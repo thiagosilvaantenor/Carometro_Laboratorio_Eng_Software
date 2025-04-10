@@ -12,6 +12,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -19,11 +20,12 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity (name="curso")
+@Table(name = "curso")
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(of = "curso_id")
+@EqualsAndHashCode(of = "id")
 public class Curso {
 	public Curso(DadosCadastroCurso dados) {
 		this.nome = dados.nome();
@@ -49,7 +51,7 @@ public class Curso {
 	private Coordenador coordenador;
 	
 	@OneToMany(mappedBy = "curso")
-	private List<Aluno> aluno;
+	private List<Aluno> alunos;
 
 	public void atualizarInformacoes(DadosAtualizacaoCurso dados) {
 		if (dados.nome() != null) {

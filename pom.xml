@@ -57,7 +57,7 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<optional>true</optional>
+			<scope>provided</scope>
 		</dependency>
 		
 				<!-- https://mvnrepository.com/artifact/jakarta.validation/jakarta.validation-api -->

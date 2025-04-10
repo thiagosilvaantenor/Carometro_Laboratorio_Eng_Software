@@ -10,6 +10,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
@@ -49,13 +51,17 @@ public class Aluno {
 	// PERGUNTAR SE é ano de ingressão ou ano do curso ou semestre
 	private int ano;
 
-	@OneToOne(mappedBy = "curso")
+	//Como é UM CURSO para MUITOS alunos, alunos é a classe Many, portanto recebe o @ManyToOne
+	@ManyToOne
+	@JoinColumn(name="curso_id", nullable=false)
 	private Curso curso;
-
-	@OneToOne(mappedBy = "historico")
+	//Talvez seria: Um aluno possui Um histórico?Com um id pra cada lista teria um registro especifico para cada aluno
+	@ManyToOne
+	@JoinColumn(name="historico_id", nullable=false)
 	private Historico historico;
-
-	@OneToOne(mappedBy = "links")
+	//Talvez seria: Um aluno possui Uma lista de links?Com um id pra cada lista teria um registro especifico para cada aluno
+	@ManyToOne
+	@JoinColumn(name="links_id", nullable=false)
 	private Links links;
 
 	public void atualizarInformacoes(DadosAtualizacaoAluno dados) {
