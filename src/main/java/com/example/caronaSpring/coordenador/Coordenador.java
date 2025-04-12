@@ -8,6 +8,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -32,5 +33,44 @@ public class Coordenador {
 	@OneToOne
 	@JoinColumn(name="curso_id")
 	private Curso curso;
+	
+	public Coordenador(DadosCadastroCoordenador dados) {
+		this.matricula = dados.matricula();
+		this.nome = dados.nome();
+		this.cpf = dados.cpf();
+		this.email = dados.email();
+		this.especializacao = dados.especializacao();
+		this.dtNascimento = dados.dtNascimento();
+		this.estadoCivil = dados.estadoCivil();
+		this.curso = dados.curso();
+	}
+
+	public void atualizarInformacoes(DadosAtualizacaoCoordenador dados) {
+		if (dados.matricula() != null) {
+			this.matricula = dados.matricula();
+		}
+		if (dados.nome() != null) {
+			this.nome = dados.nome();
+		}
+		if (dados.cpf() != null) {
+			this.cpf = dados.cpf();
+		}
+		if (dados.email() != null) {
+			this.email = dados.email();
+		}
+		if (dados.especializacao() != null) {
+			this.especializacao = dados.especializacao();
+		}
+		if (dados.dtNascimento() != null) {
+			this.dtNascimento = dados.dtNascimento();
+		}
+		if (dados.estadoCivil() != null) {
+			this.estadoCivil = dados.estadoCivil();
+		}
+		if (dados.curso() != null) {
+			this.curso = dados.curso();
+		}
+		
+	}
 	
 }

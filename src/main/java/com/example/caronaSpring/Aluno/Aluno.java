@@ -28,16 +28,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @EqualsAndHashCode(of = "id")
 public class Aluno {
-
-	public Aluno(DadosCadastroAluno dados) {
-		this.nome = dados.nome();
-		this.matricula = dados.matricula();
-		this.idade = dados.idade();
-		this.foto = dados.foto();
-		this.comentarioFATEC = dados.comentarioFATEC();
-		this.comentario = dados.comentario();
-	}
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "aluno_id")
@@ -63,7 +53,17 @@ public class Aluno {
 	@ManyToOne
 	@JoinColumn(name="links_id", nullable=false)
 	private Links links;
-
+	
+	
+	public Aluno(DadosCadastroAluno dados) {
+		this.nome = dados.nome();
+		this.matricula = dados.matricula();
+		this.idade = dados.idade();
+		this.foto = dados.foto();
+		this.comentarioFATEC = dados.comentarioFATEC();
+		this.comentario = dados.comentario();
+	}
+	
 	public void atualizarInformacoes(DadosAtualizacaoAluno dados) {
 		if (dados.nome() != null) {
 			this.nome = dados.nome();
