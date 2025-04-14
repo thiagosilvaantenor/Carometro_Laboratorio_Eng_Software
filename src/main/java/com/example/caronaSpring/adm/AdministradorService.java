@@ -18,4 +18,5 @@ public class AdministradorService {
 	public Administrador getAdministradorById(Long id) {
 		return repository.getReferenceById(id);
 	}
+	
 }

@@ -40,7 +40,7 @@
 						</div>
 						<div class="form-row">
 							<div class="form-group col-md-3">
-								<label for="email"> email: </label> <input type="text"
+								<label for="email"> email: </label> <input type="email"
 									class="form-control" id="email" name="email"
 									th:value="${coordenador?.email}">
 							</div>
@@ -57,6 +57,7 @@
 						</div>
 						<div class="row d-flex justify-content-center">
 							<div class="form-group">
+							<!-- TO FIX: estado Civil não está sendo salvo -->
 								<label for="estadoCivil"> Selecione o seu estado civil:
 								</label> <select class="form-control" name="estados" id="estados"
 									value="${coordenador?.estadoCivil}">
@@ -69,6 +70,7 @@
 							
 
 							<!-- 
+							TO DO: relacionamento do coordenador com o curso
 							<div class="form-group">
 								<label for="curso"> Selecione o seu curso: </label>
 								<select class="form-control" name="curso" id="curso" value="${coordenador?.curso}">

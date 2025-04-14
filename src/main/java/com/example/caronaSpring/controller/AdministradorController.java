@@ -10,7 +10,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+import com.example.caronaSpring.adm.Administrador;
 import com.example.caronaSpring.adm.AdminstradorRepository;
+import com.example.caronaSpring.adm.DadosAtualizacaoAdministrador;
+import com.example.caronaSpring.adm.DadosCadastroAdministrador;
 import com.example.caronaSpring.coordenador.Coordenador;
 import com.example.caronaSpring.coordenador.DadosAtualizacaoCoordenador;
 import com.example.caronaSpring.coordenador.DadosCadastroCoordenador;
@@ -21,9 +24,10 @@ import jakarta.validation.Valid;
 @Controller
 @RequestMapping("/admin")
 public class AdministradorController {
+
 	@Autowired
 	private AdminstradorRepository repository;
-	
+
 	@GetMapping("/formulario")
 	public String carregaPaginaFormulario(Long id, Model model) {
 		System.out.println("id" + id);
@@ -33,33 +37,32 @@ public class AdministradorController {
 		}
 		return "admin/formulario";
 	}
-	
+
 	@GetMapping
 	public String carregaPaginaListagem(Model model) {
 		model.addAttribute("lista", repository.findAll(Sort.by("nome").ascending()));
 		return "admin/listagem";
 	}
-//	
-//	@PostMapping
-//	@Transactional
-//	public String cadastrar(@Valid
-//			DadosCadastroCoordenador dados) {
-//			repository.save(new Coordenador(dados));
-//		return "redirect:coordenador";
-//	}
-//	
-//	@PutMapping
-//	@Transactional
-//	public String atualizar(DadosAtualizacaoCoordenador dados) {
-//		var coordenador = repository.getReferenceById(dados.matricula());
-//		coordenador.atualizarInformacoes(dados);
-//		return "redirect:coordenador";
-//	}
-//
-//	@DeleteMapping
-//	@Transactional
-//	public String removeCurso(String matricula) {
-//		repository.deleteById(matricula);
-//		return "redirect:coordenador";
-//	}
+
+	@PostMapping
+	@Transactional
+	public String cadastrar(@Valid DadosCadastroAdministrador dados) {
+		repository.save(new Administrador(dados));
+		return "redirect:admin";
+	}
+
+	@PutMapping
+	@Transactional
+	public String atualizar(DadosAtualizacaoAdministrador dados) {
+		var admin = repository.getReferenceById(dados.id());
+		admin.atualizarInformacoes(dados);
+		return "redirect:admin";
+	}
+
+	@DeleteMapping
+	@Transactional
+	public String removeCurso(Long id) {
+		repository.deleteById(id);
+		return "redirect:admin";
+	}
 }
