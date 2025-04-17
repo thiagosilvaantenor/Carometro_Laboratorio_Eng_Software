@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="pt-br" xmlns:th="http://thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{template.html}">
+<head>
+<title>Inicio Carona</title>
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css"
+	integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+	crossorigin="anonymous">
+</head>
+
+<body>
+	<div class="container">
+		<div class="row justify-content-md-center">
+			<div class="d-flex flex-column col mt-3">
+				<h1 class="text-center mt-3">Bem vindo ao Carona</h1>
+				<div class="d-flex justify-content-around mt-5">
+					<a href="/admin/formulario" class="btn btn-success p-3">Login Administrador</a>
+					<a href="/coordenador/formulario" class="btn btn-success p-3">Login Coordenador</a>
+					<a href="/aluno/formulario" class="btn btn-success p-3">Login Aluno</a>
+					<a href="/aluno/listagem" class="btn btn-success p-3">Exibir postagens</a>
+				
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

@@ -8,11 +8,11 @@
 		<version>3.5.0-SNAPSHOT</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.example</groupId>
+	<groupId>br.com.carona</groupId>
 	<artifactId>caronaSpring</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>caronaSpring</name>
-	<description>Projeto Rede Egressos</description>
+	<description>Projeto Lab de Engenharia de Software</description>
 	<url/>
 	<licenses>
 		<license/>
