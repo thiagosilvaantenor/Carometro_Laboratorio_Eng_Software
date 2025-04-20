@@ -52,8 +52,8 @@ public class AdministradorController {
 
 	@PostMapping
 	@Transactional
-	public String cadastrar(@Valid DadosCadastroAdministrador dados) {
-		repository.save(new Administrador(dados));
+	public String cadastrar(@Valid DadosCadastroAdministrador dados) throws Exception {
+		service.salvarAdmin(new Administrador(dados));
 		return "redirect:admin";
 	}
 

@@ -14,7 +14,7 @@
 		<div class="row justify-content-md-center">
 			<div class="d-flex flex-column col mt-3">
 				<h1 class="text-center">Lista de Coordenador</h1>
-				<a class="mx-auto btn btn-success border p-2" href="/curso/formulario">Novo</a>
+				<a class="mx-auto btn btn-success border p-2" href="/coordenador/formulario">Novo</a>
 			</div>
 		</div>
 		<div class="row d-flex justify-content-center">
@@ -32,17 +32,21 @@
 						<tr scope="row" class="table-primary" th:each="coordenador : ${lista}">
 							<td scope="col" th:text="${coordenador.matricula}"></td>
 							<td scope="col" th:text="${coordenador.nome}"></td>
-							<td scope="col" th:text="${coordenador.curso}"></td>
-							<td scope="col"><a
-								th:href="@{/curso/formulario?matricula={matricula}(matricula=${coordenador.matricula})}">
+							<td scope="col" th:text="${coordenador.curso.id}"></td>
+							<td scope="col">
+							<a
+								th:href="@{/coordenador/formulario?matricula={matricula}(matricula=${coordenador.matricula})}">
 									<button class="btn btn-primary mb-3">Editar</button>
 							</a>
 
-								<form action="/coordenador" method="post">
-									<input type="hidden" name="_method" value="delete"> <input
-										type="hidden" name="id" th:value="${coordenador.matricula}"> <input
-										class="btn btn-danger" type="submit" value="Excluir">
-								</form></td>
+								<form  action="/coordenador" method="post">
+									<input type="hidden" name="_method" value="delete">
+									<input type="hidden" name="matricula" th:value="${coordenador.matricula}">
+									<input type="submit" class="btn btn-danger" value="Excluir">
+								</form>
+								
+
+							</td>
 						</tr>
 					</tbody>
 				</table>

@@ -39,6 +39,7 @@ public class Aluno {
 	private String comentario;
 	// PERGUNTAR SE é ano de ingressão ou ano do curso ou semestre
 	private int ano;
+	private String unidFatec;
 
 	//Como é UM CURSO para MUITOS alunos, alunos é a classe Many, portanto recebe o @ManyToOne
 	@ManyToOne

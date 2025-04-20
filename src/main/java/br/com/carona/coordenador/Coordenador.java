@@ -3,6 +3,7 @@ package br.com.carona.coordenador;
 import java.time.LocalDate;
 
 import br.com.carona.curso.Curso;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
@@ -26,6 +27,7 @@ public class Coordenador {
 	private String nome;
 	private String cpf;
 	private String email;
+	private String senha;
 	private String especializacao;
 	private LocalDate dtNascimento;
 	private String estadoCivil;
@@ -38,6 +40,7 @@ public class Coordenador {
 		this.nome = dados.nome();
 		this.cpf = dados.cpf();
 		this.email = dados.email();
+		this.senha = dados.senha();
 		this.especializacao = dados.especializacao();
 		this.dtNascimento = dados.dtNascimento();
 		this.estadoCivil = dados.estadoCivil();
@@ -56,6 +59,9 @@ public class Coordenador {
 		}
 		if (dados.email() != null) {
 			this.email = dados.email();
+		}
+		if (dados.senha() != null) {
+			this.senha = dados.senha();
 		}
 		if (dados.especializacao() != null) {
 			this.especializacao = dados.especializacao();

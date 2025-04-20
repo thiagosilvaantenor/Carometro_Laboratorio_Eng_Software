@@ -12,6 +12,7 @@ public record DadosCadastroCoordenador(@NotBlank
 		String nome,
 		String cpf,
 		String email,
+		String senha,
 		String especializacao,
 		LocalDate dtNascimento,
 		String estadoCivil,

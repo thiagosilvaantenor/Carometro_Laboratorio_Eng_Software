@@ -15,71 +15,78 @@
 			<div class="row justify-content-md-center">
 				<div class="d-flex flex-column col mt-3">
 					<h1 class="text-center mt-3">Cadastrar Coordenador</h1>
-					<form method="post" action="/coordenador">
+					<form th:object="${coordenador}" method="post" action="/coordenador">
+<!-- 
 						<input type="hidden" name="_method" value="put"
 							th:if="${coordenador!= null}">
-						<!--  
-						<input type="hidden" name="matricula"
-							th:value="${coordenador?.matricula}">
--->
+ -->
+
+						<input type="hidden" name="_method" value="put"
+						       th:if="${coordenador?.matricula != null}">
+
 
 						<div class="form-group">
 							<label for="matricula"> Matricula: </label>
 							<input class="form-control" type="text" id="matricula" name="matricula"
 								th:value="${coordenador?.matricula}">
 							<label for="nome">Nome: </label>
-							<input class="form-control"
-								type="text" id="nome"
-								name="nome" th:value="${coordenador?.nome}">
+							<input class="form-control" type="text" id="nome" name="nome"
+								th:value="${coordenador?.nome}">
 						</div>
 
 						<div class="form-group">
-							<label for="cpf"> CPF: </label> <input type="text"
+							<label for="cpf"> CPF: </label>
+							<input type="text"
 								class="form-control" id="cpf" name="cpf"
 								th:value="${coordenador?.cpf}">
 						</div>
 						<div class="form-row">
 							<div class="form-group col-md-3">
-								<label for="email"> email: </label> <input type="email"
-									class="form-control" id="email" name="email"
-									th:value="${coordenador?.email}">
+								<label for="email"> Email: </label>
+								<input type="email" class="form-control" id="email"
+								 name="email" th:value="${coordenador?.email}">
+							</div>
+							<div class="form-group col-md-3">
+								<label for="senha"> Senha: </label>
+								<input type="password" class="form-control" id="senha"
+								 name="senha" th:value="${coordenador?.senha}">
 							</div>
 							<div class="form-group col-md-5">
-								<label for="especializacao"> especialização: </label> <input
-									type="text" class="form-control" id="especializacao"
+								<label for="especializacao"> Especialização: </label>
+								<input type="text" class="form-control" id="especializacao"
 									name="especializacao" th:value="${coordenador?.especializacao}">
 							</div>
 							<div class="form-group col-md-4">
-								<label for="dtNascimento"> Data de Nascimento: </label> <input
-									type="date" id="dtNascimento" class="form-control"
+								<label for="dtNascimento"> Data de Nascimento: </label>
+								<input type="date" id="dtNascimento" class="form-control"
 									name="dtNascimento" th:value="${coordenador?.dtNascimento}">
 							</div>
 						</div>
 						<div class="row d-flex justify-content-center">
-							<div class="form-group">
-							<!-- TO FIX: estado Civil não está sendo salvo -->
-								<label for="estadoCivil"> Selecione o seu estado civil:
-								</label> <select class="form-control" name="estados" id="estados"
-									value="${coordenador?.estadoCivil}">
-									<option value="solteiro">Solteiro/a</option>
-									<option value="casado">Casado(a)</option>
-									<option value="divorciado">Divorciado/a</option>
-									<option value="viuvo">Viúvo/a</option>
-								</select>
-							</div>
-							
-
-							<!-- 
-							TO DO: relacionamento do coordenador com o curso
-							<div class="form-group">
-								<label for="curso"> Selecione o seu curso: </label>
-								<select class="form-control" name="curso" id="curso" value="${coordenador?.curso}">
-									<option value="ads">ADS</option>
-									<option value="dsm">DSM</option>
-								</select>
-							</div>
-							 -->
+						    <div class="form-group">
+						        <label for="estadoCivil">Selecione o seu estado civil:</label>
+						        <select class="form-control" id="estadoCivil" name="estadoCivil" th:field="*{estadoCivil}">
+						            <option value="">-- Selecione --</option>
+						            <option value="solteiro">Solteiro(a)</option>
+						            <option value="casado">Casado(a)</option>
+						            <option value="divorciado">Divorciado(a)</option>
+						            <option value="viuvo">Viúvo(a)</option>
+						        </select>
+						    </div>
 						</div>
+
+
+							<div class="form-group mt-2">
+								<label for="cursoSelect"> Selecione o seu curso: </label>
+								<select class="form-control" name="cursoId" id="cursoId">
+									<option value="">-- Selecione --</option>
+									<option th:each="curso : ${cursos}"
+										th:value="${curso.id}"
+										th:text="${curso.nome}">
+									</option>
+								</select>
+							</div>
+					
 						<div class="d-flex justify-content-center">
 							<input class="btn btn-success p-3" type="submit"
 								value="Cadastrar">

@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import br.com.carona.aluno.Aluno;
 @Service
 public class CursoService {
 	@Autowired
@@ -18,6 +17,10 @@ public class CursoService {
 
 	public Curso getCursoById(Long id) {
 		return repository.getReferenceById(id);
+	}
+
+	public List<Curso> findAllById(List<Long> cursoIds) {
+		return repository.findAllById(cursoIds);
 	}
 
 }
