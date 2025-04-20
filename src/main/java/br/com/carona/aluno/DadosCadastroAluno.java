@@ -1,5 +1,7 @@
 package br.com.carona.aluno;
 
+import java.time.LocalDate;
+
 import br.com.carona.curso.Curso;
 import br.com.carona.historico.Historico;
 import br.com.carona.links.Links;
@@ -10,14 +12,19 @@ public record DadosCadastroAluno(
 		@NotBlank
 		String nome,
 		String matricula,
-		int idade,
-		String foto,
+		String cpf,
+		String email,
+		String senha,
+		LocalDate dtNascimento,
+		String unidFATEC,
 		String comentarioFATEC,
 		String comentario,
 		int ano,
 		Curso curso,
 		Historico historico,
-		Links links
+		Links links,
+		byte[] foto
 		) {
+
 
 }

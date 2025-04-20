@@ -10,27 +10,26 @@
 	crossorigin="anonymous">
 </head>
 <body>
-	<div layout:fragment="conteudo">
 		<div class="container">
 			<div class="row justify-content-md-center">
 				<div class="d-flex flex-column col mt-3">
 					<h1 class="text-center mt-3">Cadastrar admin</h1>
 					<form method="post" action="/admin">
 						<input type="hidden" name="_method" value="put"
-							th:if="${admin!= null}"> <input type="hidden"
-							name="id" th:value="${admin?.id}">
+							th:if="${admin!= null}">
+						<input type="hidden" name="id" th:value="${admin?.id}">
 
 
 						<div class="form-group">
-							<label for="nome">Nome: </label> <input class="form-control"
-								type="text" id="nome" name="nome"
+							<label for="nome">Nome: </label>
+							<input class="form-control" type="text" id="nome" name="nome"
 								th:value="${admin?.nome}">
-								<label for="unidFatec">CPF: </label>
-								<input class="form-control" type="text" id="cpf" name="cpf"
-								th:value="${admin?.cpf}"> <label for="unidFatec">Unidade
-								FATEC: </label> <input class="form-control" type="text" id="unidFatec"
+							<label for="cpf">CPF: </label>
+							<input class="form-control" type="text" id="cpf" name="cpf"
+								th:value="${admin?.cpf}">
+							<label for="unidFatec">Unidade FATEC: </label>
+							<input class="form-control" type="text" id="unidFatec"
 								name="unidFatec" th:value="${admin?.unidFatec}">
-
 						</div>
 
 						<div class="form-group">
@@ -46,7 +45,6 @@
 				</form>
 			</div>
 		</div>
-	</div>
 	</div>
 
 </body>

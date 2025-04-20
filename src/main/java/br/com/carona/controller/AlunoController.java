@@ -14,7 +14,10 @@ import br.com.carona.aluno.Aluno;
 import br.com.carona.aluno.AlunoRepository;
 import br.com.carona.aluno.DadosAtualizacaoAluno;
 import br.com.carona.aluno.DadosCadastroAluno;
+import br.com.carona.curso.CursoService;
+import br.com.carona.historico.Historico;
 import br.com.carona.historico.HistoricoRepository;
+import br.com.carona.links.Links;
 import br.com.carona.links.LinksRepository;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -28,14 +31,25 @@ public class AlunoController {
 	private HistoricoRepository repositoryHistorico;
 	@Autowired
 	private LinksRepository repositoryLinks;
+	@Autowired
+	private CursoService cursoService;
 	
 	@GetMapping("/formulario")
 	public String carregaPaginaFormulario(Long id, Model model) {
-		System.out.println("Id" + id);
+		model.addAttribute("cursos", cursoService.getAllCursos());
+		
 		if (id != null) {
 			var aluno = repository.getReferenceById(id);
 			model.addAttribute("aluno", aluno);
+			
+		} else {
+			Aluno aluno = new Aluno();
+			aluno.setHistorico(new Historico());
+			aluno.setLinks(new Links());
+			model.addAttribute("aluno", aluno);
 		}
+		
+		
 		return "aluno/formulario";
 	}
 	

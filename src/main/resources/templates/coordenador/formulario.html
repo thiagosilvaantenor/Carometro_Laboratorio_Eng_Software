@@ -10,16 +10,11 @@
 	crossorigin="anonymous">
 </head>
 <body>
-	<div layout:fragment="conteudo">
 		<div class="container">
 			<div class="row justify-content-md-center">
 				<div class="d-flex flex-column col mt-3">
 					<h1 class="text-center mt-3">Cadastrar Coordenador</h1>
 					<form th:object="${coordenador}" method="post" action="/coordenador">
-<!-- 
-						<input type="hidden" name="_method" value="put"
-							th:if="${coordenador!= null}">
- -->
 
 						<input type="hidden" name="_method" value="put"
 						       th:if="${coordenador?.matricula != null}">
@@ -95,7 +90,6 @@
 				</div>
 			</div>
 		</div>
-	</div>
 
 </body>
 </html>
