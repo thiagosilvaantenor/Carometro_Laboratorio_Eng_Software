@@ -113,7 +113,8 @@
 									<option value="">-- Selecione --</option>
 									<option th:each="curso : ${cursos}"
 										th:value="${curso.id}"
-										th:text="${curso.nome}">
+										th:text="${curso.coordenador == null ? curso.nome : curso.nome + ' (Já possui coordenador)'}"
+         								th:disabled="${curso.coordenador != null}">
 									</option>
 								</select>
 							</div>
