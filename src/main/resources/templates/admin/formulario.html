@@ -1,94 +1,93 @@
 <!DOCTYPE html>
 <html lang="pt-br" xmlns:th="http://thymeleaf.org"
-	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-	layout:decorate="~{template.html}">
+    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+    layout:decorate="~{template.html}">
 <head>
-<title>Cadastro de admin</title>
-<link rel="stylesheet"
-	href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css"
-	integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
-	crossorigin="anonymous">
+    <title>Cadastro de Admin</title>
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css"
+        integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
+        crossorigin="anonymous">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .fatec-header {
+            background-color: #990000; /* Vermelho escuro FATEC */
+            color: white;
+            padding: 20px 0;
+            border-radius: 8px 8px 0 0;
+            text-align: center;
+        }
+
+        .card-form {
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            background-color: white;
+        }
+
+        label {
+            font-weight: 600;
+        }
+
+        .btn-fatec {
+            background-color: #990000;
+            color: white;
+        }
+
+        .btn-fatec:hover {
+            background-color: #b30000;
+        }
+    </style>
 </head>
 <body>
-		<div class="container">
-			<div class="row justify-content-md-center">
-				<div class="d-flex flex-column col mt-3">
-					<h1 class="text-center mt-3">Cadastrar admin</h1>
-					<form th:object="${admin}" method="post" action="/admin">
+    <div layout:fragment="conteudo">
+        <div class="container mt-5">
+            <div class="row justify-content-md-center">
+                <div class="col-md-8">
+                    <div class="card-form p-4">
+                        <div class="fatec-header mb-4">
+                            <h2>Cadastrar Administrador</h2>
+                        </div>
+                        <form method="post" action="/admin">
+                            <input type="hidden" name="_method" value="put" th:if="${admin!= null}">
+                            <input type="hidden" name="id" th:value="${admin?.id}">
 
-					<input type="hidden" name="_method" value="put"
-						       th:if="${admin?.id != null}">
-						<input type="hidden" name="id" th:value="${admin?.id}"/>
-	
+                            <div class="form-group">
+                                <label for="nome">Nome</label>
+                                <input class="form-control" type="text" id="nome" name="nome" th:value="${admin?.nome}">
+                            </div>
 
-						<div class="form-group">
-							<label for="nome">Nome: </label>
-							<input class="form-control" type="text" id="nome" name="nome"
-								th:value="${admin?.nome}">
-							<label for="cpf">CPF: </label>
-							<input class="form-control" type="text" id="cpf" name="cpf"
-								th:value="${admin?.cpf}">								
-							    <!-- Unidade Fatec -->
-					        <label for="unidFATEC">Selecione a sua Unidade FATEC:</label>
-					        <select class="form-control" id="unidFATECSelect" name="unidFATEC" th:field="*{unidFATEC}">
-					            <option value="">-- Selecione --</option>
-					            <option value="FATEC Zona Leste">FATEC Zona Leste</option>
-					            <option value="FATEC Mogi das Cruzes">FATEC Mogi das Cruzes</option>
-					            <option value="FATEC Sao Paulo">FATEC São Paulo</option>
-					             <option value="outra">Outra Unidade</option>
-					        </select>
-					        
-					        <div id="outraUnidDiv" class="mr-5 mt-3" style="display:none;">
-							    <label for="outraUnidFATEC">Digite o nome da sua unidade FATEC:</label>
-							    <input type="text" class="form-control" id="outraUnidFATEC" placeholder="Digite o nome da sua unidade">
-							</div>
-					        <input type="hidden" id="inputOculto"  name="unidFatec"/>
-								
-						</div>
+                            <div class="form-group">
+                                <label for="cpf">CPF</label>
+                                <input class="form-control" type="text" id="cpf" name="cpf" th:value="${admin?.cpf}">
+                            </div>
 
-						<div class="form-group">
-							<label for="email"> Email: </label> <input type="text"
-								class="form-control" id="email" name="email"
-								th:value="${admin?.email}">
-								<label for="senha">Senha: </label> <input type="password" class="form-control" id="senha"
-								name="senha" th:value="${admin?.senha}">
-						</div>
-				<div class="d-flex justify-content-center">
-					<input class="btn btn-success p-3" type="submit" value="Cadastrar">
-				</div>
-				</form>
-			</div>
-		</div>
-	</div>
-<script>
-	// Função para lidar com Unidade Fatec, caso usuário escolha "Outra Unidade"
-	document.addEventListener("DOMContentLoaded", function (){
-		const select = document.getElementById("unidFATECSelect");
-		const outraDiv = document.getElementById("outraUnidDiv");
-		const outraInput = document.getElementById("outraUnidFATEC");   
-		const inputOculto = document.getElementById("inputOculto");
-		
-		function atualizaCampoOculto() {
-			if (select.value === "outra") {
-				inputOculto.value = outraInput.value;
-			} else {
-				inputOculto.value = select.value
-			}
-		}
-		
-		select.addEventListener("change", function() {
-			if (select.value === "outra") {
-				outraDiv.style.display = "block";
-			} else{
-				outraDiv.style.display = "none";
-			}
-			atualizaCampoOculto();
-		});
-		
-    	outraInput.addEventListener("input", atualizaCampoOculto);
-		
-    	document.querySelector("form").addEventListener("submit", atualizaCampoOculto);
-	});
-</script>
+                            <div class="form-group">
+                                <label for="unidFatec">Unidade FATEC</label>
+                                <input class="form-control" type="text" id="unidFatec" name="unidFatec" th:value="${admin?.unidFatec}">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="email">E-mail</label>
+                                <input type="email" class="form-control" id="email" name="email" th:value="${admin?.email}">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="senha">Senha</label>
+                                <input type="password" class="form-control" id="senha" name="senha" th:value="${admin?.senha}">
+                            </div>
+
+                            <div class="d-flex justify-content-center mt-4">
+                                <button type="submit" class="btn btn-fatec btn-lg">Cadastrar</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
