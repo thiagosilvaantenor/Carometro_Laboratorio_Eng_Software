@@ -4,7 +4,7 @@ public record DadosAtualizacaoAdministrador(
 		Long id,
 		String nome,
 		String cpf,
-		String unidFatec,
+		String unidFATEC,
 		String email,
 		String senha
 		) {

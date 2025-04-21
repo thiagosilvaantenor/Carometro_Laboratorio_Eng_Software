@@ -14,11 +14,12 @@
 			<div class="row justify-content-md-center">
 				<div class="d-flex flex-column col mt-3">
 					<h1 class="text-center mt-3">Cadastrar admin</h1>
-					<form method="post" action="/admin">
-						<input type="hidden" name="_method" value="put"
-							th:if="${admin!= null}">
-						<input type="hidden" name="id" th:value="${admin?.id}">
+					<form th:object="${admin}" method="post" action="/admin">
 
+					<input type="hidden" name="_method" value="put"
+						       th:if="${admin?.id != null}">
+						<input type="hidden" name="id" th:value="${admin?.id}"/>
+	
 
 						<div class="form-group">
 							<label for="nome">Nome: </label>
@@ -26,14 +27,27 @@
 								th:value="${admin?.nome}">
 							<label for="cpf">CPF: </label>
 							<input class="form-control" type="text" id="cpf" name="cpf"
-								th:value="${admin?.cpf}">
-							<label for="unidFatec">Unidade FATEC: </label>
-							<input class="form-control" type="text" id="unidFatec"
-								name="unidFatec" th:value="${admin?.unidFatec}">
+								th:value="${admin?.cpf}">								
+							    <!-- Unidade Fatec -->
+					        <label for="unidFATEC">Selecione a sua Unidade FATEC:</label>
+					        <select class="form-control" id="unidFATECSelect" name="unidFATEC" th:field="*{unidFATEC}">
+					            <option value="">-- Selecione --</option>
+					            <option value="FATEC Zona Leste">FATEC Zona Leste</option>
+					            <option value="FATEC Mogi das Cruzes">FATEC Mogi das Cruzes</option>
+					            <option value="FATEC Sao Paulo">FATEC São Paulo</option>
+					             <option value="outra">Outra Unidade</option>
+					        </select>
+					        
+					        <div id="outraUnidDiv" class="mr-5 mt-3" style="display:none;">
+							    <label for="outraUnidFATEC">Digite o nome da sua unidade FATEC:</label>
+							    <input type="text" class="form-control" id="outraUnidFATEC" placeholder="Digite o nome da sua unidade">
+							</div>
+					        <input type="hidden" id="inputOculto"  name="unidFatec"/>
+								
 						</div>
 
 						<div class="form-group">
-							<label for="email"> email: </label> <input type="text"
+							<label for="email"> Email: </label> <input type="text"
 								class="form-control" id="email" name="email"
 								th:value="${admin?.email}">
 								<label for="senha">Senha: </label> <input type="password" class="form-control" id="senha"
@@ -46,6 +60,35 @@
 			</div>
 		</div>
 	</div>
-
+<script>
+	// Função para lidar com Unidade Fatec, caso usuário escolha "Outra Unidade"
+	document.addEventListener("DOMContentLoaded", function (){
+		const select = document.getElementById("unidFATECSelect");
+		const outraDiv = document.getElementById("outraUnidDiv");
+		const outraInput = document.getElementById("outraUnidFATEC");   
+		const inputOculto = document.getElementById("inputOculto");
+		
+		function atualizaCampoOculto() {
+			if (select.value === "outra") {
+				inputOculto.value = outraInput.value;
+			} else {
+				inputOculto.value = select.value
+			}
+		}
+		
+		select.addEventListener("change", function() {
+			if (select.value === "outra") {
+				outraDiv.style.display = "block";
+			} else{
+				outraDiv.style.display = "none";
+			}
+			atualizaCampoOculto();
+		});
+		
+    	outraInput.addEventListener("input", atualizaCampoOculto);
+		
+    	document.querySelector("form").addEventListener("submit", atualizaCampoOculto);
+	});
+</script>
 </body>
 </html>

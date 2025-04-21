@@ -36,10 +36,11 @@ public class AdministradorController {
 
 	@GetMapping("/formulario")
 	public String carregaPaginaFormulario(Long id, Model model) {
-		System.out.println("id" + id);
 		if (id != null) {
 			var admin = repository.getReferenceById(id);
 			model.addAttribute("admin", admin);
+		} else {
+			model.addAttribute("admin", new Administrador());
 		}
 		return "admin/formulario";
 	}
@@ -67,7 +68,7 @@ public class AdministradorController {
 
 	@DeleteMapping
 	@Transactional
-	public String removeCurso(Long id) {
+	public String removeAdmin(Long id) {
 		repository.deleteById(id);
 		return "redirect:admin";
 	}

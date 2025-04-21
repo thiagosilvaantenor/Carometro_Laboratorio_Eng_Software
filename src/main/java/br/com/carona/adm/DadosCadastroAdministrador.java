@@ -6,7 +6,7 @@ public record DadosCadastroAdministrador(
 		@NotBlank
 		String nome,
 		String cpf,
-		String unidFatec,
+		String unidFATEC,
 		String email,
 		String senha
 		) {

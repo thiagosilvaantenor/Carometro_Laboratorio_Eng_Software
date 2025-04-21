@@ -29,12 +29,12 @@ public class Administrador {
 	String cpf;
 	String email;
 	String senha;
-	String unidFatec;
+	String unidFATEC;
 
 	public Administrador(@Valid DadosCadastroAdministrador dados) {
 		this.nome = dados.nome();
 		this.cpf = dados.cpf();
-		this.unidFatec = dados.unidFatec();
+		this.unidFATEC = dados.unidFATEC();
 		this.email = dados.email();
 		this.senha = dados.senha();
 	}
@@ -43,19 +43,17 @@ public class Administrador {
 		if (dados.nome() != null) {
 			this.nome = dados.nome();
 		}
-
-		if (dados.cpf() != null) {
-			this.cpf = dados.cpf();
-		}
-
-		if (dados.unidFatec() != null) {
-			this.unidFatec = dados.unidFatec();
-		}
 		if (dados.email() != null) {
 			this.email = dados.email();
 		}
 		if (dados.senha() != null) {
 			this.senha = dados.senha();
+		}
+		if (dados.cpf() != null) {
+			this.cpf = dados.cpf();
+		}
+		if (dados.unidFATEC() != null) {
+			this.unidFATEC = dados.unidFATEC();
 		}
 	}
 }
