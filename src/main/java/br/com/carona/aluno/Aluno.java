@@ -69,7 +69,6 @@ public class Aluno {
 		this.email = dados.email();
 		this.senha = dados.senha();
 		this.dtNascimento = dados.dtNascimento();
-		this.foto = dados.foto();
 		this.unidFATEC = dados.unidFATEC();
 		this.comentarioFATEC = dados.comentarioFATEC();
 		this.comentario = dados.comentario();
@@ -95,9 +94,6 @@ public class Aluno {
 		}		
 		if (dados.dtNascimento() != null) {
 			this.dtNascimento = dados.dtNascimento();
-		}
-		if (dados.foto() != null) {
-			this.foto = dados.foto();
 		}
 		if (dados.unidFATEC() != null) {
 			this.unidFATEC = dados.unidFATEC();

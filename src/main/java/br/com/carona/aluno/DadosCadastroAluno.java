@@ -2,6 +2,8 @@ package br.com.carona.aluno;
 
 import java.time.LocalDate;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import br.com.carona.curso.Curso;
 import br.com.carona.historico.Historico;
 import br.com.carona.links.Links;
@@ -31,7 +33,7 @@ public record DadosCadastroAluno(
 		String gitHub,
 		String linkedIn,
 		String lattesCNPQ,
-		byte[] foto
+		MultipartFile foto
 		) {
 
 

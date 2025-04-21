@@ -36,7 +36,7 @@
 							<td scope="col" th:text="${aluno.id}"></td>
 							<td scope="col" th:text="${aluno.nome}"></td>
 							<td scope="col">
-								<img th:src="@{/aluno/{id}/foto(id=${aluno.id})}" alt="Foto do aluno"/>
+								<img th:src="@{/aluno/{id}/foto(id=${aluno.id})}" alt="Foto do aluno" width="30%"/>
 							</td>
 							<td scope="col" th:text="${aluno.curso.nome}"></td>
 							<td scope="col" th:text="${aluno.historico.empresaTrabalho}"></td>

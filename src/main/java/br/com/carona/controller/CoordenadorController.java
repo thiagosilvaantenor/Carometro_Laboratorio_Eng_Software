@@ -42,7 +42,6 @@ public class CoordenadorController {
 
 	@GetMapping("/formulario")
 	public String carregaPaginaFormulario(String matricula, Model model) {
-		//System.out.println("matricula" + matricula);
 		model.addAttribute("cursos", cursoService.getAllCursos());
 		if(matricula != null) {
 	        var coordenador = repository.getReferenceById(matricula);

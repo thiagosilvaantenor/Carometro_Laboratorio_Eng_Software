@@ -1,5 +1,6 @@
 package br.com.carona.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,7 +77,6 @@ public class AlunoController {
 	public String cadastrar(@Valid
 			DadosCadastroAluno dados,
 			@RequestParam("cursoId") Long cursoId
-			//TO FIX: Quando tenta atualizar ou cadastrar da erro por conta da foto ,@RequestParam("foto") MultipartFile foto
 			) throws Exception {
 		
 		Aluno aluno = new Aluno(dados);
@@ -105,16 +105,12 @@ public class AlunoController {
 		links.getAlunos().add(aluno);
 		aluno.setLinks(links);
 		
-		/*TO FIX: Foto não está sendo salva no banco de dados
-		//Foto
-		if (!foto.isEmpty()) {
-			try {
-				aluno.setFoto(foto.getBytes());
-			} catch (Exception e) {
-				throw new Exception("Erro ao salvar foto");
-			}
-		}
-		*/
+		 // convertendo a foto de MultipartFile para byte[]
+	    if (dados.foto() != null && !dados.foto().isEmpty()) {
+	        aluno.setFoto(dados.foto().getBytes());
+	    }
+
+		
 		
 		//Salva primeiro o histórico e links no banco de dados
 		repositoryHistorico.save(historico);
@@ -127,8 +123,9 @@ public class AlunoController {
 	
 	@PutMapping
 	@Transactional
-	public String atualizar(DadosAtualizacaoAluno dados) {
+	public String atualizar(DadosAtualizacaoAluno dados) throws IOException {
 		var aluno = repository.getReferenceById(dados.id());
+		//Atualiza curso
 		if (dados.curso() != null) {
 			//Remove o curso antigo
 			aluno.getCurso().getAlunos().remove(aluno);
@@ -136,6 +133,10 @@ public class AlunoController {
 			aluno.setCurso(dados.curso());
 			dados.curso().getAlunos().add(aluno);
 		}
+		//Atualiza foto
+		if (dados.foto() != null && !dados.foto().isEmpty()) {
+	        aluno.setFoto(dados.foto().getBytes());
+	    }
 		aluno.atualizarInformacoes(dados);
 		return "redirect:aluno";
 	}
