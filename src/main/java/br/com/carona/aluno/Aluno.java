@@ -42,7 +42,7 @@ public class Aluno {
 	private LocalDate dtNascimento;	
 	private String comentarioFATEC;
 	private String comentario;
-	private int ano;
+	private Integer ano;
 	private String unidFATEC;
 	@Lob
 	@Column(name = "foto", columnDefinition = "LONGBLOB")
@@ -73,6 +73,7 @@ public class Aluno {
 		this.unidFATEC = dados.unidFATEC();
 		this.comentarioFATEC = dados.comentarioFATEC();
 		this.comentario = dados.comentario();
+		this.ano = dados.ano();
 		this.curso = dados.curso();
 	}
 	
@@ -107,9 +108,27 @@ public class Aluno {
 		if (dados.comentario() != null) {
 			this.comentario = dados.comentario();
 		}
-		if (dados.curso() != null) {
-			this.curso = dados.curso();
+		if (dados.ano() != null) {
+			this.ano = dados.ano();
+		}	
+		if (dados.empresaTrabalho() != null) {
+			this.historico.setEmpresaTrabalho(dados.empresaTrabalho());
 		}
-
+		if (dados.descricaoTrabalho() != null) {
+			this.historico.setDescricaoTrabalho(dados.descricaoTrabalho());
+		}
+		if (dados.tempoTrabalho() != 0) {
+			this.historico.setTempoTrabalho(dados.tempoTrabalho());
+		}
+		if (dados.gitHub() != null) {
+			this.links.setGitHub(dados.gitHub());
+		}
+		if (dados.linkedIn() != null) {
+			this.links.setLinkedIn(dados.linkedIn());
+		}
+		if (dados.lattesCNPQ() != null) {
+			this.links.setLattesCNPQ(dados.lattesCNPQ());
+		}
+		
 	}
 }

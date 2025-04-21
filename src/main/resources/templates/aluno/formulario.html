@@ -14,7 +14,7 @@
 			<div class="row justify-content-md-center">
 				<div class="d-flex flex-column col mt-3">
 					<h1 class="text-center mt-3">Cadastrar Aluno</h1>
-					<form th:object="${aluno}" method="post" action="/aluno">
+					<form th:object="${aluno}" method="post" action="/aluno" enctype="multipart/form-data">
 
 						<input type="hidden" name="_method" value="put"
 						       th:if="${aluno?.id != null}">
@@ -51,34 +51,49 @@
 						
 						<div class="form-row">
 							<div class="form-group col-md-4">
-								<label for="dtNascimento"> dtNascimento: </label>
+								<label for="dtNascimento"> data de Nascimento: </label>
 								<input type="date" class="form-control" id="dtNascimento"
 									name="dtNascimento" th:value="${aluno?.dtNascimento}" required/>
 							</div>
 							<div class="form-group col-md-3">
 								<label for="foto"> foto: </label>
-								<input type="file" accept="image/png, image/jpeg" class="form-control" id="foto"
+								<input type="file" accept="image/jpeg" class="form-control" id="foto"
 									name="foto" th:value="${aluno?.foto}"/>
 							</div>
-							<div class="form-group col-md-2">
-								<label for="unidFATEC"> Unidade FATEC: </label>
-								<input type="text" class="form-control" id="unidFATEC"
-									name="unidFATEC" th:value="${aluno?.unidFATEC}"/>
+							
+							<div class="form-row">
+							    <!-- Unidade Fatec -->
+							        <label for="unidFATEC">Selecione a sua Unidade FATEC:</label>
+							        <select class="form-control" id="unidFATECSelect" name="unidFATEC" th:field="*{unidFATEC}">
+							            <option value="">-- Selecione --</option>
+							            <option value="FATEC Zona Leste">FATEC Zona Leste</option>
+							            <option value="FATEC Mogi das Cruzes">FATEC Mogi das Cruzes</option>
+							            <option value="FATEC Sao Paulo">FATEC São Paulo</option>
+							             <option value="outra">Outra Unidade</option>
+							        </select>
+							        
+							        <div id="outraUnidDiv" class="mr-5 mt-3" style="display:none;">
+									    <label for="outraUnidFATEC">Digite o nome da sua unidade FATEC:</label>
+									    <input type="text" class="form-control" id="outraUnidFATEC" placeholder="Digite o nome da sua unidade">
+									</div>
+							        <input type="hidden" id="inputOculto" />
+									
+							<div class="form-group col-md-5 mt-3">
+									<label for="ano"> Informe o ano e semestre em que se formou: </label>
+									<input type="number" class="form-control" id="ano"
+										name="ano" th:value="${aluno?.ano}" value="202501"/>
+								</div>
 							</div>
-							<div class="form-group col-md-2">
-								<label for="ano"> Informe o ano e semestre em que se formou: </label>
-								<input type="number" class="form-control" id="ano"
-									name="ano" th:value="${aluno?.ano}" placeholder=""/>
 							</div>
-						</div>
 					
 						<div class="form-group mt-2">
 							<label for="cursoSelect"> Selecione o seu curso: </label>
-							<select class="form-control" name="cursoId" id="cursoId">
+							<select class="form-control" name="cursoId" id="cursoId" th:field="*{curso}">
 								<option value="">-- Selecione --</option>
 								<option th:each="curso : ${cursos}"
 									th:value="${curso.id}"
-									th:text="${curso.nome}">
+									th:text="${curso.nome}"
+									th:selected="${aluno?.curso?.id} == ${curso.id}">
 								</option>
 							</select>
 						</div>
@@ -144,6 +159,35 @@
 				</div>
 			</div>
 		</div>
-
+<script>
+	// Função para lidar com Unidade Fatec, caso usuário escolha "Outra Unidade"
+	document.addEventListener("DOMContentLoaded", function (){
+		const select = document.getElementById("unidFATECSelect");
+		const outraDiv = document.getElementById("outraUnidDiv");
+		const outraInput = document.getElementById("outraUnidFATEC");   
+		const inputOculto = document.getElementById("inputOculto");
+		
+		function atualizaCampoOculto() {
+			if (select.value === "outro") {
+				inputOculto.value = outraInput.value;
+			} else {
+				inputOculto.value = select.value
+			}
+		}
+		
+		select.addEventListener("change", function() {
+			if (select.value === "outra") {
+				outraDiv.style.display = "block";
+			} else{
+				outraDiv.style.display = "none";
+			}
+			atualizaCampoOculto();
+		});
+		
+    	outraInput.addEventListener("input", atualizaCampoOculto);
+		
+    	document.querySelector("form").addEventListener("submit", atualizaCampoOculto);
+	});
+</script>
 </body>
 </html>

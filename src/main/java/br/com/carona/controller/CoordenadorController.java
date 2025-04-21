@@ -65,7 +65,7 @@ public class CoordenadorController {
 	public String cadastrar(@Valid
 			DadosCadastroCoordenador dados, @RequestParam("cursoId") Long cursoId) throws Exception {
 		Coordenador coordenador = new Coordenador(dados);
-		// Busca os Cursos pelos IDs cria uma lista de cursos 
+		// Busca o curso selecionado no formulario
 		Curso curso = cursoService.getCursoById(cursoId);
 		
 		coordenador.setCurso(curso);

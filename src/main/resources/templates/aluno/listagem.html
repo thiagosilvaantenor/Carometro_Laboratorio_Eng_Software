@@ -23,7 +23,7 @@
 						<tr scope="row" class="table-info">
 							<th scope="col">ID</th>
 							<th scope="col">Nome</th>
-							<th scope="col">Matricula</th>
+							<th scope="col">Foto</th>
 							<th scope="col">Nome do curso</th>
 							<th scope="col">Historico Nome da empresa </th>
 							<th scope="col">Comentario FATEC </th>
@@ -35,9 +35,11 @@
 						<tr scope="row" class="table-primary" th:each="aluno : ${lista}">
 							<td scope="col" th:text="${aluno.id}"></td>
 							<td scope="col" th:text="${aluno.nome}"></td>
-							<td scope="col" th:text="${aluno.matricula}"></td>
+							<td scope="col">
+								<img th:src="@{/aluno/{id}/foto(id=${aluno.id})}" alt="Foto do aluno"/>
+							</td>
 							<td scope="col" th:text="${aluno.curso.nome}"></td>
-							<td scope="col" th:text="${aluno.historico.empresa}"></td>
+							<td scope="col" th:text="${aluno.historico.empresaTrabalho}"></td>
 							<td scope="col" th:text="${aluno.comentarioFATEC}"></td>
 							<td scope="col" th:text="${aluno.comentario}"></td>
 							<td scope="col">
@@ -46,7 +48,7 @@
 									<button class="btn btn-primary mb-3">Editar</button>
 							</a>
 
-								<form  action="/coordenador" method="post">
+								<form  action="/aluno" method="post">
 									<input type="hidden" name="_method" value="delete">
 									<input type="hidden" name="id" th:value="${aluno.id}">
 									<input type="submit" class="btn btn-danger" value="Excluir">
