@@ -1,6 +1,7 @@
 package br.com.carometro.controller;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +30,7 @@ import br.com.carometro.historico.Historico;
 import br.com.carometro.historico.HistoricoRepository;
 import br.com.carometro.links.Links;
 import br.com.carometro.links.LinksRepository;
+import br.com.carometro.security.Criptografia;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
@@ -122,7 +124,7 @@ public class AlunoController {
 	
 	@PutMapping
 	@Transactional
-	public String atualizar(DadosAtualizacaoAluno dados) throws IOException {
+	public String atualizar(DadosAtualizacaoAluno dados) throws IOException, NoSuchAlgorithmException {
 		var aluno = repository.getReferenceById(dados.id());
 		//Atualiza curso
 		if (dados.curso() != null) {
@@ -136,6 +138,12 @@ public class AlunoController {
 		if (dados.foto() != null && !dados.foto().isEmpty()) {
 	        aluno.setFoto(dados.foto().getBytes());
 	    }
+		
+		//codifica a senha nova
+		if (dados.senha() != null) {
+			aluno.setSenha(Criptografia.md5(aluno.getSenha()));
+		}
+		
 		aluno.atualizarInformacoes(dados);
 		return "redirect:aluno";
 	}

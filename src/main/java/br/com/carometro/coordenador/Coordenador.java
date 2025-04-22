@@ -46,9 +46,6 @@ public class Coordenador {
 	}
 
 	public void atualizarInformacoes(DadosAtualizacaoCoordenador dados) {
-		if (dados.matricula() != null) {
-			this.matricula = dados.matricula();
-		}
 		if (dados.nome() != null) {
 			this.nome = dados.nome();
 		}

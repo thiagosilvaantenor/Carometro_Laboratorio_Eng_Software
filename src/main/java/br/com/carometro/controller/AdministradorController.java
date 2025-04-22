@@ -60,8 +60,11 @@ public class AdministradorController {
 
 	@PutMapping
 	@Transactional
-	public String atualizar(DadosAtualizacaoAdministrador dados) {
+	public String atualizar(DadosAtualizacaoAdministrador dados) throws NoSuchAlgorithmException {
 		var admin = repository.getReferenceById(dados.id());
+		if (dados.senha() != null) {
+			admin.setSenha(Criptografia.md5(admin.getSenha()));
+		}
 		admin.atualizarInformacoes(dados);
 		return "redirect:admin";
 	}

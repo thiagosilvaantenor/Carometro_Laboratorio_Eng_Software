@@ -69,15 +69,27 @@ public class CoordenadorController {
 		coordenador.setCurso(curso);
 		
 		service.salvar(coordenador); 
-		return "redirect:coordenador/login";
+		return "redirect:coordenador";
 	} 
 	
 	@PutMapping
 	@Transactional
-	public String atualizar(DadosAtualizacaoCoordenador dados) {
+	public String atualizar(DadosAtualizacaoCoordenador dados) throws NoSuchAlgorithmException {
 		var coordenador = repository.getReferenceById(dados.matricula());
+		//Atualiza curso
+		if (dados.curso() != null) {
+			//Remove o curso antigo
+			coordenador.getCurso().setCoordenador(null);
+			coordenador.setCurso(null);
+			//Adiciona o curso novo
+			coordenador.setCurso(dados.curso());
+			dados.curso().setCoordenador(coordenador);
+		}
+		if (dados.senha() != null) {
+			coordenador.setSenha(Criptografia.md5(coordenador.getSenha()));
+		}
 		coordenador.atualizarInformacoes(dados);
-		
+		repository.save(coordenador);
 	    return "redirect:coordenador";
 	}
 
