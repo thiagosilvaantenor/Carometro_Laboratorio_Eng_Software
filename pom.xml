@@ -8,10 +8,10 @@
 		<version>3.5.0-SNAPSHOT</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>br.com.carona</groupId>
-	<artifactId>caronaSpring</artifactId>
+	<groupId>br.com.carometro</groupId>
+	<artifactId>carometroSpring</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>caronaSpring</name>
+	<name>carometroSpring</name>
 	<description>Projeto Lab de Engenharia de Software</description>
 	<url/>
 	<licenses>
