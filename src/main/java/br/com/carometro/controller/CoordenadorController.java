@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import br.com.carometro.adm.Administrador;
 import br.com.carometro.coordenador.Coordenador;
 import br.com.carometro.coordenador.CoordenadorRepository;
 import br.com.carometro.coordenador.CoordenadorService;

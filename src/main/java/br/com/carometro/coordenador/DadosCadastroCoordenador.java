@@ -3,8 +3,6 @@ package br.com.carometro.coordenador;
 import java.time.LocalDate;
 
 import br.com.carometro.curso.Curso;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.NotBlank;
 
 public record DadosCadastroCoordenador(@NotBlank

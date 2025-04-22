@@ -6,9 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import br.com.carometro.adm.Administrador;
-import br.com.carometro.aluno.Aluno;
-import br.com.carometro.aluno.AlunoRepository;
 import br.com.carometro.security.Criptografia;
 
 @Service

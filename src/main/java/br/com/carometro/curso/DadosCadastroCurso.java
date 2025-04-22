@@ -4,8 +4,6 @@ import java.util.List;
 
 import br.com.carometro.aluno.Aluno;
 import br.com.carometro.coordenador.Coordenador;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.NotBlank;
 
 

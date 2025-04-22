@@ -3,7 +3,6 @@ package br.com.carometro.aluno;
 import java.time.LocalDate;
 
 import br.com.carometro.curso.Curso;
-import br.com.carometro.curso.DadosAtualizacaoCurso;
 import br.com.carometro.historico.Historico;
 import br.com.carometro.links.Links;
 import jakarta.persistence.Column;
@@ -14,7 +13,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;

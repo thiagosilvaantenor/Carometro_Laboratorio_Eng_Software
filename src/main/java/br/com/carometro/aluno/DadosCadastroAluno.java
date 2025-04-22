@@ -5,9 +5,6 @@ import java.time.LocalDate;
 import org.springframework.web.multipart.MultipartFile;
 
 import br.com.carometro.curso.Curso;
-import br.com.carometro.historico.Historico;
-import br.com.carometro.links.Links;
-import jakarta.persistence.OneToOne;
 import jakarta.validation.constraints.NotBlank;
 
 public record DadosCadastroAluno(
