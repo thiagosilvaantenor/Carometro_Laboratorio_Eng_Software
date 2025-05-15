@@ -53,27 +53,14 @@
 
 					<form th:object="${coordenador}" method="post" action="/coordenador">
 						<input type="hidden" name="_method" value="put"
-						       th:if="${coordenador?.matricula != null}">
+						       th:if="${coordenador?.id != null}">
 
 						<div class="form-row">
-							<div class="form-group col-md-3">
-								<label for="matricula">Matrícula:</label>
-								<input class="form-control" type="text" id="matricula" name="matricula"
-									th:value="${coordenador?.matricula}">
-							</div>
 							<div class="form-group col-md-5">
 								<label for="nome">Nome:</label>
 								<input class="form-control" type="text" id="nome" name="nome"
 									th:value="${coordenador?.nome}">
 							</div>
-							<div class="form-group col-md-4">
-								<label for="cpf">CPF:</label>
-								<input type="text" class="form-control" id="cpf" name="cpf"
-									th:value="${coordenador?.cpf}">
-							</div>
-						</div>
-
-						<div class="form-row">
 							<div class="form-group col-md-4">
 								<label for="email">Email:</label>
 								<input type="email" class="form-control" id="email"
@@ -84,28 +71,15 @@
 								<input type="password" class="form-control" id="senha"
 								 name="senha" th:value="${coordenador?.senha}">
 							</div>
-							<div class="form-group col-md-4">
-								<label for="especializacao">Especialização:</label>
-								<input type="text" class="form-control" id="especializacao"
-									name="especializacao" th:value="${coordenador?.especializacao}">
-							</div>
 						</div>
 
+
+
 						<div class="form-row">
-							<div class="form-group col-md-4">
-								<label for="dtNascimento">Data de Nascimento:</label>
-								<input type="date" id="dtNascimento" class="form-control"
-									name="dtNascimento" th:value="${coordenador?.dtNascimento}">
-							</div>
-							<div class="form-group col-md-4">
-								<label for="estadoCivil">Estado Civil:</label>
-								<select class="form-control" id="estadoCivil" name="estadoCivil" th:field="*{estadoCivil}">
-									<option value="">-- Selecione --</option>
-									<option value="solteiro">Solteiro(a)</option>
-									<option value="casado">Casado(a)</option>
-									<option value="divorciado">Divorciado(a)</option>
-									<option value="viuvo">Viúvo(a)</option>
-								</select>
+							<div class="form-group col-md-3">
+								<label for="vencimentoMandato">Data de Vencimento do Mandato:</label>
+								<input type="date" id="vencimentoMandato" class="form-control"
+									name="vencimentoMandato" th:value="${coordenador?.vencimentoMandato}">
 							</div>
 							<div class="form-group col-md-4">
 								<label for="cursoSelect">Curso:</label>
