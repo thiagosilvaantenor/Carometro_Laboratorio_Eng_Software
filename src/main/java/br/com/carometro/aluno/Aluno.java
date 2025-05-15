@@ -33,8 +33,6 @@ public class Aluno {
 	@Column(name = "aluno_id")
 	private Long id;
 	private String nome;
-	private String matricula;
-	private String cpf;
 	private String email;
 	private String senha;
 	private LocalDate dtNascimento;	
@@ -60,8 +58,6 @@ public class Aluno {
 	
 	public Aluno(DadosCadastroAluno dados) {
 		this.nome = dados.nome();
-		this.matricula = dados.matricula();
-		this.cpf = dados.cpf();
 		this.email = dados.email();
 		this.senha = dados.senha();
 		this.dtNascimento = dados.dtNascimento();
@@ -75,12 +71,6 @@ public class Aluno {
 	public void atualizarInformacoes(DadosAtualizacaoAluno dados) {
 		if (dados.nome() != null) {
 			this.nome = dados.nome();
-		}
-		if (dados.matricula() != null) {
-			this.matricula = dados.matricula();
-		}
-		if (dados.cpf() != null) {
-			this.cpf = dados.cpf();
 		}
 		if (dados.email() != null) {
 			this.email = dados.email();

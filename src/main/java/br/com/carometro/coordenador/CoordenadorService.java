@@ -17,8 +17,8 @@ public class CoordenadorService {
 		return repository.findAll(Sort.by("nome").ascending());
 	}
 
-	public Coordenador getCoordenadorById(String matricula) {
-		return repository.getReferenceById(matricula);
+	public Coordenador getCoordenadorById(Long id) {
+		return repository.getReferenceById(id);
 	}
 	
 	

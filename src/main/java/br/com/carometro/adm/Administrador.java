@@ -24,16 +24,14 @@ public class Administrador {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "admin_id")
 
-	Long id;
-	String nome;
-	String cpf;
-	String email;
-	String senha;
-	String unidFATEC;
+	private Long id;
+	private String nome;
+	private String email;
+	private String senha;
+	private String unidFATEC;
 
 	public Administrador(@Valid DadosCadastroAdministrador dados) {
 		this.nome = dados.nome();
-		this.cpf = dados.cpf();
 		this.unidFATEC = dados.unidFATEC();
 		this.email = dados.email();
 		this.senha = dados.senha();
@@ -48,9 +46,6 @@ public class Administrador {
 		}
 		if (dados.senha() != null) {
 			this.senha = dados.senha();
-		}
-		if (dados.cpf() != null) {
-			this.cpf = dados.cpf();
 		}
 		if (dados.unidFATEC() != null) {
 			this.unidFATEC = dados.unidFATEC();

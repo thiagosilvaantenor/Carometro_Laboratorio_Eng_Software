@@ -8,8 +8,6 @@ import br.com.carometro.curso.Curso;
 
 public record DadosAtualizacaoAluno(Long id, 
 		String nome, 
-		String matricula, 
-		String cpf, 
 		String email, 
 		String senha, 
 		LocalDate dtNascimento,

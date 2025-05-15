@@ -1,5 +1,6 @@
 package br.com.carometro.security;
 
+
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

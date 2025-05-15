@@ -40,10 +40,10 @@ public class CoordenadorController {
 	private CoordenadorService service;
 
 	@GetMapping("/formulario")
-	public String carregaPaginaFormulario(String matricula, Model model) {
+	public String carregaPaginaFormulario(Long id, Model model) {
 		model.addAttribute("cursos", cursoService.getAllCursos());
-		if(matricula != null) {
-	        var coordenador = repository.getReferenceById(matricula);
+		if(id != null) {
+	        var coordenador = repository.getReferenceById(id);
 	        model.addAttribute("coordenador", coordenador);
 	    } else {
 	    	model.addAttribute("coordenador", new Coordenador());
@@ -75,7 +75,7 @@ public class CoordenadorController {
 	@PutMapping
 	@Transactional
 	public String atualizar(DadosAtualizacaoCoordenador dados) throws NoSuchAlgorithmException {
-		var coordenador = repository.getReferenceById(dados.matricula());
+		var coordenador = repository.getReferenceById(dados.id());
 		//Atualiza curso
 		if (dados.curso() != null) {
 			//Remove o curso antigo
@@ -95,8 +95,8 @@ public class CoordenadorController {
 
 	@DeleteMapping
 	@Transactional
-	public String removeCoordenador(String matricula) {
-		var coordenador = repository.getReferenceById(matricula);
+	public String removeCoordenador(Long id) {
+		var coordenador = repository.getReferenceById(id);
 		// Desfaz o vinculo entre curso e coordenador
 		if (coordenador.getCurso() != null) {
 		    coordenador.getCurso().setCoordenador(null);

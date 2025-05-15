@@ -11,10 +11,6 @@ public record DadosCadastroAluno(
 		@NotBlank
 		String nome,
 		@NotBlank
-		String matricula,
-		@NotBlank
-		String cpf,
-		@NotBlank
 		String email,
 		@NotBlank
 		String senha,
