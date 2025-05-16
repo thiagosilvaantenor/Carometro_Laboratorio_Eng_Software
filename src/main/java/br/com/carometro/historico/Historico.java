@@ -1,13 +1,13 @@
 package br.com.carometro.historico;
 
-import java.util.List;
-
 import br.com.carometro.aluno.Aluno;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -31,7 +31,9 @@ public class Historico {
 	private String descricaoTrabalho;
 	private int tempoTrabalho;
 	
-	@OneToMany (mappedBy = "historico")
-	private List<Aluno> alunos;
+	
+	@ManyToOne
+	@JoinColumn(name="aluno_id", nullable=false)
+	private Aluno aluno;
 	
 }

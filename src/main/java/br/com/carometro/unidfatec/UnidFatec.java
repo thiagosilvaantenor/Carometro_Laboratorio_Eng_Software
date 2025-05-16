@@ -13,16 +13,17 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity(name="unidFatec")
-@Table(name="unid_Fatec")
 @AllArgsConstructor
 @NoArgsConstructor
 @Setter
 @Getter
+@EqualsAndHashCode(of = "id")
 public class UnidFatec {
 	
 	@Id
@@ -30,8 +31,7 @@ public class UnidFatec {
 	@Column(name = "unidFatec_id")
 	private Long id;
 	private String nome;
-	@OneToMany
-	@JoinColumn(name = "curos_id")
-	private List<Curso> cursos;
+    @OneToMany(mappedBy = "unidFatec") // "unidFatec" deve ser o nome do campo ManyToOne na classe Curso
+    private List<Curso> cursos;
 	
 }

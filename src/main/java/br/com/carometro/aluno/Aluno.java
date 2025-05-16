@@ -1,10 +1,12 @@
 package br.com.carometro.aluno;
 
 import java.time.LocalDate;
+import java.util.Set;
 
 import br.com.carometro.curso.Curso;
 import br.com.carometro.historico.Historico;
 import br.com.carometro.links.Links;
+import br.com.carometro.unidfatec.UnidFatec;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -13,6 +15,8 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -39,7 +43,10 @@ public class Aluno {
 	private String comentarioFATEC;
 	private String comentario;
 	private Integer ano;
-	private String unidFATEC;
+	@OneToOne
+	@JoinColumn(name="unidfatec_id", nullable=false)
+	private UnidFatec unidFATEC;
+	//TODO: Trocar maneira de salvar a foto
 	@Lob
 	@Column(name = "foto", columnDefinition = "LONGBLOB")
 	private byte[] foto;
@@ -48,9 +55,9 @@ public class Aluno {
 	@ManyToOne
 	@JoinColumn(name="curso_id", nullable=false)
 	private Curso curso;
-	@ManyToOne
-	@JoinColumn(name="historico_id", nullable=false)
-	private Historico historico;
+	//Um aluno vai ter muitos históricos
+	@OneToMany(mappedBy = "aluno")
+	private Set<Historico> historico;
 	@ManyToOne
 	@JoinColumn(name="links_id", nullable=false)
 	private Links links;
@@ -61,11 +68,13 @@ public class Aluno {
 		this.email = dados.email();
 		this.senha = dados.senha();
 		this.dtNascimento = dados.dtNascimento();
+		//TODO: Verificar se os dados capturados no html realmente criam a entidade unidFatec
 		this.unidFATEC = dados.unidFATEC();
 		this.comentarioFATEC = dados.comentarioFATEC();
 		this.comentario = dados.comentario();
 		this.ano = dados.ano();
 		this.curso = dados.curso();
+		//TODO: Add DTO do histórico
 	}
 	
 	public void atualizarInformacoes(DadosAtualizacaoAluno dados) {
@@ -93,15 +102,17 @@ public class Aluno {
 		if (dados.ano() != null) {
 			this.ano = dados.ano();
 		}	
-		if (dados.empresaTrabalho() != null) {
-			this.historico.setEmpresaTrabalho(dados.empresaTrabalho());
-		}
-		if (dados.descricaoTrabalho() != null) {
-			this.historico.setDescricaoTrabalho(dados.descricaoTrabalho());
-		}
-		if (dados.tempoTrabalho() != 0) {
-			this.historico.setTempoTrabalho(dados.tempoTrabalho());
-		}
+		//TODO: Método deve receber um set de históricos
+		
+//		if (dados.empresaTrabalho() != null) {
+//			this.historico.setEmpresaTrabalho(dados.empresaTrabalho());
+//		}
+//		if (dados.descricaoTrabalho() != null) {
+//			this.historico.setDescricaoTrabalho(dados.descricaoTrabalho());
+//		}
+//		if (dados.tempoTrabalho() != 0) {
+//			this.historico.setTempoTrabalho(dados.tempoTrabalho());
+//		}
 		if (dados.gitHub() != null) {
 			this.links.setGitHub(dados.gitHub());
 		}

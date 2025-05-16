@@ -1,10 +1,13 @@
 package br.com.carometro.aluno;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import org.springframework.web.multipart.MultipartFile;
 
 import br.com.carometro.curso.Curso;
+import br.com.carometro.historico.DadosCadastroHistorico;
+import br.com.carometro.unidfatec.UnidFatec;
 import jakarta.validation.constraints.NotBlank;
 
 public record DadosCadastroAluno(
@@ -15,14 +18,12 @@ public record DadosCadastroAluno(
 		@NotBlank
 		String senha,
 		LocalDate dtNascimento,
-		String unidFATEC,
+		UnidFatec unidFATEC,
 		String comentarioFATEC,
 		String comentario,
 		Integer ano,
 		Curso curso,
-		String empresaTrabalho,
-		String descricaoTrabalho,
-		int tempoTrabalho,
+		//List<DadosCadastroHistorico> historico,
 		String gitHub,
 		String linkedIn,
 		String lattesCNPQ,

@@ -3,6 +3,9 @@ package br.com.carometro.controller;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -26,6 +29,7 @@ import br.com.carometro.aluno.DadosAtualizacaoAluno;
 import br.com.carometro.aluno.DadosCadastroAluno;
 import br.com.carometro.curso.Curso;
 import br.com.carometro.curso.CursoService;
+import br.com.carometro.historico.DadosCadastroHistorico;
 import br.com.carometro.historico.Historico;
 import br.com.carometro.historico.HistoricoRepository;
 import br.com.carometro.links.Links;
@@ -58,11 +62,10 @@ public class AlunoController {
 			
 		} else {
 			Aluno aluno = new Aluno();
-			aluno.setHistorico(new Historico());
+			aluno.setHistorico(new HashSet<>());
 			aluno.setLinks(new Links());
 			model.addAttribute("aluno", aluno);
 		}
-		
 		
 		return "aluno/formulario";
 	}
@@ -77,6 +80,7 @@ public class AlunoController {
 	@Transactional
 	public String cadastrar(@Valid
 			DadosCadastroAluno dados,
+			List<DadosCadastroHistorico> dadosHistorico,
 			@RequestParam("cursoId") Long cursoId
 			) throws Exception {
 		
@@ -87,13 +91,17 @@ public class AlunoController {
 		aluno.setCurso(curso);
 		
 		// Historico
-		Historico historico = new Historico();
-		historico.setEmpresaTrabalho(dados.empresaTrabalho());
-		historico.setDescricaoTrabalho(dados.descricaoTrabalho());
-		historico.setTempoTrabalho(dados.tempoTrabalho());
-		
-		historico.setAlunos(new ArrayList<>());
-		historico.getAlunos().add(aluno);
+		Set<Historico> historico = new HashSet<>();
+		dadosHistorico.forEach(item -> {
+			Historico novo = new Historico();
+			novo.setEmpresaTrabalho(item.empresaTrabalho());
+			novo.setDescricaoTrabalho(item.descricaoTrabalho());
+			novo.setTempoTrabalho(item.tempoTrabalho());
+			novo.setAluno(aluno);
+			historico.add(novo);
+			//Salva primeiro o histórico no banco de dados
+			repositoryHistorico.save(novo);
+		});
 		aluno.setHistorico(historico);
 		
 		//Links
@@ -110,13 +118,9 @@ public class AlunoController {
 	    if (dados.foto() != null && !dados.foto().isEmpty()) {
 	        aluno.setFoto(dados.foto().getBytes());
 	    }
-
-		
-		
-		//Salva primeiro o histórico e links no banco de dados
-		repositoryHistorico.save(historico);
+				
+		//Salva primeiro os links no banco de dados
 		repositoryLinks.save(links);
-		
 		service.salvar(aluno);
 		
 		return "redirect:aluno";
@@ -124,7 +128,7 @@ public class AlunoController {
 	
 	@PutMapping
 	@Transactional
-	public String atualizar(DadosAtualizacaoAluno dados) throws IOException, NoSuchAlgorithmException {
+	public String atualizar(DadosAtualizacaoAluno dados, DadosCadastroHistorico dadosHistorico) throws IOException, NoSuchAlgorithmException {
 		var aluno = repository.getReferenceById(dados.id());
 		//Atualiza curso
 		if (dados.curso() != null) {
@@ -134,6 +138,9 @@ public class AlunoController {
 			aluno.setCurso(dados.curso());
 			dados.curso().getAlunos().add(aluno);
 		}
+		
+		//TODO: atualização do histórico
+		
 		//Atualiza foto
 		if (dados.foto() != null && !dados.foto().isEmpty()) {
 	        aluno.setFoto(dados.foto().getBytes());
