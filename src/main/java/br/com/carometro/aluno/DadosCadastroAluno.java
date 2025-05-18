@@ -18,12 +18,13 @@ public record DadosCadastroAluno(
 		@NotBlank
 		String senha,
 		LocalDate dtNascimento,
-		UnidFatec unidFATEC,
 		String comentarioFATEC,
 		String comentario,
 		Integer ano,
 		Curso curso,
 		//List<DadosCadastroHistorico> historico,
+		//Unidade Fatec
+		String nomeUnidFatec,
 		String gitHub,
 		String linkedIn,
 		String lattesCNPQ,

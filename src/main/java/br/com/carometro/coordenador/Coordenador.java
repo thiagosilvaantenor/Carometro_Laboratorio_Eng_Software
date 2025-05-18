@@ -3,6 +3,7 @@ package br.com.carometro.coordenador;
 import java.time.LocalDate;
 
 import br.com.carometro.curso.Curso;
+import br.com.carometro.unidfatec.UnidFatec;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -27,13 +28,16 @@ public class Coordenador {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "coordenador_id")
 	private Long id;
-	private String nome;
+	private String nome; 
 	private String email;
 	private String senha;
 	private LocalDate vencimentoMandato;
 	@OneToOne
 	@JoinColumn(name="curso_id")
 	private Curso curso;
+	@OneToOne
+	@JoinColumn(name="unid_fatec_id")
+	private UnidFatec unidFatec;
 	
 	public Coordenador(DadosCadastroCoordenador dados) {
 		this.nome = dados.nome();
@@ -41,6 +45,7 @@ public class Coordenador {
 		this.senha = dados.senha();
 		this.vencimentoMandato = dados.vencimentoMandato();
 		this.curso = dados.curso();
+		//TODO: add unidFatec
 	}
 
 	public void atualizarInformacoes(DadosAtualizacaoCoordenador dados) {
@@ -59,7 +64,7 @@ public class Coordenador {
 		if (dados.curso() != null) {
 			this.curso = dados.curso();
 		}
-		
+		//TODO: add unidFatec		
 	}
 	
 }

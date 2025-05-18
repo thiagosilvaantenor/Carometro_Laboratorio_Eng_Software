@@ -1,11 +1,15 @@
 package br.com.carometro.adm;
 
+import br.com.carometro.unidfatec.UnidFatec;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -23,16 +27,22 @@ public class Administrador {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "admin_id")
-
 	private Long id;
+	
+	@NotBlank(message = "Nome é obrigatório")
 	private String nome;
+	@NotBlank(message = "Email é obrigatório")
 	private String email;
+	@NotBlank(message = "Senha é obrigatória")
 	private String senha;
-	private String unidFATEC;
+	
+	@OneToOne
+	@JoinColumn(name="unid_fatec_id")
+	private UnidFatec unidFatec;
 
 	public Administrador(@Valid DadosCadastroAdministrador dados) {
 		this.nome = dados.nome();
-		this.unidFATEC = dados.unidFATEC();
+//		this.unidFATEC = new Unidadedados.unidFATEC();
 		this.email = dados.email();
 		this.senha = dados.senha();
 	}
@@ -47,8 +57,6 @@ public class Administrador {
 		if (dados.senha() != null) {
 			this.senha = dados.senha();
 		}
-		if (dados.unidFATEC() != null) {
-			this.unidFATEC = dados.unidFATEC();
-		}
+		//TODO: Atualização da unidade fatec
 	}
 }

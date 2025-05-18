@@ -1,14 +1,13 @@
 package br.com.carometro.links;
 
-import java.util.List;
-
 import br.com.carometro.aluno.Aluno;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -28,6 +27,7 @@ public class Links {
 	private String gitHub;
 	private String linkedIn;
 	
-	@OneToMany(mappedBy = "links")
-	private List<Aluno> alunos;
+	@OneToOne
+	@JoinColumn(name = "aluno_id", referencedColumnName = "aluno_id", nullable = false)
+	private Aluno aluno;
 }

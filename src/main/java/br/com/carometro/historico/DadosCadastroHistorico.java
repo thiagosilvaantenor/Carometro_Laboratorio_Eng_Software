@@ -1,10 +1,12 @@
 package br.com.carometro.historico;
 
+import java.time.LocalDate;
 
 public record DadosCadastroHistorico(
 		String empresaTrabalho,
 		String descricaoTrabalho,
-		Integer tempoTrabalho
+		LocalDate dtInicio,
+		LocalDate dtFim
 		) {
 
 }

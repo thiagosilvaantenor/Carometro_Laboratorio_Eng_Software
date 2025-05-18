@@ -7,6 +7,7 @@ import br.com.carometro.curso.Curso;
 import br.com.carometro.historico.Historico;
 import br.com.carometro.links.Links;
 import br.com.carometro.unidfatec.UnidFatec;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -44,7 +45,7 @@ public class Aluno {
 	private String comentario;
 	private Integer ano;
 	@OneToOne
-	@JoinColumn(name="unidfatec_id", nullable=false)
+	@JoinColumn(name="unid_fatec_id", nullable=false)
 	private UnidFatec unidFATEC;
 	//TODO: Trocar maneira de salvar a foto
 	@Lob
@@ -58,8 +59,7 @@ public class Aluno {
 	//Um aluno vai ter muitos históricos
 	@OneToMany(mappedBy = "aluno")
 	private Set<Historico> historico;
-	@ManyToOne
-	@JoinColumn(name="links_id", nullable=false)
+	@OneToOne(mappedBy = "aluno", cascade = CascadeType.ALL)
 	private Links links;
 	
 	
@@ -69,7 +69,6 @@ public class Aluno {
 		this.senha = dados.senha();
 		this.dtNascimento = dados.dtNascimento();
 		//TODO: Verificar se os dados capturados no html realmente criam a entidade unidFatec
-		this.unidFATEC = dados.unidFATEC();
 		this.comentarioFATEC = dados.comentarioFATEC();
 		this.comentario = dados.comentario();
 		this.ano = dados.ano();

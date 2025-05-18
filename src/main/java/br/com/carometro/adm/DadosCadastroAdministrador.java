@@ -3,11 +3,11 @@ package br.com.carometro.adm;
 import jakarta.validation.constraints.NotBlank;
 
 public record DadosCadastroAdministrador(
-		@NotBlank
+		@NotBlank(message = "Nome é obrigatório")
 		String nome,
-		String unidFATEC,
+		@NotBlank(message = "Email é obrigatório")
 		String email,
-		String senha
-		) {
+		@NotBlank(message = "Senha é obrigatória")
+		String senha) {
 
 }

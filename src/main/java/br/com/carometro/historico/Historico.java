@@ -1,5 +1,7 @@
 package br.com.carometro.historico;
 
+import java.time.LocalDate;
+
 import br.com.carometro.aluno.Aluno;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -29,7 +31,9 @@ public class Historico {
 	private long id;
 	private String empresaTrabalho;
 	private String descricaoTrabalho;
-	private int tempoTrabalho;
+	private LocalDate dtInicio;
+	//TODO: No front end deixar uma opção para caso seja o trabalho atual, salvar dtFim como NULL
+	private LocalDate dtFim;
 	
 	
 	@ManyToOne

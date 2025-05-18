@@ -5,6 +5,7 @@ import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,6 +36,8 @@ import br.com.carometro.historico.HistoricoRepository;
 import br.com.carometro.links.Links;
 import br.com.carometro.links.LinksRepository;
 import br.com.carometro.security.Criptografia;
+import br.com.carometro.unidfatec.UnidFatec;
+import br.com.carometro.unidfatec.UnidFatecService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
@@ -52,8 +55,13 @@ public class AlunoController {
 	@Autowired
 	private CursoService cursoService;
 	
+	@Autowired
+	private UnidFatecService unidService;
+	
 	@GetMapping("/formulario")
 	public String carregaPaginaFormulario(Long id, Model model) {
+		//Busca as unidades Fatec
+		model.addAttribute("unidades", unidService.buscaTodas());
 		model.addAttribute("cursos", cursoService.getAllCursos());
 		
 		if (id != null) {
@@ -81,7 +89,7 @@ public class AlunoController {
 	public String cadastrar(@Valid
 			DadosCadastroAluno dados,
 			List<DadosCadastroHistorico> dadosHistorico,
-			@RequestParam("cursoId") Long cursoId
+			@RequestParam("cursoId") Long cursoId, @RequestParam("unidadeId") Long unidFatecId
 			) throws Exception {
 		
 		Aluno aluno = new Aluno(dados);
@@ -90,13 +98,24 @@ public class AlunoController {
 		curso.getAlunos().add(aluno);
 		aluno.setCurso(curso);
 		
+		
+		//UnidFatec
+		Optional<UnidFatec> unidFatec = unidService.getUnidFatecById(unidFatecId);
+		if(unidFatec.isEmpty()) {
+			throw new Exception("Erro ao buscar unidade Fatec");
+		}
+		aluno.setUnidFATEC(unidFatec.get());
+		//TODO: Verificar como buscar os cursos da unidade para serem exibidos ao usuário selecionar
+		
+		
 		// Historico
 		Set<Historico> historico = new HashSet<>();
 		dadosHistorico.forEach(item -> {
 			Historico novo = new Historico();
 			novo.setEmpresaTrabalho(item.empresaTrabalho());
 			novo.setDescricaoTrabalho(item.descricaoTrabalho());
-			novo.setTempoTrabalho(item.tempoTrabalho());
+			novo.setDtInicio(item.dtInicio());
+			novo.setDtFim(item.dtFim());
 			novo.setAluno(aluno);
 			historico.add(novo);
 			//Salva primeiro o histórico no banco de dados
@@ -110,8 +129,7 @@ public class AlunoController {
 		links.setLinkedIn(dados.linkedIn());
 		links.setLattesCNPQ(dados.lattesCNPQ());
 		
-		links.setAlunos(new ArrayList<>());
-		links.getAlunos().add(aluno);
+		links.setAluno(aluno);
 		aluno.setLinks(links);
 		
 		 // convertendo a foto de MultipartFile para byte[]

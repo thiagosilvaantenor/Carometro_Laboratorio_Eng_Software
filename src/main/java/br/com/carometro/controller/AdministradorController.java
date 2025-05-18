@@ -1,6 +1,7 @@
 package br.com.carometro.controller;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import br.com.carometro.adm.Administrador;
@@ -20,6 +22,8 @@ import br.com.carometro.adm.AdminstradorRepository;
 import br.com.carometro.adm.DadosAtualizacaoAdministrador;
 import br.com.carometro.adm.DadosCadastroAdministrador;
 import br.com.carometro.security.Criptografia;
+import br.com.carometro.unidfatec.UnidFatec;
+import br.com.carometro.unidfatec.UnidFatecService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -34,30 +38,47 @@ public class AdministradorController {
 	@Autowired
 	private AdministradorService service;
 
+	@Autowired
+	private UnidFatecService unidFatecService;
+	
 	@GetMapping("/formulario")
 	public String carregaPaginaFormulario(Long id, Model model) {
+		model.addAttribute("unidades", unidFatecService.buscaTodas());
 		if (id != null) {
 			var admin = repository.getReferenceById(id);
 			model.addAttribute("admin", admin);
 		} else {
 			model.addAttribute("admin", new Administrador());
+
 		}
 		return "admin/formulario";
 	}
-
+  
 	@GetMapping
 	public String carregaPaginaListagem(Model model) {
 		model.addAttribute("lista", repository.findAll(Sort.by("nome").ascending()));
-		return "admin/listagem";
+		return "admin/listagem"; 
 	}
 
 	@PostMapping
 	@Transactional
-	public String cadastrar(@Valid DadosCadastroAdministrador dados) throws Exception {
-		service.salvarAdmin(new Administrador(dados));
-		return "redirect:admin";
+	public String cadastrar(@Valid DadosCadastroAdministrador dados, @RequestParam("nomeFatec") String nomeFatec) throws Exception {
+		if (dados == null || dados.email().isBlank() || dados.nome().isBlank() || dados.senha().isBlank()) {
+			throw new Exception("Dados invalidos, cadastro não realizado");
+		}
+		UnidFatec unidade = unidFatecService.buscarPorNome(nomeFatec);
+		//Caso o nome da unidade não foi encontrado então cria essa unidadeFatec
+		if (unidade == null) {
+			    unidade = new UnidFatec();
+			    unidade.setNome(nomeFatec);
+			    unidFatecService.salvar(unidade);
+		}
+		Administrador admin = new Administrador(dados);
+		admin.setUnidFatec(unidade);
+		service.salvarAdmin(admin);
+		return "redirect:admin"; 
 	}
-
+ 
 	@PutMapping
 	@Transactional
 	public String atualizar(DadosAtualizacaoAdministrador dados) throws NoSuchAlgorithmException {
@@ -71,8 +92,8 @@ public class AdministradorController {
 
 	@DeleteMapping
 	@Transactional
-	public String removeAdmin(Long id) {
-		repository.deleteById(id);
+	public String removeAdmin(Long id) throws Exception {
+		service.remover(id);
 		return "redirect:admin";
 	}
 	

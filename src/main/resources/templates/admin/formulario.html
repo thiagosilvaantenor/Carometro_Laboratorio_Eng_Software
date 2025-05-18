@@ -61,30 +61,27 @@
                                 <label for="nome">Nome</label>
                                 <input class="form-control" type="text" id="nome" name="nome" th:value="${admin?.nome}">
                             </div>
-
+     
                             <div class="form-group">
-                                <label for="cpf">CPF</label>
-                                <input class="form-control" type="text" id="cpf" name="cpf" th:value="${admin?.cpf}">
+ 								<!-- Unidade Fatec -->
+						        <label for="unidFATEC">Selecione a sua Unidade FATEC:</label>
+						        <select class="form-control" id="nomeFatec">
+						            <option value="">-- Selecione --</option>
+									<option th:each="unidade : ${unidades}"
+											th:value="${unidade.nome}"
+											th:text="${unidade.nome}">
+											<!--  th:selected="${aluno?.unidFatec?.id} == ${unidFatec.id}"> -->
+									</option>
+							 		<option value="outra">Outra Unidade</option>
+						        </select>
+						        
+						        <div id="outraUnidDiv" class="mr-5 mt-3" style="display:none;">
+								    <label for="outraUnidFATEC">Digite o nome da sua unidade FATEC:</label>
+								    <input type="text" class="form-control" id="outraUnidFATEC" placeholder="Digite o nome da sua unidade">
+								</div>
+						        <input type="hidden" id="inputOculto" name="nomeFatec"/>
                             </div>
-
-                            <div class="form-group">
-                               <!-- Unidade Fatec -->
- 					        <label for="unidFATEC">Selecione a sua Unidade FATEC:</label>
- 					        <select class="form-control" id="unidFATECSelect" name="unidFATEC" th:field="*{unidFATEC}">
- 					            <option value="">-- Selecione --</option>
- 					            <option value="FATEC Zona Leste">FATEC Zona Leste</option>
- 					            <option value="FATEC Mogi das Cruzes">FATEC Mogi das Cruzes</option>
- 					            <option value="FATEC Sao Paulo">FATEC São Paulo</option>
- 					             <option value="outra">Outra Unidade</option>
- 					        </select>
- 					        
- 					        <div id="outraUnidDiv" class="mr-5 mt-3" style="display:none;">
- 							    <label for="outraUnidFATEC">Digite o nome da sua unidade FATEC:</label>
- 							    <input type="text" class="form-control" id="outraUnidFATEC" placeholder="Digite o nome da sua unidade">
- 							</div>
- 					        <input type="hidden" id="inputOculto"  name="unidFatec"/>
-                            </div>
-
+                                                                                   
                             <div class="form-group">
                                 <label for="email">E-mail</label>
                                 <input type="email" class="form-control" id="email" name="email" th:value="${admin?.email}">
@@ -107,7 +104,7 @@
 <script>
  	// Função para lidar com Unidade Fatec, caso usuário escolha "Outra Unidade"
  	document.addEventListener("DOMContentLoaded", function (){
- 		const select = document.getElementById("unidFATECSelect");
+ 		const select = document.getElementById("nomeFatec");
  		const outraDiv = document.getElementById("outraUnidDiv");
  		const outraInput = document.getElementById("outraUnidFATEC");   
  		const inputOculto = document.getElementById("inputOculto");
