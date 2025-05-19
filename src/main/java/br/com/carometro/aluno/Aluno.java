@@ -1,6 +1,7 @@
 package br.com.carometro.aluno;
 
 import java.time.LocalDate;
+import java.util.HashSet;
 import java.util.Set;
 
 import br.com.carometro.curso.Curso;
@@ -56,9 +57,10 @@ public class Aluno {
 	@ManyToOne
 	@JoinColumn(name="curso_id", nullable=false)
 	private Curso curso;
-	//Um aluno vai ter muitos históricos
-	@OneToMany(mappedBy = "aluno")
-	private Set<Historico> historico;
+	//Um aluno vai ter muitos históricos, cascata do tipo All para quando for salvar um aluno salvar o histórico e o mesmo para remover
+	@OneToMany(mappedBy = "aluno", cascade = CascadeType.ALL)
+	private Set<Historico> historico = new HashSet<>();
+	//Uma lista de links pertence a Um aluno, cascata do tipo All para quando for salvar um aluno salvar os links e o mesmo para remover
 	@OneToOne(mappedBy = "aluno", cascade = CascadeType.ALL)
 	private Links links;
 	

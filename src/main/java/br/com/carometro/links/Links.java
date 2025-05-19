@@ -22,7 +22,7 @@ import lombok.Setter;
 public class Links {
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="links_id")
-	private long id;
+	private Long id;
 	private String lattesCNPQ;
 	private String gitHub;
 	private String linkedIn;

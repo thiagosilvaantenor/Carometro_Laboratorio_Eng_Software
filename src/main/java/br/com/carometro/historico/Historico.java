@@ -28,11 +28,10 @@ public class Historico {
 
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="historico_id")
-	private long id;
+	private Long id;
 	private String empresaTrabalho;
 	private String descricaoTrabalho;
 	private LocalDate dtInicio;
-	//TODO: No front end deixar uma opção para caso seja o trabalho atual, salvar dtFim como NULL
 	private LocalDate dtFim;
 	
 	

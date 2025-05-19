@@ -51,31 +51,31 @@
 									name="foto" th:value="${aluno?.foto}"/>
 							</div>
 							
-							<div class="form-row">
-							    <!-- Unidade Fatec -->
-							        <label for="unidFATEC">Selecione a sua Unidade FATEC:</label>
-							        <select class="form-control" id="unidadeId" name="unidadeId"">
-							            <option value="">-- Selecione --</option>
-										<option th:each="unidade : ${unidades}"
-												th:value="${unidade.id}"
-												th:text="${unidade.nome}">
-												<!--  th:selected="${aluno?.unidFatec?.id} == ${unidFatec.id}"> -->
-										</option>
-								 		<option value="outra">Outra Unidade</option>
-							        </select>
-							        
-							        <div id="outraUnidDiv" class="mr-5 mt-3" style="display:none;">
-									    <label for="outraUnidFATEC">Digite o nome da sua unidade FATEC:</label>
-									    <input type="text" class="form-control" id="outraUnidFATEC" placeholder="Digite o nome da sua unidade">
-									</div>
-							        <input type="hidden" id="inputOculto" />
+						  <div class="form-group">
+ 								<!-- Unidade Fatec -->
+						        <label for="unidFATEC">Selecione a sua Unidade FATEC:</label>
+						        <select class="form-control" id="nomeFatec">
+						            <option value="">-- Selecione --</option>
+									<option th:each="unidade : ${unidades}"
+											th:value="${unidade.nome}"
+											th:text="${unidade.nome}"
+											th:selected="${aluno.unidFATEC?.nome} == ${unidade.nome}">
+									</option>
+							 		<option value="outra">Outra Unidade</option>
+						        </select>
+						        
+						        <div id="outraUnidDiv" class="mr-5 mt-3" style="display:none;">
+								    <label for="outraUnidFATEC">Digite o nome da sua unidade FATEC:</label>
+								    <input type="text" class="form-control" id="outraUnidFATEC" placeholder="Digite o nome da sua unidade">
+								</div>
+						        <input type="hidden" id="inputOculto" name="nomeFatec"/>
+                            </div>
 									
 							<div class="form-group col-md-5 mt-3">
 									<label for="ano"> Informe o ano e semestre em que se formou Ex:(202401): </label>
 									<input type="number" class="form-control" id="ano"
 										name="ano" th:value="${aluno?.ano}"/>
 								</div>
-							</div>
 							</div>
 					
 						<div class="form-group mt-2">
@@ -113,26 +113,40 @@
 					<!-- Historico 
 					TODO: Adicionar opção para adicionar mais um histórico ao aluno
 					-->
-						<div class="form-row">
-							<div class="form-group col-md-4">
-								<label for="empresaTrabalho"> Informe o nome da empresa em que está trabalhando: </label>
-								<input type="text" id="empresaTrabalho" class="form-control"
-									name="empresaTrabalho" th:value="${aluno?.historico.empresaTrabalho}"/>
+					
+					<div id="historicosContainer">
+								<!--  Para cada entrada de Histórico -->
+							<div class="historico-entry" th:each="historicoEntry, stat : *{historico}">
+								<input type="hidden" th:field="*{historico[__${stat.index}__].id}"/>
+
+								<div class="form-row">
+									<div class="form-group col-md-6">
+										<label th:for="${#ids.next('empresaTrabalho')}"> Empresa: </label>
+										<input type="text" class="form-control" th:field="*{historico[__${stat.index}__].empresaTrabalho}" required/>
+									</div>
+									<div class="form-group col-md-6">
+										<label th:for="${#ids.next('descricaoTrabalho')}"> Descrição/Cargo: </label>
+										<input type="text" class="form-control" th:field="*{historico[__${stat.index}__].descricaoTrabalho}" required/>
+									</div>
+								</div>
+								<div class="form-row">
+									<div class="form-group col-md-6">
+										<label th:for="${#ids.next('dtInicio')}"> Data Início: </label>
+										<input type="date" class="form-control" th:field="*{historico[__${stat.index}__].dtInicio}" required/>
+									</div>
+									<div class="form-group col-md-6">
+										<label th:for="${#ids.next('dtFim')}"> Data Fim (caso não seja o seu trabalho atual): </label>
+										<input type="date" class="form-control" th:field="*{historico[__${stat.index}__].dtFim}"/>
+									</div>
+								</div>
+								<button class="remove-historico btn btn-danger">Remover</button>
 							</div>
-							<div class="form-group col-md-4">
-								<label for="descricaoTrabalho"> Descrição do seu trabalho: </label>
-								<input type="text" id="descricaoTrabalho" class="form-control"
-									name="descricaoTrabalho" th:value="${aluno?.historico.descricaoTrabalho}"/>
-							</div>
-							<div class="form-group col-md-4">
-								<label for="tempoTrabalho"> Informe a quantos meses está trabalhando: </label>
-								<input type="number" id="tempoTrabalho" class="form-control"
-									name="tempoTrabalho" th:value="${aluno?.historico.tempoTrabalho}"/>
-							</div>
-							<div class="form group col-md-2">
-								<button class=" btn btn-primary">Clique aqui para adicionar mais um histórico</button>
-							</div>
+							
+							
+
 						</div>
+						<button type="button" class="btn btn-success mt-2" id="addHistoricoBtn">Adicionar Histórico</button>
+					
 						<!-- Comentarios -->
 						<div class="form-row">
 							<div class="form-group col-md-4">
@@ -153,13 +167,38 @@
 								value="Cadastrar">
 						</div>
 					</form>
+					<!-- Caso o usuário clique em Adicionar Histórico, exibe os campos da div abaixo, com o indice do proximo histórico-->
+							<div class="historico-template historico-entry" style="display: none;">
+								<input type="hidden" name="historico[__index__].id" value=""/> 
+								<div class="form-row">
+									<div class="form-group col-md-6">
+										<label for="empresaTrabalho__index__"> Empresa: </label>
+										<input type="text" class="form-control" id="empresaTrabalho__index__" name="historico[__index__].empresaTrabalho" required/>
+									</div>
+									<div class="form-group col-md-6">
+										<label for="descricaoTrabalho__index__"> Descrição: </label>
+										<input type="text" class="form-control" id="descricaoTrabalho__index__" name="historico[__index__].descricaoTrabalho" required/>
+									</div>
+								</div>
+								<div class="form-row">
+									<div class="form-group col-md-6">
+										<label for="dtInicio__index__"> Data Início: </label>
+										<input type="date" class="form-control" id="dtInicio__index__" name="historico[__index__].dtInicio" required/>
+									</div>
+									<div class="form-group col-md-6">
+										<label for="dtFim__index__"> Data Fim (se aplicável): </label>
+										<input type="date" class="form-control" id="dtFim__index__" name="historico[__index__].dtFim"/>
+									</div>
+								</div>
+								<button class="remove-historico btn btn-danger">Remover</button>
+							</div>
 				</div>
 			</div>
 		</div>
 <script>
 	// Função para lidar com Unidade Fatec, caso usuário escolha "Outra Unidade"
 	document.addEventListener("DOMContentLoaded", function (){
-		const select = document.getElementById("unidFATECSelect");
+		const select = document.getElementById("nomeFatec");
 		const outraDiv = document.getElementById("outraUnidDiv");
 		const outraInput = document.getElementById("outraUnidFATEC");   
 		const inputOculto = document.getElementById("inputOculto");
@@ -185,6 +224,91 @@
 		
     	document.querySelector("form").addEventListener("submit", atualizaCampoOculto);
 	});
+	
+	//Função para lidar com Adicionar/Remover Historico
+		const historicosContainer = document.getElementById('historicosContainer');
+		const addHistoricoBtn = document.getElementById('addHistoricoBtn');
+		const historicoTemplate = document.querySelector('.historico-template');
+
+		// Função para determinar o próximo índice
+		function getNextIndex() {
+			// Encontra todos os campos 'id' dos históricos (excluindo o template)
+			const idFields = historicosContainer.querySelectorAll('.historico-entry:not(.historico-template) input[name$=".id"]');
+			let maxIndex = -1;
+			idFields.forEach(field => {
+				// Extrai o índice do nome, ex: "historico[5].id" -> 5
+				const nameMatch = field.name.match(/historico\[(\d+)\].id/);
+				if (nameMatch && nameMatch[1]) {
+					const index = parseInt(nameMatch[1]);
+					if (!isNaN(index) && index > maxIndex) {
+						maxIndex = index;
+					}
+				}
+			});
+			return maxIndex + 1;
+		}
+
+		// Função para atualizar nomes e IDs dos campos clonados
+		function updateNamesAndIds(element, index) {
+			element.querySelectorAll('[name]').forEach(input => {
+				const currentName = input.getAttribute('name');
+				// Substitui o placeholder __index__ pelo índice real
+				input.setAttribute('name', currentName.replace('__index__', index));
+
+				// Atualiza o ID
+				if (input.hasAttribute('id')) {
+					const currentId = input.getAttribute('id');
+					input.setAttribute('id', currentId.replace('__index__', index));
+				}
+			});
+
+			// Limpa os valores dos campos para a nova entrada (exceto hidden id)
+			element.querySelectorAll('input:not([type="hidden"]), textarea, select').forEach(input => {
+				input.value = '';
+			});
+
+			// Garante que o hidden ID para novos históricos seja vazio
+			const idInput = element.querySelector('input[type="hidden"][name$=".id"]');
+			if(idInput) {
+				idInput.value = '';
+			}
+
+			// Adiciona o event listener para o botão de remover
+			const removeBtn = element.querySelector('.remove-historico');
+			if (removeBtn && !removeBtn.dataset.listenerAttached) {
+				removeBtn.addEventListener('click', handleRemoveHistorico);
+				removeBtn.dataset.listenerAttached = 'true'; // Marca que o listener foi anexado
+			}
+		}
+
+		// Função para lidar com a remoção de histórico
+		function handleRemoveHistorico(event) {
+			const historicoEntry = event.target.closest('.historico-entry');
+			if (historicoEntry && !historicoEntry.classList.contains('historico-template')) {
+				historicoEntry.remove();
+			}
+		}
+
+		// Adiciona listener ao botão "Adicionar Histórico"
+		addHistoricoBtn.addEventListener('click', function() {
+			const newIndex = getNextIndex();
+			const newHistoricoEntry = historicoTemplate.cloneNode(true); // Clonar com conteúdo
+			newHistoricoEntry.classList.remove('historico-template');
+			newHistoricoEntry.style.display = 'block'; // Torna visível
+
+			updateNamesAndIds(newHistoricoEntry, newIndex);
+
+			historicosContainer.appendChild(newHistoricoEntry);
+		});
+
+		// Adiciona event listeners para remover históricos existentes ao carregar a página
+		historicosContainer.querySelectorAll('.historico-entry:not(.historico-template) .remove-historico').forEach(btn => {
+			if (!btn.dataset.listenerAttached) {
+				btn.addEventListener('click', handleRemoveHistorico);
+				btn.dataset.listenerAttached = 'true';
+			}
+		});
+
 </script>
 </body>
 </html>

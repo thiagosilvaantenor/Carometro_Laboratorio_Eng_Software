@@ -25,7 +25,6 @@
 							<th scope="col">Nome</th>
 							<th scope="col">Foto</th>
 							<th scope="col">Nome do curso</th>
-							<th scope="col">Nome da empresa </th>
 							<th scope="col">Comentario FATEC </th>
 							<th scope="col">Comentario Livre </th>
 							<th scope="col">Opções</th>
@@ -39,7 +38,9 @@
 								<img th:src="@{/aluno/{id}/foto(id=${aluno.id})}" alt="Foto do aluno" width="30%"/>
 							</td>
 							<td scope="col" th:text="${aluno.curso.nome}"></td>
-							<td scope="col" th:text="${aluno.historico.empresaTrabalho}"></td>
+							<!--  FIXME: Verificar como exibir o histórico
+							<td scope="col" th:text="${aluno.historico[0].empresaTrabalho}"></td>
+							-->
 							<td scope="col" th:text="${aluno.comentarioFATEC}"></td>
 							<td scope="col" th:text="${aluno.comentario}"></td>
 							<td scope="col">
