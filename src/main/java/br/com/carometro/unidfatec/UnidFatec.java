@@ -36,6 +36,6 @@ public class UnidFatec {
     @OneToMany(mappedBy = "unidFatec") // "unidFatec" deve ser o nome do campo ManyToOne na classe Curso
     private List<Curso> cursos = new ArrayList<>();
     @OneToOne(mappedBy = "unidFatec")
-    private Coordenador coordenador;
+    private Coordenador coordenador; 
 	
 }

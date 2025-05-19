@@ -47,10 +47,11 @@
 			<div class="row justify-content-center">
 				<div class="col-md-10 card-form">
 					<h1 class="text-center">Cadastrar Curso</h1>
-					<form method="post" action="/curso">
+					  <form th:object="${curso}" method="post" action="/curso">
 						<input type="hidden" name="_method" value="put" th:if="${curso!= null}">
 						<input type="hidden" name="id" th:value="${curso?.id}">
 
+						<!-- Inputs: Nome, descrição, Duração -->
 						<div class="form-group">
 							<label for="nome">Nome do curso:</label>
 							<input class="form-control" type="text" id="nome" name="nome" th:value="${curso?.nome}">
@@ -63,16 +64,31 @@
 
 						<div class="form-row">
 							<div class="form-group col-md-3">
-								<label for="duracao">Duração:</label>
+								<label for="duracao">Duração em semestres:</label>
 								<input type="number" class="form-control" id="duracao" name="duracao" th:value="${curso?.duracao}">
 							</div>
+							
+							<!-- Modalidade -->
 							<div class="form-group col-md-5">
-								<label for="modalidade">Modalidade:</label>
-								<input type="text" class="form-control" id="modalidade" name="modalidade" th:value="${curso?.modalidade}">
+								<label for="turno">Selecione a modalidade do curso:</label>
+							        <select class="form-control" id="modalidadeSelect" name="modalidade" th:value="${curso?.modalidade}">
+							            <option value="">-- Selecione --</option>
+							            <option value="Presencial">Presencial</option>
+							            <option value="Remoto">Remoto</option>
+							            <option value="Hibrido">Hibrido</option>
+									 </select>
 							</div>
+							
+							<!-- Turno -->
 							<div class="form-group col-md-4">
-								<label for="turno">Turno:</label>
-								<input type="text" class="form-control" id="turno" name="turno" th:value="${curso?.turno}">
+
+							        <label for="turno">Selecione o turno do curso Turno:</label>
+							        <select class="form-control" id="turnoSelect" name="turno" th:value="${curso?.turno}">
+							            <option value="">-- Selecione --</option>
+							            <option value="Noite">Noite</option>
+							            <option value="Tarde">Tarde</option>
+							            <option value="Manhã">Manhã</option>
+									 </select>
 							</div>
 						</div>
 
@@ -80,7 +96,20 @@
 							<label for="areaAtuacao">Área de Atuação:</label>
 							<input type="text" class="form-control" id="areaAtuacao" name="areaAtuacao" th:value="${curso?.areaAtuacao}">
 						</div>
-
+						
+						<div class="form-group">
+ 								<!-- Unidade Fatec -->
+						        <label for="unidFatec">Selecione a sua Unidade FATEC:</label>
+						        <select class="form-control" id="nomeFatec" name = "nomeFatec">
+						            <option value="">-- Selecione --</option>
+									<option th:each="unidade : ${unidades}"
+											th:value="${unidade.nome}"
+											th:text="${unidade.nome}"
+											th:selected="${curso?.unidFatec?.nome} == ${unidade.nome}">
+									</option>
+							 		<option value="outra">Outra Unidade</option>
+						        </select>
+						</div>
 						<div class="text-center mt-4">
 							<input class="btn btn-fatec" type="submit" value="Cadastrar">
 						</div>

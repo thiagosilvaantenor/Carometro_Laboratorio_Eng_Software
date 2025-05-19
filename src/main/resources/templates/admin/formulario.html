@@ -69,8 +69,8 @@
 						            <option value="">-- Selecione --</option>
 									<option th:each="unidade : ${unidades}"
 											th:value="${unidade.nome}"
-											th:text="${unidade.nome}">
-											<!--  th:selected="${aluno?.unidFatec?.id} == ${unidFatec.id}"> -->
+											th:text="${unidade.nome}"
+											th:selected="${aluno?.unidFatec?.id} == ${unidFatec.id}">
 									</option>
 							 		<option value="outra">Outra Unidade</option>
 						        </select>

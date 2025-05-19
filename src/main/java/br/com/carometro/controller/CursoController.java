@@ -9,11 +9,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import br.com.carometro.curso.Curso;
 import br.com.carometro.curso.CursoRepository;
 import br.com.carometro.curso.DadosAtualizacaoCurso;
 import br.com.carometro.curso.DadosCadastroCurso;
+import br.com.carometro.unidfatec.UnidFatec;
+import br.com.carometro.unidfatec.UnidFatecService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
@@ -23,13 +26,19 @@ public class CursoController {
 	@Autowired
 	private CursoRepository repository;
 
+	@Autowired
+	private UnidFatecService unidService;
+	
 	@GetMapping("/formulario")
 	public String carregaPaginaFormulario(Long id, Model model) {
-		System.out.println("Id" + id);
+		//Busca as unidades Fatec
+		model.addAttribute("unidades", unidService.buscaTodas());
+		Curso curso = null;
 		if (id != null) {
-			var curso = repository.getReferenceById(id);
-			model.addAttribute("curso", curso);
+			//Verifica se é uma atualização de um curso
+			curso = repository.getReferenceById(id);
 		}
+		model.addAttribute("curso", curso);
 		return "curso/formulario";
 	}
 	
@@ -42,14 +51,25 @@ public class CursoController {
 	@PostMapping
 	@Transactional
 	public String cadastrar(@Valid
-			DadosCadastroCurso dados) {
-		repository.save(new Curso(dados));
+			DadosCadastroCurso dados) throws Exception {
+		//UnidFatec
+		Curso curso = new Curso(dados);
+		
+		UnidFatec unidFatec = unidService.buscarPorNome(dados.nomeFatec());
+		if(unidFatec == null) {
+			throw new Exception("Erro ao buscar unidade Fatec");
+		}
+		curso.setUnidFatec(unidFatec);
+		
+		repository.save(curso);
+		
 		return "redirect:curso";
 	}
 	
 	@PutMapping
 	@Transactional
 	public String atualizar(DadosAtualizacaoCurso dados) {
+		
 		var curso = repository.getReferenceById(dados.id());
 		curso.atualizarInformacoes(dados);
 		return "redirect:curso";
