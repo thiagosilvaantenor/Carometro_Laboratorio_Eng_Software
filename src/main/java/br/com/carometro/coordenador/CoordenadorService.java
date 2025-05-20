@@ -1,6 +1,7 @@
 package br.com.carometro.coordenador;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -36,7 +37,11 @@ public class CoordenadorService {
 		repository.save(cordenador);
 	}
 
-	public Coordenador login(String email, String senha) {
+	public Optional<Coordenador> login(String email, String senha) {
 		return repository.buscaLogin(email,senha);
+	}
+
+	public Coordenador findbyEmail(String email) {
+		return repository.findbyEmail(email);
 	}
 }

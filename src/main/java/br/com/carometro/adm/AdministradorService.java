@@ -12,7 +12,7 @@ import br.com.carometro.security.Criptografia;
 @Service
 public class AdministradorService {
 	@Autowired
-	private AdminstradorRepository repository;
+	private AdministradorRepository repository;
 
 	public List<Administrador> getAllAdministrador() {
 		return repository.findAll(Sort.by("nome").ascending());
@@ -24,7 +24,7 @@ public class AdministradorService {
 
 	public void salvarAdmin(Administrador admin) throws Exception {
 		try {
-			if (repository.findbyEmail(admin.getEmail()) != null) {
+			if (repository.findByEmail(admin.getEmail()) != null) {
 				throw new Exception("Este email já está cadastrado: " + admin.getEmail());
 			}
 
@@ -36,7 +36,7 @@ public class AdministradorService {
 		repository.save(admin);
 	}
 
-	public Administrador loginAdmin(String email, String senha) {
+	public Optional<Administrador> loginAdmin(String email, String senha) {
 		return repository.buscaLogin(email, senha);
 	}
 	
@@ -46,5 +46,9 @@ public class AdministradorService {
 		}
 		//Caso tenha encontrado o administrador
 		repository.deleteById(id);
+	}
+
+	public Administrador findByEmail(String email) {
+		return repository.findByEmail(email);
 	}
 }

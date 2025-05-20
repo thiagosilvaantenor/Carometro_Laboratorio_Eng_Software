@@ -1,5 +1,7 @@
 package br.com.carometro.coordenador;
 
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -9,7 +11,7 @@ public interface CoordenadorRepository  extends JpaRepository<Coordenador, Long>
 	public Coordenador findbyEmail(String email);
 
 	@Query("select l from Coordenador l where l.email = :email AND l.senha = :senha")
-	public Coordenador buscaLogin(String email, String senha);
+	public Optional<Coordenador> buscaLogin(String email, String senha);
 	
 		/* Query para filtrar por curso do coordenador as postagens
 		 * SELECT 

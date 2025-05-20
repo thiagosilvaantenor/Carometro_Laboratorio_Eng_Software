@@ -1,6 +1,7 @@
 package br.com.carometro.aluno;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -36,7 +37,11 @@ public class AlunoService {
 		repository.save(aluno);
 	}
 
-	public Aluno login(String email, String senha) {
+	public Optional<Aluno> login(String email, String senha) {
 		return repository.findByEmailAndSenha(email,senha);
+	}
+
+	public Aluno findByEmail(String email) {
+		return repository.findByEmail(email);
 	}
 }

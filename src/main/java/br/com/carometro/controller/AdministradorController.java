@@ -18,7 +18,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import br.com.carometro.adm.Administrador;
 import br.com.carometro.adm.AdministradorService;
-import br.com.carometro.adm.AdminstradorRepository;
+import br.com.carometro.adm.AdministradorRepository;
 import br.com.carometro.adm.DadosAtualizacaoAdministrador;
 import br.com.carometro.adm.DadosCadastroAdministrador;
 import br.com.carometro.security.Criptografia;
@@ -33,7 +33,7 @@ import jakarta.validation.Valid;
 public class AdministradorController {
 
 	@Autowired
-	private AdminstradorRepository repository;
+	private AdministradorRepository repository;
 	
 	@Autowired
 	private AdministradorService service;
@@ -115,31 +115,31 @@ public class AdministradorController {
 		return modelAndView;
 	}
 	
-	
-	@PostMapping("/login")
-    public ModelAndView login(@Valid Administrador admin, BindingResult br,
-                              HttpSession session) throws NoSuchAlgorithmException {
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("admin", new Administrador());
-        if(br.hasErrors()) {
-            modelAndView.setViewName("/login");
-        }
+// FIXME: linhas comentadas para testar o LoginController, caso não funcione verifique as linhas abaixo
+//	@PostMapping("/login")
+//    public ModelAndView login(@Valid Administrador admin, BindingResult br,
+//                              HttpSession session) throws NoSuchAlgorithmException {
+//        ModelAndView modelAndView = new ModelAndView();
+//        modelAndView.addObject("admin", new Administrador());
+//        if(br.hasErrors()) {
+//            modelAndView.setViewName("/login");
+//        }
+//
+//        //Busca no banco de dados se este email e senha estão cadastrado
+//        Administrador adminLogin = service.loginAdmin(admin.getEmail(), Criptografia.md5(admin.getSenha()));
+//        if(adminLogin == null) {
+//            modelAndView.addObject("msg","Administrador não encontrado. Tente novamente");
+//        } else {
+//            session.setAttribute("adminLogado", adminLogin);
+//            return index();
+//        }
+//
+//        return modelAndView;
+//    }
 
-        //Busca no banco de dados se este email e senha estão cadastrado
-        Administrador adminLogin = service.loginAdmin(admin.getEmail(), Criptografia.md5(admin.getSenha()));
-        if(adminLogin == null) {
-            modelAndView.addObject("msg","Administrador não encontrado. Tente novamente");
-        } else {
-            session.setAttribute("adminLogado", adminLogin);
-            return index();
-        }
-
-        return modelAndView;
-    }
-
-    @PostMapping("/logout")
-    public ModelAndView logout(HttpSession session) {
-        session.invalidate();
-        return login();
-    }
+//    @PostMapping("/logout")
+//    public ModelAndView logout(HttpSession session) {
+//        session.invalidate();
+//        return login();
+//    }
 }

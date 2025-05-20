@@ -1,6 +1,7 @@
 package br.com.carometro.controller;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -135,8 +136,8 @@ public class CoordenadorController {
         }
 
         //Busca no banco de dados se este email e senha estão cadastrado
-        Coordenador coordenadorLogin = service.login(coordenador.getEmail(), Criptografia.md5(coordenador.getSenha()));
-        if(coordenadorLogin == null) {
+        Optional<Coordenador> coordenadorLogin = service.login(coordenador.getEmail(), Criptografia.md5(coordenador.getSenha()));
+        if(coordenadorLogin.isEmpty()) {
             modelAndView.addObject("msg","Coordenador não encontrado. Tente novamente");
         } else {
             session.setAttribute("CoordenadorLogado", coordenadorLogin);
