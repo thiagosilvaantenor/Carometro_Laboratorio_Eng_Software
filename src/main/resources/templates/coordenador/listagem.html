@@ -64,24 +64,24 @@
 						<table class="table table-bordered table-hover">
 							<thead class="thead-light">
 								<tr>
-									<th>Matrícula</th>
 									<th>Nome</th>
+									<th>Unidade Fatec</th>
 									<th>Curso</th>
 									<th>Opções</th>
 								</tr>
 							</thead>
 							<tbody>
 								<tr th:each="coordenador : ${lista}">
-									<td th:text="${coordenador.matricula}"></td>
 									<td th:text="${coordenador.nome}"></td>
+									<td th:text="${coordenador.unidFatec.nome}"></td>
 									<td th:text="${coordenador.curso.nome}"></td>
 									<td>
-										<a th:href="@{/coordenador/formulario?matricula={matricula}(matricula=${coordenador.matricula})}">
+										<a th:href="@{/coordenador/formulario?id={id}(id=${coordenador.id})}">
 											<button class="btn btn-primary mb-2">Editar</button>
 										</a>
 										<form action="/coordenador" method="post" class="d-inline">
 											<input type="hidden" name="_method" value="delete">
-											<input type="hidden" name="matricula" th:value="${coordenador.matricula}">
+											<input type="hidden" name="id" th:value="${coordenador.id}">
 											<input type="submit" class="btn btn-danger" value="Excluir">
 										</form>
 									</td>

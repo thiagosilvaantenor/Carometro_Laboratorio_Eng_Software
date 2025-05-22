@@ -15,6 +15,7 @@ import br.com.carometro.adm.Administrador;
 import br.com.carometro.aluno.Aluno;
 import br.com.carometro.coordenador.Coordenador;
 import br.com.carometro.security.Criptografia;
+import br.com.carometro.usuario.UsuarioDTO;
 import br.com.carometro.usuario.UsuarioService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -33,14 +34,14 @@ public class LoginController {
 	
 	 @GetMapping
 	 public String mostrarFormularioLogin(Model model) {
-	      //model.addAttribute("usuario", new Usuario());
+		  //Como existem 3 atores, se cria um DTO para lidar com os dados e depois verificar qual o ator
+		  model.addAttribute("usuario", new UsuarioDTO(null, null));
 	      return "login/login";
 	 }
 	
 	
 	@PostMapping
-	public String processarLogin(@Valid String email,
-			@Valid String senha,
+	public String processarLogin(@Valid UsuarioDTO dados,
     		BindingResult bindingResult,
     		HttpSession session, 
     		RedirectAttributes redirectAttributes) 
@@ -52,53 +53,57 @@ public class LoginController {
     	// Verifica no banco de dados o email e senha estão cadastrados
     	//se sim verifica qual ator esta logando (admin, coodenador ou aluno)
     	
-    	String ator = serviceUsuario.verificaAtor(email);
+    	String ator = serviceUsuario.verificaAtor(dados.email());
     	//Transforma a senha enviada em md5 para ser comparada com a senha do banco de dados
-    	senha = Criptografia.md5(senha);
+    	String senhaCript = Criptografia.md5(dados.senha());
     	switch (ator) {
-    	//TODO: verifica se o email e senha estão corretos de acordo com o ator, se sim redireciona para a o indice
-		case "administrador":
-			Optional<Administrador> admin = serviceUsuario.verificaLoginAdmin(email, senha);
-			if (admin.isEmpty()) {
-				redirectAttributes.addFlashAttribute("mensagemErro", 
-	    				"Senha incorreta. Tente novamente");
-			} else {
-				// Adicione esta linha para identificar o usuário
-				Administrador adminEncontrado = admin.get();
-				session.setAttribute("usuarioLogado", adminEncontrado); 				
-			}
-			break;
-		case "coordenador":
-			Optional<Coordenador> coordenador = serviceUsuario.verificaLoginCoordenador(email, senha);
-			if (coordenador.isEmpty()) {
-				redirectAttributes.addFlashAttribute("mensagemErro", 
-	    				"Senha incorreta. Tente novamente");
-			} else {
-				// Adicione esta linha para identificar o usuário
-				Coordenador cooordenadorEncotrado = coordenador.get();
-				session.setAttribute("usuarioLogado", cooordenadorEncotrado); 				
-			}
-			break;
-		case "aluno":
-			Optional<Aluno> aluno = serviceUsuario.verificaLoginAluno(email, senha);
-			if (aluno.isEmpty()) {
-				redirectAttributes.addFlashAttribute("mensagemErro", 
-	    				"Senha incorreta. Tente novamente");
-			}else {
-				// Adicione esta linha para identificar o usuário
-				Aluno alunoEncontrado = aluno.get();
-				session.setAttribute("usuarioLogado", alunoEncontrado); 				
-			}
-			break;
+			case "administrador":
+				Optional<Administrador> admin = serviceUsuario.verificaLoginAdmin(dados.email(), senhaCript);
+				if (admin.isEmpty()) {
+					redirectAttributes.addFlashAttribute("mensagemErro", 
+		    				"Senha incorreta. Tente novamente");
+					return "redirect:/login";
+				} else {
+					System.out.println("ACHOU O ADMIN");
+					// Adicione esta linha para identificar o usuário
+					Administrador adminEncontrado = admin.get();
+					session.setAttribute("usuarioLogado", adminEncontrado);
+					return "redirect:/admin/index";
+				}
+			case "coordenador":
+				Optional<Coordenador> coordenador = serviceUsuario.verificaLoginCoordenador(dados.email(), senhaCript);
+				if (coordenador.isEmpty()) {
+					redirectAttributes.addFlashAttribute("mensagemErro", 
+		    				"Senha incorreta. Tente novamente");
+					return "redirect:/login";
+				} else {
+					// Adicione esta linha para identificar o usuário
+					Coordenador cooordenadorEncotrado = coordenador.get();
+					session.setAttribute("usuarioLogado", cooordenadorEncotrado);
+					return "redirect:/coordenador/index";
 
-		default:
-			redirectAttributes.addFlashAttribute("mensagemErro", 
-    				"Usuário não encontrado. Tente novamente");
-    		return "redirect:/login";
-		}
+				}
+			case "aluno":
+				Optional<Aluno> aluno = serviceUsuario.verificaLoginAluno(dados.email(), senhaCript);
+				if (aluno.isEmpty()) {
+					redirectAttributes.addFlashAttribute("mensagemErro", 
+		    				"Senha incorreta. Tente novamente");
+					return "redirect:/login";
+				}else {
+					// Adicione esta linha para identificar o usuário
+					Aluno alunoEncontrado = aluno.get();
+					session.setAttribute("usuarioLogado", alunoEncontrado);
+					return "redirect:/aluno/listagem";
+				}
+	
+			default:
+				redirectAttributes.addFlashAttribute("mensagemErro", 
+	    				"Usuário não encontrado. Tente novamente");
+	    		return "redirect:/login";
+			}
     	
     	//TODO: redirecionar para o index de acordo com o ator
-    	return "redirect:/home/dashboard";
+    	//return "redirect:/home/dashboard";
     }
 	
 	

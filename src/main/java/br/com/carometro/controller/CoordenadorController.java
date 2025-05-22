@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import br.com.carometro.aluno.Aluno;
 import br.com.carometro.coordenador.Coordenador;
 import br.com.carometro.coordenador.CoordenadorRepository;
 import br.com.carometro.coordenador.CoordenadorService;
@@ -24,6 +25,8 @@ import br.com.carometro.coordenador.DadosCadastroCoordenador;
 import br.com.carometro.curso.Curso;
 import br.com.carometro.curso.CursoService;
 import br.com.carometro.security.Criptografia;
+import br.com.carometro.unidfatec.UnidFatec;
+import br.com.carometro.unidfatec.UnidFatecService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -39,9 +42,13 @@ public class CoordenadorController {
 	
 	@Autowired
 	private CoordenadorService service;
+	
+	@Autowired
+	private UnidFatecService unidFatecService;
 
 	@GetMapping("/formulario")
 	public String carregaPaginaFormulario(Long id, Model model) {
+		model.addAttribute("unidades", unidFatecService.buscaTodas());
 		model.addAttribute("cursos", cursoService.getAllCursos());
 		if(id != null) {
 	        var coordenador = repository.getReferenceById(id);
@@ -62,12 +69,26 @@ public class CoordenadorController {
 	@PostMapping
 	@Transactional
 	public String cadastrar(@Valid
-			DadosCadastroCoordenador dados, @RequestParam("cursoId") Long cursoId) throws Exception {
+			DadosCadastroCoordenador dados, @RequestParam("cursoId") Long cursoId,
+			@RequestParam("fatecId") Long fatecId) throws Exception {
+		
 		Coordenador coordenador = new Coordenador(dados);
 		// Busca o curso selecionado no formulario
 		Curso curso = cursoService.getCursoById(cursoId);
-		
 		coordenador.setCurso(curso);
+		
+		//UnidFATEC
+		Optional<UnidFatec> unidFatec = unidFatecService.getUnidFatecById(fatecId);
+		
+		if (unidFatec.isEmpty()) {
+			throw new Exception("Unidade fatec não encontrada");
+		}
+		//Se encontrou
+		UnidFatec unidFatecEncontrada = unidFatec.get();
+		// adiciona a relação coordenador e unidFatec
+		coordenador.setUnidFatec(unidFatecEncontrada);
+		unidFatecEncontrada.setCoordenador(coordenador);	
+		
 		
 		service.salvar(coordenador); 
 		return "redirect:coordenador";

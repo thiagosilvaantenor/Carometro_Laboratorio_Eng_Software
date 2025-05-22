@@ -69,9 +69,10 @@
 						            <option value="">-- Selecione --</option>
 									<option th:each="unidade : ${unidades}"
 											th:value="${unidade.nome}"
-											th:text="${unidade.nome}"
-											th:selected="${aluno?.unidFatec?.id} == ${unidFatec.id}">
+											th:text="${unidade.administrador == null ? unidade.nome : unidade.nome + ' (Já possui administrador)'}"
+											th:selected="${admin?.unidFatec?.id} == ${unidade.id}">
 									</option>
+									<!-- Apenas o administrador pode cadastrar outras Unidades Fatec, sendo valido apenas a unidade dele -->
 							 		<option value="outra">Outra Unidade</option>
 						        </select>
 						        

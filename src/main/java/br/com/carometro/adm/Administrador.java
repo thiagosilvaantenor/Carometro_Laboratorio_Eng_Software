@@ -42,9 +42,9 @@ public class Administrador {
 
 	public Administrador(@Valid DadosCadastroAdministrador dados) {
 		this.nome = dados.nome();
-//		this.unidFATEC = new Unidadedados.unidFATEC();
 		this.email = dados.email();
 		this.senha = dados.senha();
+//		relação unidFatec é feita no controller
 	}
 
 	public void atualizarInformacoes(DadosAtualizacaoAdministrador dados) {
@@ -57,6 +57,6 @@ public class Administrador {
 		if (dados.senha() != null) {
 			this.senha = dados.senha();
 		}
-		//TODO: Atualização da unidade fatec
+		//Atualização da unidFatec é feita no controller
 	}
 }

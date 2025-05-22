@@ -60,12 +60,12 @@ public class AlunoController {
 	private CursoService cursoService;
 	
 	@Autowired
-	private UnidFatecService unidService;
+	private UnidFatecService unidFatecService;
 	
 	@GetMapping("/formulario")
 	public String carregaPaginaFormulario(Long id, Model model) {
 		//Busca as unidades Fatec
-		model.addAttribute("unidades", unidService.buscaTodas());
+		model.addAttribute("unidades", unidFatecService.buscaTodas());
 		model.addAttribute("cursos", cursoService.getAllCursos());
 		Aluno aluno = null;
 		//Caso seja uma edição(PUT)
@@ -118,11 +118,11 @@ public class AlunoController {
 		
 		
 		//UnidFatec
-		UnidFatec unidFatec = unidService.buscarPorNome(nomeFatec);
+		UnidFatec unidFatec = unidFatecService.buscarPorNome(nomeFatec);
 		if(unidFatec == null) {
 			throw new Exception("Erro ao buscar unidade Fatec");
 		}
-		aluno.setUnidFATEC(unidFatec);
+		aluno.setUnidFatec(unidFatec);
 		//TODO: Verificar como buscar os cursos da unidade para serem exibidos ao usuário selecionar
 		
 		
@@ -196,20 +196,20 @@ public class AlunoController {
 		//Unid FATEC
 		// Atualiza a unidade Fatec
 		//Busca a fatec existente
-				if (nomeFatec != null && (aluno.getUnidFATEC() == null || 
-						!aluno.getUnidFATEC().getNome().equals(nomeFatec))) {					
-					UnidFatec unidFatec = unidService.buscarPorNome(nomeFatec);
+				if (nomeFatec != null && (aluno.getUnidFatec() == null || 
+						!aluno.getUnidFatec().getNome().equals(nomeFatec))) {					
+					UnidFatec unidFatec = unidFatecService.buscarPorNome(nomeFatec);
 					if (unidFatec != null) {
 						  model.addAttribute("erro", "Unidade Fatec não encontrada ao atualizar.");
 			                // Repopular o modelo
-			                model.addAttribute("unidades", unidService.buscaTodas());
+			                model.addAttribute("unidades", unidFatecService.buscaTodas());
 			                model.addAttribute("cursos", cursoService.getAllCursos());
 			                model.addAttribute("aluno", aluno);
 			                 model.addAttribute("selectedCursoId", cursoId);
 			                model.addAttribute("selectedUnidadeId", unidFatec.getId());
 			                return "aluno/formulario";
 					}
-					aluno.setUnidFATEC(unidFatec);
+					aluno.setUnidFatec(unidFatec);
 				}
 				
 				// Se Links já existe, atualiza. Se não, cria um novo.

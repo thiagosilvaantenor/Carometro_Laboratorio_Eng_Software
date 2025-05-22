@@ -98,20 +98,15 @@ public class AdministradorController {
 	}
 	
 	
-	@GetMapping("/login")
-    public ModelAndView login() {
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("/admin/login");
-        modelAndView.addObject("admin", new Administrador());
-        return modelAndView;
-    }
-
-
+	//Mapeamento da pagina inicio do administrador, para chegar lá é necessario ele se logar pelo LoginController
 	@GetMapping("/index")
-	public ModelAndView index() {
+	public ModelAndView index(HttpSession session) {
+		//Pega o administrador recebido do login
+		Administrador adminLogado = (Administrador) session.getAttribute("usuarioLogado");
+		
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("admin/index");
-		modelAndView.addObject("admin", new Administrador());
+		modelAndView.addObject("admin", adminLogado);
 		return modelAndView;
 	}
 	

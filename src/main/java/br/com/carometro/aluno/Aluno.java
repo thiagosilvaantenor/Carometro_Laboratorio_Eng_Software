@@ -47,20 +47,20 @@ public class Aluno {
 	private Integer ano;
 	@OneToOne
 	@JoinColumn(name="unid_fatec_id", nullable=false)
-	private UnidFatec unidFATEC;
+	private UnidFatec unidFatec;
 	//TODO: Trocar maneira de salvar a foto
 	@Lob
 	@Column(name = "foto", columnDefinition = "LONGBLOB")
 	private byte[] foto;
 
-	//Como é UM CURSO para MUITOS alunos, alunos é a classe Many, portanto recebe o @ManyToOne
+	//1 curso para N alunos
 	@ManyToOne
 	@JoinColumn(name="curso_id", nullable=false)
 	private Curso curso;
-	//Um aluno vai ter muitos históricos, cascata do tipo All para quando for salvar um aluno salvar o histórico e o mesmo para remover
+	//1 Aluno para N Historicos , cascata do tipo All para quando for salvar um aluno salvar o histórico e o mesmo para remover
 	@OneToMany(mappedBy = "aluno", cascade = CascadeType.ALL)
 	private Set<Historico> historico = new HashSet<>();
-	//Uma lista de links pertence a Um aluno, cascata do tipo All para quando for salvar um aluno salvar os links e o mesmo para remover
+	//Um aluno para 1 lista de redes, cascata do tipo All para quando for salvar um aluno salvar os links e o mesmo para remover
 	@OneToOne(mappedBy = "aluno", cascade = CascadeType.ALL)
 	private Links links;
 	
@@ -70,12 +70,12 @@ public class Aluno {
 		this.email = dados.email();
 		this.senha = dados.senha();
 		this.dtNascimento = dados.dtNascimento();
-		//TODO: Verificar se os dados capturados no html realmente criam a entidade unidFatec
 		this.comentarioFATEC = dados.comentarioFATEC();
 		this.comentario = dados.comentario();
 		this.ano = dados.ano();
 		this.curso = dados.curso();
-		//TODO: Add DTO do histórico
+		//DTO do historico é adicionado no controller
+		//Relações de historico, unidFatec e links são feitas no controller
 	}
 	
 	public void atualizarInformacoes(DadosAtualizacaoAluno dados) {
@@ -92,7 +92,7 @@ public class Aluno {
 			this.dtNascimento = dados.dtNascimento();
 		}
 		if (dados.unidFATEC() != null) {
-			this.unidFATEC = dados.unidFATEC();
+			this.unidFatec = dados.unidFATEC();
 		}
 		if (dados.comentarioFATEC() != null) {
 			this.comentarioFATEC = dados.comentarioFATEC();

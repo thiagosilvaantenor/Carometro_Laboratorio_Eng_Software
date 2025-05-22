@@ -52,12 +52,12 @@
 			<div class="col-md-10">
 				<div class="card-home">
 					<div class="fatec-header">
-						<h2>Bem-vindo à sua Home, Administrador</h2>
+						<h2 th:text="'Bem vindo à sua Home, ' + (${admin.nome} ?: 'Administrador') + '!'">Bem-vindo à sua Home</h2>
 					</div>
 					<div class="d-flex flex-column align-items-center mt-4">
-						<a th:href="/curso/formulario" class="btn btn-fatec">Cadastrar Curso</a>
+						<a th:href="@{/curso/formulario}" class="btn btn-fatec">Cadastrar Curso</a>
 						<a class="btn btn-fatec" href="#">Validar Comentários</a>
-						<a th:href="/admin/listagem" class="btn btn-fatec">Editar seu Cadastro</a>
+						<a th:href="@{/admin/formulario(id=${admin.id})}" class="btn btn-fatec">Editar seu Cadastro</a>
 					</div>
 				</div>
 			</div>

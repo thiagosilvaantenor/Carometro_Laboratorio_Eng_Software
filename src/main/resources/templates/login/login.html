@@ -50,9 +50,9 @@
 				<div class="col-md-6 card-login">
 					<h2 class="text-center fatec-title mb-4">Login</h2>
 
-					<form method="post" action="/login" th:object="${admin}">
-						<div class="alert alert-danger text-center" role="alert" th:if="${msg}">
-							<strong th:text="${msg}"></strong>
+					<form method="post" th:action="@{/login}" th:object="${usuario}">
+						<div class="alert alert-danger text-center" role="alert" th:if="${mensagemErro}">
+							<strong th:text="${mensagemErro}"></strong>
 						</div>
 
 						<div class="form-group">
