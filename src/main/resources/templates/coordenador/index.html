@@ -51,11 +51,11 @@
 		<div class="container">
 			<div class="row justify-content-center">
 				<div class="col-md-8 home-card">
-					<h1>Bem-vindo à sua Home</h1>
+					<h1 th:text="'Bem vindo à sua Home, ' + (${coordenador.nome} ?: 'Coordenador') + '!'">Bem-vindo à sua Home</h1>
 					<div class="d-flex justify-content-center flex-wrap">
-						<a th:href="/curso/formulario" class="btn btn-fatec">Cadastrar Curso</a>
-						<a href="#" class="btn btn-fatec">Validar Comentários</a>
-						<a th:href="/coordenador/listagem" class="btn btn-fatec">Editar Cadastro</a>
+						<!-- Criar pagina de listagem do coordenador -->
+						<a href="#" class="btn btn-fatec">Validar Ex-alunos</a>
+						<a th:href="@{/coordenador/formulario(id=${coordenador.id})}" class="btn btn-fatec">Editar Cadastro</a>
 					</div>
 				</div>
 			</div>

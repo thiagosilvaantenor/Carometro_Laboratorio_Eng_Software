@@ -20,6 +20,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -39,6 +40,7 @@ public class Aluno {
 	@Column(name = "aluno_id")
 	private Long id;
 	private String nome;
+	@Email
 	private String email;
 	private String senha;
 	private LocalDate dtNascimento;	

@@ -1,5 +1,6 @@
 package br.com.carometro.coordenador;
 
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,25 +24,25 @@ public class CoordenadorService {
 	}
 	
 	
-	public void salvar(Coordenador cordenador) throws Exception {
+	public void salvar(Coordenador coordenador) throws Exception {
 		try {
-			if (repository.findbyEmail(cordenador.getEmail()) != null) {
-				throw new Exception("Este email já está cadastrado: " + cordenador.getEmail());
+			
+			if (repository.findByEmail(coordenador.getEmail()).isPresent()) {
+				throw new Exception("Este email já está cadastrado: " + coordenador.getEmail());
 			}
+			coordenador.setSenha(Criptografia.md5(coordenador.getSenha()));
 
-			cordenador.setSenha(Criptografia.md5(cordenador.getSenha()));
-
-		} catch (Exception e) {
-			throw new Exception("Erro na criptografia da senha");
+		} catch (NoSuchAlgorithmException e) {
+			 throw new RuntimeException("Erro ao criptografar senha", e.getCause());
 		}
-		repository.save(cordenador);
+		repository.save(coordenador);
 	}
 
 	public Optional<Coordenador> login(String email, String senha) {
 		return repository.buscaLogin(email,senha);
 	}
 
-	public Coordenador findbyEmail(String email) {
-		return repository.findbyEmail(email);
+	public Optional<Coordenador> findbyEmail(String email) {
+		return repository.findByEmail(email);
 	}
 }

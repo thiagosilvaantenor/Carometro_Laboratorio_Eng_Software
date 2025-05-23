@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 public interface CoordenadorRepository  extends JpaRepository<Coordenador, Long>{
 	
 	@Query("SELECT c FROM Coordenador c WHERE c.email = :email")
-	public Coordenador findbyEmail(String email);
+	public Optional<Coordenador> findByEmail(String email); 
 
 	@Query("select l from Coordenador l where l.email = :email AND l.senha = :senha")
 	public Optional<Coordenador> buscaLogin(String email, String senha);

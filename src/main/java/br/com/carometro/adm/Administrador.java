@@ -8,7 +8,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.UniqueConstraint;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -32,6 +34,7 @@ public class Administrador {
 	@NotBlank(message = "Nome é obrigatório")
 	private String nome;
 	@NotBlank(message = "Email é obrigatório")
+	@Email
 	private String email;
 	@NotBlank(message = "Senha é obrigatória")
 	private String senha;
