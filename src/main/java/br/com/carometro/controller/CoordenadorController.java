@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
+import br.com.carometro.adm.Administrador;
 import br.com.carometro.aluno.Aluno;
 import br.com.carometro.coordenador.Coordenador;
 import br.com.carometro.coordenador.CoordenadorRepository;
@@ -64,8 +65,8 @@ public class CoordenadorController {
 	public String carregaPaginaListagem(Model model) {
 		model.addAttribute("lista", repository.findAll(Sort.by("nome").ascending()));
 		return "coordenador/listagem";
-	}
-	
+	} 
+	//FIXME: ID DA FATEC NÃO ESTA SENDO RECEBIDO
 	@PostMapping
 	@Transactional
 	public String cadastrar(@Valid
@@ -87,7 +88,7 @@ public class CoordenadorController {
 		UnidFatec unidFatecEncontrada = unidFatec.get();
 		// adiciona a relação coordenador e unidFatec
 		coordenador.setUnidFatec(unidFatecEncontrada);
-		unidFatecEncontrada.setCoordenador(coordenador);	
+		unidFatecEncontrada.getCoordenadores().add(coordenador);	
 		
 		
 		service.salvar(coordenador); 
@@ -96,7 +97,8 @@ public class CoordenadorController {
 	
 	@PutMapping
 	@Transactional
-	public String atualizar(DadosAtualizacaoCoordenador dados) throws NoSuchAlgorithmException {
+	public String atualizar(DadosAtualizacaoCoordenador dados,
+			@RequestParam("fatecId") Long fatecId ) throws NoSuchAlgorithmException {
 		var coordenador = repository.getReferenceById(dados.id());
 		//Atualiza curso
 		if (dados.curso() != null) {
@@ -107,8 +109,17 @@ public class CoordenadorController {
 			coordenador.setCurso(dados.curso());
 			dados.curso().setCoordenador(coordenador);
 		}
+		//Encripta a senha
 		if (dados.senha() != null) {
 			coordenador.setSenha(Criptografia.md5(coordenador.getSenha()));
+		}
+		//Unid fatec
+		//Busca no banco de dados a unid fatec escolhida, se for diferente realiza a troca
+		UnidFatec fatecRecebida = unidFatecService.getUnidFatecById(fatecId).get();
+		if ( fatecRecebida.getId() != coordenador.getUnidFatec().getId()) {
+			UnidFatec unidAntiga = coordenador.getUnidFatec();
+			unidAntiga.getCoordenadores().remove(coordenador);
+			coordenador.setUnidFatec(fatecRecebida);
 		}
 		coordenador.atualizarInformacoes(dados);
 		repository.save(coordenador);
@@ -121,57 +132,44 @@ public class CoordenadorController {
 		var coordenador = repository.getReferenceById(id);
 		// Desfaz o vinculo entre curso e coordenador
 		if (coordenador.getCurso() != null) {
+			Curso curso = coordenador.getCurso();
 		    coordenador.getCurso().setCoordenador(null);
 		    coordenador.setCurso(null);
+		    curso.setCoordenador(null);
+		    
+		}
+		//Desfaz o vinculo de unidFATEC
+		if (coordenador.getUnidFatec() != null) {
+			Optional<UnidFatec> unidFatec = unidFatecService.getUnidFatecById
+					(coordenador.getUnidFatec().getId());
+			if (unidFatec.isPresent()) {
+				unidFatec.get().getCoordenadores().remove(coordenador);
+				coordenador.setUnidFatec(null);
+			}
 		}
 		repository.delete(coordenador);
 		return "redirect:coordenador";
 	}
 	
-	@GetMapping("/login")
-    public ModelAndView login() {
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("coordenador/login");
-        modelAndView.addObject("coordenador", new Coordenador());
-        return modelAndView;
-    }
 
-
+	//Mapeamento da pagina inicio do administrador, para chegar lá é necessario ele se logar pelo LoginController
 	@GetMapping("/index")
-	public ModelAndView index() {
+	public ModelAndView index(HttpSession session) {
+		//Pega o coordenador recebido do login
+		Coordenador coordenadorLogado = (Coordenador) session.getAttribute("usuarioLogado");
+		
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("coordenador/index");
-		modelAndView.addObject("coordenador", new Coordenador());
+		modelAndView.addObject("coordenador", coordenadorLogado);
 		return modelAndView;
 	}
 	
-	
-	@PostMapping("/login")
-    public ModelAndView login(@Valid Coordenador coordenador, BindingResult br,
-                              HttpSession session) throws NoSuchAlgorithmException {
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.addObject("coordenador", new Coordenador());
-        if(br.hasErrors()) {
-            modelAndView.setViewName("coordenador/login");
-            return modelAndView;
-        }
 
-        //Busca no banco de dados se este email e senha estão cadastrado
-        Optional<Coordenador> coordenadorLogin = service.login(coordenador.getEmail(), Criptografia.md5(coordenador.getSenha()));
-        if(coordenadorLogin.isEmpty()) {
-            modelAndView.addObject("msg","Coordenador não encontrado. Tente novamente");
-        } else {
-            session.setAttribute("CoordenadorLogado", coordenadorLogin);
-            return new ModelAndView("redirect:/index");
-        }
-
-        return modelAndView;
-    }
-
-    @PostMapping("/logout")
-    public ModelAndView logout(HttpSession session) {
-        session.invalidate();
-        return login();
-    }
+// FIXME: Corrigir método de logout
+//    @PostMapping("/logout")
+//    public ModelAndView logout(HttpSession session) {
+//        session.invalidate();
+//        return login();
+//    }
 	
 }

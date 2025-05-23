@@ -10,7 +10,9 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
+import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -29,13 +31,16 @@ public class Coordenador {
 	@Column(name = "coordenador_id")
 	private Long id;
 	private String nome; 
+	@Email
 	private String email;
+	
 	private String senha;
 	private LocalDate vencimentoMandato;
 	@OneToOne
 	@JoinColumn(name="curso_id")
 	private Curso curso;
-	@OneToOne
+	
+	@ManyToOne
 	@JoinColumn(name="unid_fatec_id")
 	private UnidFatec unidFatec;
 	
@@ -44,8 +49,6 @@ public class Coordenador {
 		this.email = dados.email();
 		this.senha = dados.senha();
 		this.vencimentoMandato = dados.vencimentoMandato();
-		this.curso = dados.curso();
-		//TODO: add unidFatec
 	}
 
 	public void atualizarInformacoes(DadosAtualizacaoCoordenador dados) {
@@ -64,7 +67,7 @@ public class Coordenador {
 		if (dados.curso() != null) {
 			this.curso = dados.curso();
 		}
-		//TODO: add unidFatec		
+		//UNID FATEC é tratado no controller
 	}
 	
 }

@@ -52,8 +52,10 @@
 					<h2 class="text-center fatec-title">Cadastro de Coordenador</h2>
 
 					<form th:object="${coordenador}" method="post" action="/coordenador">
+						<!-- Caso for Atualização PUT -->
 						<input type="hidden" name="_method" value="put"
-						       th:if="${coordenador?.id != null}">
+						       th:if="${coordenador?.id != null}"> 
+ 						<input type="hidden" name="id" th:value="${coordenador?.id}"/>
 
 						<div class="form-row">
 							<div class="form-group col-md-5">
@@ -73,7 +75,19 @@
 							</div>
 						</div>
 
-						<!-- TODO: COLOCAR UNIDFATEC -->
+						<div class="form-group">
+ 								<!-- Unidade Fatec -->
+						        <label for="unidFATEC">Selecione a sua Unidade FATEC:</label>
+						        <select class="form-control" id="fatecId" name="fatecId">
+						            <option value="">-- Selecione --</option>
+									<option th:each="unidade : ${unidades}"
+											th:value="${unidade.id}"
+											th:text="${unidade.nome}"
+											th:selected="${coordenador?.unidFatec?.id} == ${unidade.id}">
+									</option>
+						        </select>
+						</div>
+						
 
 						<div class="form-row">
 							<div class="form-group col-md-3">
@@ -88,6 +102,7 @@
 									<option th:each="curso : ${cursos}"
 										th:value="${curso.id}"
 										th:text="${curso.coordenador == null ? curso.nome : curso.nome + ' (Já possui coordenador)'}"
+										th:selected="${coordenador?.curso?.id} == ${curso.id}"
          								th:disabled="${curso.coordenador != null}">
 									</option>
 								</select>
