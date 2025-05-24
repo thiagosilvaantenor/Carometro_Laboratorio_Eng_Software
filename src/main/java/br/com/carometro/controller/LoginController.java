@@ -101,9 +101,6 @@ public class LoginController {
 	    				"Usuário não encontrado. Tente novamente");
 	    		return "redirect:/login";
 			}
-    	
-    	//TODO: redirecionar para o index de acordo com o ator
-    	//return "redirect:/home/dashboard";
     }
 	
 	

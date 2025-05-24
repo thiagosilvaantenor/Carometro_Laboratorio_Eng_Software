@@ -14,7 +14,7 @@ public interface CoordenadorRepository  extends JpaRepository<Coordenador, Long>
 	public Optional<Coordenador> buscaLogin(String email, String senha);
 	
 		/* Query para filtrar por curso do coordenador as postagens
-		 * SELECT 
+		  @Query(SELECT 
 			A.foto as 'Foto', 
 			A.nome as 'Nome Completo', 
 			A.ano as 'Ano de Conclusão', 
@@ -30,9 +30,9 @@ public interface CoordenadorRepository  extends JpaRepository<Coordenador, Long>
 			INNER JOIN historico H ON A.aluno_id = H.aluno_id
 			INNER JOIN links L ON A.aluno_id = L.aluno_id
 			WHERE A.curso_id IN (SELECT curso_id FROM curso WHERE curso_id = 1) -- :curso_id)
-			ORDER BY ano ASC
-	
-		 * */
+			ORDER BY ano ASC)
+			*/
+
 	
 
 }

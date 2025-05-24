@@ -21,6 +21,9 @@ import br.com.carometro.adm.AdministradorService;
 import br.com.carometro.adm.AdministradorRepository;
 import br.com.carometro.adm.DadosAtualizacaoAdministrador;
 import br.com.carometro.adm.DadosCadastroAdministrador;
+import br.com.carometro.aluno.Aluno;
+import br.com.carometro.aluno.AlunoService;
+import br.com.carometro.coordenador.Coordenador;
 import br.com.carometro.security.Criptografia;
 import br.com.carometro.unidfatec.UnidFatec;
 import br.com.carometro.unidfatec.UnidFatecService;
@@ -40,6 +43,9 @@ public class AdministradorController {
 
 	@Autowired
 	private UnidFatecService unidFatecService;
+	
+	@Autowired
+	private AlunoService alunoService;
 	
 	@GetMapping("/formulario")
 	public String carregaPaginaFormulario(Long id, Model model) {
@@ -110,7 +116,24 @@ public class AdministradorController {
 		return modelAndView;
 	}
 	
-
+	//Mapeamento da pagina de posts para validaçao dos alunos 
+	@GetMapping("/validarPostagem")
+	public ModelAndView paginaExibicaoPosts(HttpSession session) throws Exception {
+		//Busca o admin logado
+		Administrador adminLogado = (Administrador) session.getAttribute("usuarioLogado");
+	    if (adminLogado != null) {
+	    	//Busca os alunos da unidFatec do admin para exibir
+	        List<Aluno> alunos = alunoService.filtraAlunosPelaUnidFatecAdmin(adminLogado.getUnidFatec().getId());			
+	        ModelAndView modelAndView = new ModelAndView();
+	        modelAndView.addObject("alunos", alunos);
+	        modelAndView.setViewName("admin/validarPostagem");
+	        return modelAndView;
+	    } else {
+	        throw new Exception("Usuário não está logado.");
+	    }
+	}
+	
+	
 
 //    @PostMapping("/logout")
 //    public ModelAndView logout(HttpSession session) {

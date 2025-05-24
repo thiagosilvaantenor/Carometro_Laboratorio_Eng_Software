@@ -42,5 +42,6 @@ public class UnidFatec {
     private List<Coordenador> coordenadores;
 	@OneToOne(mappedBy = "unidFatec")
 	private Administrador administrador;
+
 	
 }

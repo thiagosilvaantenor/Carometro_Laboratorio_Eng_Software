@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -104,7 +105,7 @@ public class AlunoController {
 	public String cadastrar(@Valid
 			DadosCadastroAluno dados,
 			@ModelAttribute("aluno.historico") List<DadosCadastroHistorico> dadosHistoricoSubmetidos,
-			@RequestParam("cursoId") Long cursoId, @RequestParam("nomeFatec") String nomeFatec) throws Exception {
+			@RequestParam("cursoId") Long cursoId, @RequestParam("fatecId") Long fatecId) throws Exception {
 		
 		
 		 // Converte a lista submetida (que pode ser um proxy) para uma ArrayList padrão.
@@ -117,14 +118,18 @@ public class AlunoController {
 		
 		
 		//UnidFatec
-		UnidFatec unidFatec = unidFatecService.buscarPorNome(nomeFatec);
-		if(unidFatec == null) {
-			throw new Exception("Erro ao buscar unidade Fatec");
+		//UnidFATEC
+		Optional<UnidFatec> unidFatec = unidFatecService.getUnidFatecById(fatecId);
+		
+		if (unidFatec.isEmpty()) {
+			throw new Exception("Unidade fatec não encontrada");
 		}
-		aluno.setUnidFatec(unidFatec);
-		//TODO: Verificar como buscar os cursos da unidade para serem exibidos ao usuário selecionar
-		
-		
+		//Se encontrou
+		UnidFatec unidFatecEncontrada = unidFatec.get();
+		// adiciona a relação coordenador e unidFatec
+		aluno.setUnidFatec(unidFatecEncontrada);
+				
+
 		// Historico
 		Set<Historico> historico = new HashSet<>();
 		if (listaDTOHistorico != null) {

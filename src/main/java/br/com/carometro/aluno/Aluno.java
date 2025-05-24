@@ -47,7 +47,7 @@ public class Aluno {
 	private String comentarioFATEC;
 	private String comentario;
 	private Integer ano;
-	@OneToOne
+	@ManyToOne
 	@JoinColumn(name="unid_fatec_id", nullable=false)
 	private UnidFatec unidFatec;
 	//TODO: Trocar maneira de salvar a foto

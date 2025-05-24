@@ -10,4 +10,4 @@ public class CarometroSpringApplication {
 		SpringApplication.run(CarometroSpringApplication.class, args);
 	}
 
-}
+} 

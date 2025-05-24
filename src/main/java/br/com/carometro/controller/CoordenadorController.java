@@ -1,13 +1,13 @@
 package br.com.carometro.controller;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,8 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import br.com.carometro.adm.Administrador;
 import br.com.carometro.aluno.Aluno;
+import br.com.carometro.aluno.AlunoService;
 import br.com.carometro.coordenador.Coordenador;
 import br.com.carometro.coordenador.CoordenadorRepository;
 import br.com.carometro.coordenador.CoordenadorService;
@@ -46,6 +46,9 @@ public class CoordenadorController {
 	
 	@Autowired
 	private UnidFatecService unidFatecService;
+	
+	@Autowired
+	private AlunoService alunoService;
 
 	@GetMapping("/formulario")
 	public String carregaPaginaFormulario(Long id, Model model) {
@@ -66,7 +69,7 @@ public class CoordenadorController {
 		model.addAttribute("lista", repository.findAll(Sort.by("nome").ascending()));
 		return "coordenador/listagem";
 	} 
-	//FIXME: ID DA FATEC NÃO ESTA SENDO RECEBIDO
+
 	@PostMapping
 	@Transactional
 	public String cadastrar(@Valid
@@ -164,12 +167,30 @@ public class CoordenadorController {
 		return modelAndView;
 	}
 	
+	//Mapeamento da pagina de posts para validaçao dos alunos 
+	@GetMapping("/validarAluno")
+	public ModelAndView paginaExibicaoPosts(HttpSession session) throws Exception {
+		//Busca o coordenador logado
+	    Coordenador coordenadorLogado = (Coordenador) session.getAttribute("usuarioLogado");
+	    if (coordenadorLogado != null) {
+	    	//Busca os alunos do curso do coordenador para exibir
+	        List<Aluno> alunos = alunoService.filtraAlunosPeloCurso(coordenadorLogado.getCurso().getId());			
+	        ModelAndView modelAndView = new ModelAndView();
+	        modelAndView.addObject("alunos", alunos);
+	        modelAndView.setViewName("coordenador/validarAluno");
+	        return modelAndView;
+	    } else {
+	        throw new Exception("Usuário não está logado.");
+	    }
+	}
 
 // FIXME: Corrigir método de logout
-//    @PostMapping("/logout")
-//    public ModelAndView logout(HttpSession session) {
-//        session.invalidate();
-//        return login();
-//    }
+    @PostMapping("/logout")
+    public ModelAndView logout(HttpSession session) {
+        session.invalidate();
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("login/login");
+        return modelAndView;
+    }
 	
 }

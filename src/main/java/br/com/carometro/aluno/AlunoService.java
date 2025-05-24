@@ -44,4 +44,13 @@ public class AlunoService {
 	public Aluno findByEmail(String email) {
 		return repository.findByEmail(email);
 	}
+
+	public List<Aluno> filtraAlunosPelaUnidFatecAdmin(Long unidFatecId) {
+		
+		return repository.findByUnidFatecId(unidFatecId);
+	}
+	
+	public List<Aluno> filtraAlunosPeloCurso(Long cursoId){
+		return repository.findByCursoId(cursoId);
+	}
 }

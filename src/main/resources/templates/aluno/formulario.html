@@ -45,30 +45,24 @@
 								<input type="date" class="form-control" id="dtNascimento"
 									name="dtNascimento" th:value="${aluno?.dtNascimento}" required/>
 							</div>
+						<!-- FOTO -->
 							<div class="form-group col-md-3">
-								<label for="foto"> Foto: </label>
+								<label for="foto"> Foto, precisa ser JPG no maximo 2MB: </label>
 								<input type="file" accept="image/jpeg" class="form-control" id="foto"
 									name="foto" th:value="${aluno?.foto}"/>
 							</div>
 							
 						  <div class="form-group">
  								<!-- Unidade Fatec -->
-						        <label for="unidFATEC">Selecione a sua Unidade FATEC:</label>
-						        <select class="form-control" id="nomeFatec">
+							        <label for="unidFATEC">Selecione a sua Unidade FATEC:</label>
+						        <select class="form-control" id="fatecId" name="fatecId">
 						            <option value="">-- Selecione --</option>
 									<option th:each="unidade : ${unidades}"
-											th:value="${unidade.nome}"
+											th:value="${unidade.id}"
 											th:text="${unidade.nome}"
-											th:selected="${aluno.unidFATEC?.nome} == ${unidade.nome}">
+											th:selected="${aluno?.unidFatec?.id} == ${unidade.id}">
 									</option>
-							 		<option value="outra">Outra Unidade</option>
-						        </select>
-						        
-						        <div id="outraUnidDiv" class="mr-5 mt-3" style="display:none;">
-								    <label for="outraUnidFATEC">Digite o nome da sua unidade FATEC:</label>
-								    <input type="text" class="form-control" id="outraUnidFATEC" placeholder="Digite o nome da sua unidade">
-								</div>
-						        <input type="hidden" id="inputOculto" name="nomeFatec"/>
+						        </select>		        
                             </div>
 									
 							<div class="form-group col-md-5 mt-3">
@@ -78,6 +72,7 @@
 								</div>
 							</div>
 					
+					<!-- Curso -->
 						<div class="form-group mt-2">
 							<label for="cursoSelect"> Selecione o seu curso: </label>
 							<select class="form-control" name="cursoId" id="cursoId">
@@ -196,36 +191,8 @@
 			</div>
 		</div>
 <script>
-	// Função para lidar com Unidade Fatec, caso usuário escolha "Outra Unidade"
-	document.addEventListener("DOMContentLoaded", function (){
-		const select = document.getElementById("nomeFatec");
-		const outraDiv = document.getElementById("outraUnidDiv");
-		const outraInput = document.getElementById("outraUnidFATEC");   
-		const inputOculto = document.getElementById("inputOculto");
-		
-		function atualizaCampoOculto() {
-			if (select.value === "outra") {
-				inputOculto.value = outraInput.value;
-			} else {
-				inputOculto.value = select.value
-			}
-		}
-		
-		select.addEventListener("change", function() {
-			if (select.value === "outra") {
-				outraDiv.style.display = "block";
-			} else{
-				outraDiv.style.display = "none";
-			}
-			atualizaCampoOculto();
-		});
-		
-    	outraInput.addEventListener("input", atualizaCampoOculto);
-		
-    	document.querySelector("form").addEventListener("submit", atualizaCampoOculto);
-	});
-	
 	//Função para lidar com Adicionar/Remover Historico
+	document.addEventListener("DOMContentLoaded", function (){	
 		const historicosContainer = document.getElementById('historicosContainer');
 		const addHistoricoBtn = document.getElementById('addHistoricoBtn');
 		const historicoTemplate = document.querySelector('.historico-template');
@@ -308,6 +275,7 @@
 				btn.dataset.listenerAttached = 'true';
 			}
 		});
+	});
 
 </script>
 </body>
