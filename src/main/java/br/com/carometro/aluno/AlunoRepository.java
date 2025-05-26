@@ -14,6 +14,6 @@ public interface AlunoRepository extends JpaRepository<Aluno, Long>{
 	
 	public List<Aluno> findByCursoId(Long cursoId);
 
-	public List<Aluno> findByUnidFatecId(Long unidFatecId);
+
 
 }

@@ -47,7 +47,7 @@
 	<div layout:fragment="conteudo">
 		<div class="container">
 			<div class="row justify-content-center">
-				<div class="col-md-6 card-login">
+				<div class="col-md card-login">
 					<h2 class="text-center fatec-title mb-4">Login</h2>
 
 					<form method="post" th:action="@{/login}" th:object="${usuario}">
@@ -64,10 +64,13 @@
 							<label for="senha">Senha:</label>
 							<input type="password" class="form-control" id="senha" name="senha" th:field="*{senha}">
 						</div>
-
-						<div class="d-flex justify-content-between mt-4">
-							<a th:href="@{cadastro}" class="btn btn-fatec">Cadastrar-se</a>
+						<div class="d-flex justify-content-center mt-4">
 							<input class="btn btn-fatec" type="submit" value="Login">
+						</div>
+						<div class="d-flex justify-content-between mt-4">
+							<a th:href="@{/coordenador/formulario}" class="btn btn-fatec">Cadastro Coordenador</a>
+							<a th:href="@{/admin/formulario}" class="btn btn-fatec">Cadastro Admin</a>
+							<a th:href="@{/aluno/formulario}" class="btn btn-fatec">Cadastro Aluno</a>
 						</div>
 					</form>
 				</div>

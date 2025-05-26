@@ -1,7 +1,9 @@
 package br.com.carometro.aluno;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import br.com.carometro.curso.Curso;
@@ -47,9 +49,6 @@ public class Aluno {
 	private String comentarioFATEC;
 	private String comentario;
 	private Integer ano;
-	@ManyToOne
-	@JoinColumn(name="unid_fatec_id", nullable=false)
-	private UnidFatec unidFatec;
 	//TODO: Trocar maneira de salvar a foto
 	@Lob
 	@Column(name = "foto", columnDefinition = "LONGBLOB")
@@ -61,7 +60,7 @@ public class Aluno {
 	private Curso curso;
 	//1 Aluno para N Historicos , cascata do tipo All para quando for salvar um aluno salvar o histórico e o mesmo para remover
 	@OneToMany(mappedBy = "aluno", cascade = CascadeType.ALL)
-	private Set<Historico> historico = new HashSet<>();
+	private List<Historico> historico = new ArrayList<>();
 	//Um aluno para 1 lista de redes, cascata do tipo All para quando for salvar um aluno salvar os links e o mesmo para remover
 	@OneToOne(mappedBy = "aluno", cascade = CascadeType.ALL)
 	private Links links;
@@ -77,7 +76,7 @@ public class Aluno {
 		this.ano = dados.ano();
 		this.curso = dados.curso();
 		//DTO do historico é adicionado no controller
-		//Relações de historico, unidFatec e links são feitas no controller
+		//Relações de historico e links são feitas no controller
 	}
 	
 	public void atualizarInformacoes(DadosAtualizacaoAluno dados) {
@@ -92,9 +91,6 @@ public class Aluno {
 		}		
 		if (dados.dtNascimento() != null) {
 			this.dtNascimento = dados.dtNascimento();
-		}
-		if (dados.unidFATEC() != null) {
-			this.unidFatec = dados.unidFATEC();
 		}
 		if (dados.comentarioFATEC() != null) {
 			this.comentarioFATEC = dados.comentarioFATEC();

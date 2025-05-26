@@ -22,9 +22,7 @@ public record DadosCadastroAluno(
 		String comentario,
 		Integer ano,
 		Curso curso,
-		//List<DadosCadastroHistorico> historico,
-		//Unidade Fatec
-		String nomeUnidFatec,
+		List<DadosCadastroHistorico> historico,
 		String gitHub,
 		String linkedIn,
 		String lattesCNPQ,

@@ -1,6 +1,7 @@
 package br.com.carometro.controller;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +25,8 @@ import br.com.carometro.adm.DadosCadastroAdministrador;
 import br.com.carometro.aluno.Aluno;
 import br.com.carometro.aluno.AlunoService;
 import br.com.carometro.coordenador.Coordenador;
+import br.com.carometro.curso.Curso;
+import br.com.carometro.curso.CursoService;
 import br.com.carometro.security.Criptografia;
 import br.com.carometro.unidfatec.UnidFatec;
 import br.com.carometro.unidfatec.UnidFatecService;
@@ -46,6 +49,9 @@ public class AdministradorController {
 	
 	@Autowired
 	private AlunoService alunoService;
+	
+	@Autowired
+	private CursoService cursoService;
 	
 	@GetMapping("/formulario")
 	public String carregaPaginaFormulario(Long id, Model model) {
@@ -123,11 +129,20 @@ public class AdministradorController {
 		Administrador adminLogado = (Administrador) session.getAttribute("usuarioLogado");
 	    if (adminLogado != null) {
 	    	//Busca os alunos da unidFatec do admin para exibir
-	        List<Aluno> alunos = alunoService.filtraAlunosPelaUnidFatecAdmin(adminLogado.getUnidFatec().getId());			
+	    	
+	    	//Busca os cursos da unidFatec do admin
+	    	List<Curso> cursos = cursoService.findByUnidFatecId(adminLogado.getUnidFatec().getId());
+	    	//Cria a lista de alunos que vai ser populada com os alunos de cada curso da unidade
+	    	List<Aluno> alunos = new ArrayList<>();
+	    	cursos.forEach(curso -> {
+	    		 alunos.addAll( alunoService.
+	    				filtraAlunosPeloCurso(curso.getId()) );
+	    	});
+	    	//Envia para a model a lista de alunos
 	        ModelAndView modelAndView = new ModelAndView();
 	        modelAndView.addObject("alunos", alunos);
 	        modelAndView.setViewName("admin/validarPostagem");
-	        return modelAndView;
+	        return modelAndView; 
 	    } else {
 	        throw new Exception("Usuário não está logado.");
 	    }

@@ -22,7 +22,6 @@
 						<tr scope="row" class="table-info">
 							<th scope="col">Nome</th>
 							<th scope="col">Nome do curso</th>
-							<th scope="col">Unidade FATEC</th>
 							<th scope="col">Comentario FATEC </th>
 							<th scope="col">Comentario Livre </th>
 							<th scope="col">Opções</th>
@@ -32,7 +31,6 @@
 						<tr scope="row" class="table-primary" th:each="aluno : ${alunos}">
 							<td scope="col" th:text="${aluno.nome}"></td>
 							<td scope="col" th:text="${aluno.curso.nome}"></td>
-							<td scope="col" th:text="${aluno.unidFatec.nome}"></td>
 							<td scope="col" th:text="${aluno.comentarioFATEC}"></td>
 							<td scope="col" th:text="${aluno.comentario}"></td>
 							<td scope="col">

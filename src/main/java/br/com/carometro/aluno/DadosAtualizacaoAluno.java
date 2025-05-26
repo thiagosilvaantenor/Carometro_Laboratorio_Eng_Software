@@ -20,6 +20,7 @@ public record DadosAtualizacaoAluno(Long id,
 		String gitHub,
 		String linkedIn,
 		String lattesCNPQ,
-		MultipartFile foto) {
+		MultipartFile foto
+		) {
 
 }

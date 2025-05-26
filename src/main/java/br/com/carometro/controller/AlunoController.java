@@ -3,13 +3,7 @@ package br.com.carometro.controller;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -40,7 +34,6 @@ import br.com.carometro.historico.HistoricoRepository;
 import br.com.carometro.links.Links;
 import br.com.carometro.links.LinksRepository;
 import br.com.carometro.security.Criptografia;
-import br.com.carometro.unidfatec.UnidFatec;
 import br.com.carometro.unidfatec.UnidFatecService;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -64,8 +57,7 @@ public class AlunoController {
 	
 	@GetMapping("/formulario")
 	public String carregaPaginaFormulario(Long id, Model model) {
-		//Busca as unidades Fatec
-		model.addAttribute("unidades", unidFatecService.buscaTodas());
+		//Manda a lista de cursos do banco de dados
 		model.addAttribute("cursos", cursoService.getAllCursos());
 		Aluno aluno = null;
 		//Caso seja uma edição(PUT)
@@ -73,7 +65,7 @@ public class AlunoController {
 			aluno = repository.getReferenceById(id);
 			//Verifica e garante que tanto historico como links não sejam nulos ao editar aluno
 			if (aluno.getHistorico() == null) {
-				Set<Historico> historico = new HashSet<>();
+				List<Historico> historico = new ArrayList<>();
 				historico.add(new Historico());
 				
 				aluno.setHistorico(historico);
@@ -86,11 +78,13 @@ public class AlunoController {
 		else {
 			
 			aluno = new Aluno();
-			aluno.setHistorico(new HashSet<>());
+			aluno.setHistorico(new ArrayList<>());
 			aluno.setLinks(new Links());
 		}
 		//De toda maneira envia para a model a entidade aluno
 		model.addAttribute("aluno", aluno);
+//		List<DadosCadastroHistorico> historicoEntry = new ArrayList<>();
+//		model.addAttribute("historico", historicoEntry );
 		return "aluno/formulario";
 	}
 	
@@ -104,36 +98,23 @@ public class AlunoController {
 	@Transactional
 	public String cadastrar(@Valid
 			DadosCadastroAluno dados,
-			@ModelAttribute("aluno.historico") List<DadosCadastroHistorico> dadosHistoricoSubmetidos,
-			@RequestParam("cursoId") Long cursoId, @RequestParam("fatecId") Long fatecId) throws Exception {
+			//@ModelAttribute("aluno.historico")List<DadosCadastroHistorico> dadosHistoricoSubmetidos,
+			@RequestParam("cursoId") Long cursoId) throws Exception {
 		
 		
-		 // Converte a lista submetida (que pode ser um proxy) para uma ArrayList padrão.
-		List<DadosCadastroHistorico> listaDTOHistorico = new ArrayList<>(dadosHistoricoSubmetidos);
+		 // A lista de histórico já estará em dados.getHistorico()
+	    List<DadosCadastroHistorico> dadosHistoricoSubmetidos = dados.historico();
 		Curso curso = cursoService.getCursoById(cursoId);
 		Aluno aluno = new Aluno(dados);
 		// adiciona o aluno na lista de alunos
 		curso.getAlunos().add(aluno);
 		aluno.setCurso(curso);
 		
-		
-		//UnidFatec
-		//UnidFATEC
-		Optional<UnidFatec> unidFatec = unidFatecService.getUnidFatecById(fatecId);
-		
-		if (unidFatec.isEmpty()) {
-			throw new Exception("Unidade fatec não encontrada");
-		}
-		//Se encontrou
-		UnidFatec unidFatecEncontrada = unidFatec.get();
-		// adiciona a relação coordenador e unidFatec
-		aluno.setUnidFatec(unidFatecEncontrada);
-				
 
 		// Historico
-		Set<Historico> historico = new HashSet<>();
-		if (listaDTOHistorico != null) {
-			listaDTOHistorico.forEach(item -> { 
+		List<Historico> historico = new ArrayList<>();
+		if (dadosHistoricoSubmetidos != null) {
+			dadosHistoricoSubmetidos.forEach(item -> { 
 				if (item.empresaTrabalho() != null) {
 						
 					Historico novo = new Historico();
@@ -181,9 +162,8 @@ public class AlunoController {
 	@PutMapping
 	@Transactional
 	public String atualizar(@Valid DadosAtualizacaoAluno dados, 
-			@ModelAttribute("aluno.historico") List<DadosCadastroHistorico> dadosHistorico,
+			List<DadosCadastroHistorico> dadosHistorico,
 			@RequestParam("cursoId") Long cursoId,
-			@RequestParam("nomeFatec") String nomeFatec,
 			Model model) throws IOException, NoSuchAlgorithmException {
 		
 		//Busca o aluno existente
@@ -196,92 +176,72 @@ public class AlunoController {
 			aluno.setCurso(dados.curso());
 			dados.curso().getAlunos().add(aluno);
 		}
-		
-		//Unid FATEC
-		// Atualiza a unidade Fatec
-		//Busca a fatec existente
-				if (nomeFatec != null && (aluno.getUnidFatec() == null || 
-						!aluno.getUnidFatec().getNome().equals(nomeFatec))) {					
-					UnidFatec unidFatec = unidFatecService.buscarPorNome(nomeFatec);
-					if (unidFatec != null) {
-						  model.addAttribute("erro", "Unidade Fatec não encontrada ao atualizar.");
-			                // Repopular o modelo
-			                model.addAttribute("unidades", unidFatecService.buscaTodas());
-			                model.addAttribute("cursos", cursoService.getAllCursos());
-			                model.addAttribute("aluno", aluno);
-			                 model.addAttribute("selectedCursoId", cursoId);
-			                model.addAttribute("selectedUnidadeId", unidFatec.getId());
-			                return "aluno/formulario";
-					}
-					aluno.setUnidFatec(unidFatec);
-				}
-				
-				// Se Links já existe, atualiza. Se não, cria um novo.
-				Links links = aluno.getLinks();
-				if (links == null) {
-					links = new Links();
-					links.setAluno(aluno); // Define a relação
-					aluno.setLinks(links); // Associa ao aluno
-					// Não precisa salvar links explicitamente se cascade está configurado
-					// repositoryLinks.save(links); // Remova se estiver usando cascade
-				}
-				links.setGitHub(dados.gitHub());
-				links.setLinkedIn(dados.linkedIn());
-				links.setLattesCNPQ(dados.lattesCNPQ());
+		// Se Links já existe, atualiza. Se não, cria um novo.
+		Links links = aluno.getLinks();
+		if (links == null) {
+			links = new Links();
+			links.setAluno(aluno); // Define a relação
+			aluno.setLinks(links); // Associa ao aluno
+			// Não precisa salvar links explicitamente se cascade está configurado
+			// repositoryLinks.save(links); // Remova se estiver usando cascade
+		}
+		links.setGitHub(dados.gitHub());
+		links.setLinkedIn(dados.linkedIn());
+		links.setLattesCNPQ(dados.lattesCNPQ());
 		
 		
-		//Atualização do histórico
-		// 1. Mapeia históricos existentes pelo ID
-				Set<Historico> historicosSalvos = new HashSet<>(aluno.getHistorico()); // Copia para iterar sem problemas
-				Map<Long, Historico> mapHistoricosSalvos = historicosSalvos.stream()
-						.collect(Collectors.toMap(Historico::getId, Function.identity()));
-
-				// 2. Limpa a coleção no aluno para reconstruir
-				aluno.getHistorico().clear();
-
-				// 3. Processa a lista de DTOs submetida
-				Set<Historico> novoOuAtualizado = new HashSet<>();
-				if (dadosHistorico != null) {
-					for (DadosCadastroHistorico dto : dadosHistorico) {
-						// Ignora DTOs vazios que podem vir do formulário dinâmico
-						if (dto.empresaTrabalho() != null && !dto.empresaTrabalho().trim().isEmpty()) {
-							Historico entidadeHistorico = null;
-
-							// Tenta encontrar um histórico existente pelo ID do DTO
-							if (dto.id() != null && mapHistoricosSalvos.containsKey(dto.id())) {
-								entidadeHistorico = mapHistoricosSalvos.get(dto.id());
-								// Atualiza a entidade existente com os dados do DTO
-								entidadeHistorico.setEmpresaTrabalho(dto.empresaTrabalho());
-								entidadeHistorico.setDescricaoTrabalho(dto.descricaoTrabalho());
-								entidadeHistorico.setDtInicio(dto.dtInicio());
-								entidadeHistorico.setDtFim(dto.dtFim());
-								// Remove do mapa de existentes para saber quais foram removidos
-								mapHistoricosSalvos.remove(dto.id());
-							} else {
-								// Cria um novo histórico se o ID for nulo ou não encontrado nos existentes
-								entidadeHistorico = new Historico();
-								entidadeHistorico.setEmpresaTrabalho(dto.empresaTrabalho());
-								entidadeHistorico.setDescricaoTrabalho(dto.descricaoTrabalho());
-								entidadeHistorico.setDtInicio(dto.dtInicio());
-								entidadeHistorico.setDtFim(dto.dtFim());
-								entidadeHistorico.setAluno(aluno); // Define a relação para o novo histórico
-							}
-							// Adiciona o histórico (atualizado ou novo) à nova coleção
-							novoOuAtualizado.add(entidadeHistorico);
-						}
-					}
-				}
-
-				// 4. Adiciona a coleção atualizada/nova de volta ao aluno
-				aluno.setHistorico(novoOuAtualizado);
-
-				// 5. Remove históricos que estavam no banco mas não foram submetidos
-				// Esses são os históricos que sobraram no mapHistoricosSalvos
-				mapHistoricosSalvos.values().forEach(historico -> {
-					// Remover a relação do aluno antes de deletar 
-					historico.setAluno(null); 
-					repositoryHistorico.delete(historico); // Deleta do banco
-				});		
+//		//Atualização do histórico
+//		// 1. Mapeia históricos existentes pelo ID
+//				Set<Historico> historicosSalvos = new HashSet<>(aluno.getHistorico()); // Copia para iterar sem problemas
+//				Map<Long, Historico> mapHistoricosSalvos = historicosSalvos.stream()
+//						.collect(Collectors.toMap(Historico::getId, Function.identity()));
+//
+//				// 2. Limpa a coleção no aluno para reconstruir
+//				aluno.getHistorico().clear();
+//
+//				// 3. Processa a lista de DTOs submetida
+//				Set<Historico> novoOuAtualizado = new HashSet<>();
+//				if (dadosHistorico != null) {
+//					for (DadosCadastroHistorico dto : dadosHistorico) {
+//						// Ignora DTOs vazios que podem vir do formulário dinâmico
+//						if (dto.empresaTrabalho() != null && !dto.empresaTrabalho().trim().isEmpty()) {
+//							Historico entidadeHistorico = null;
+//
+//							// Tenta encontrar um histórico existente pelo ID do DTO
+//							if (dto.id() != null && mapHistoricosSalvos.containsKey(dto.id())) {
+//								entidadeHistorico = mapHistoricosSalvos.get(dto.id());
+//								// Atualiza a entidade existente com os dados do DTO
+//								entidadeHistorico.setEmpresaTrabalho(dto.empresaTrabalho());
+//								entidadeHistorico.setDescricaoTrabalho(dto.descricaoTrabalho());
+//								entidadeHistorico.setDtInicio(dto.dtInicio());
+//								entidadeHistorico.setDtFim(dto.dtFim());
+//								// Remove do mapa de existentes para saber quais foram removidos
+//								mapHistoricosSalvos.remove(dto.id());
+//							} else {
+//								// Cria um novo histórico se o ID for nulo ou não encontrado nos existentes
+//								entidadeHistorico = new Historico();
+//								entidadeHistorico.setEmpresaTrabalho(dto.empresaTrabalho());
+//								entidadeHistorico.setDescricaoTrabalho(dto.descricaoTrabalho());
+//								entidadeHistorico.setDtInicio(dto.dtInicio());
+//								entidadeHistorico.setDtFim(dto.dtFim());
+//								entidadeHistorico.setAluno(aluno); // Define a relação para o novo histórico
+//							}
+//							// Adiciona o histórico (atualizado ou novo) à nova coleção
+//							novoOuAtualizado.add(entidadeHistorico);
+//						}
+//					}
+//				}
+//
+//				// 4. Adiciona a coleção atualizada/nova de volta ao aluno
+//				aluno.setHistorico(novoOuAtualizado);
+//
+//				// 5. Remove históricos que estavam no banco mas não foram submetidos
+//				// Esses são os históricos que sobraram no mapHistoricosSalvos
+//				mapHistoricosSalvos.values().forEach(historico -> {
+//					// Remover a relação do aluno antes de deletar 
+//					historico.setAluno(null); 
+//					repositoryHistorico.delete(historico); // Deleta do banco
+//				});		
 	
 		
 		//Atualiza foto
