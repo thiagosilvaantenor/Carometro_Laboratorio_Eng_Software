@@ -10,6 +10,7 @@
 	crossorigin="anonymous">
 </head>
 <body>
+		<header th:replace="~{fragmentos/header :: header(activePage='formularioAluno')}"></header>
 		<div class="container">
 			<div class="row justify-content-md-center">
 				<div class="d-flex flex-column col mt-3">
@@ -92,10 +93,7 @@
 								th:value="${aluno?.links.lattesCNPQ}"/>
 						</div>
 					</div>
-					<!-- Historico 
-					FIXME: Histórico não esta sendo salvo, se comentar toda a parte de histórico é possível salvar o aluno
-					-->
-					
+					<!-- Historico -->					
 					<div id="historicosContainer">
 								<!--  Para cada entrada de Histórico -->
 							<div class="historico-entry" th:each="historicoEntry, stat : *{historico}">
@@ -265,5 +263,6 @@
 	});
 
 </script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -10,6 +10,7 @@
 	crossorigin="anonymous">
 </head>
 <body>
+	<header th:replace="~{fragmentos/header :: header(activePage='validarPostagem')}"></header>
 		<div class="row justify-content-md-center">
 			<div class="d-flex flex-column col mt-3">
 				<h1 class="text-center">Lista de Postagens a serém aprovadas</h1>
@@ -52,5 +53,6 @@
 				</table>
 			</div>
 		</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

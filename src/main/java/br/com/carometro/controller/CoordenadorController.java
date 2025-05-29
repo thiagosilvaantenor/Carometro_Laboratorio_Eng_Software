@@ -164,6 +164,7 @@ public class CoordenadorController {
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("coordenador/index");
 		modelAndView.addObject("coordenador", coordenadorLogado);
+		modelAndView.addObject("role", "coordenador");
 		return modelAndView;
 	}
 	
@@ -184,13 +185,6 @@ public class CoordenadorController {
 	    }
 	}
 
-// FIXME: Corrigir método de logout
-    @PostMapping("/logout")
-    public ModelAndView logout(HttpSession session) {
-        session.invalidate();
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("login/login");
-        return modelAndView;
-    }
+
 	
 }

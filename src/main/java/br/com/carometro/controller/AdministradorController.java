@@ -115,10 +115,11 @@ public class AdministradorController {
 	public ModelAndView index(HttpSession session) {
 		//Pega o administrador recebido do login
 		Administrador adminLogado = (Administrador) session.getAttribute("usuarioLogado");
-		
+		session.setAttribute("usuarioLogado", adminLogado);
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("admin/index");
 		modelAndView.addObject("admin", adminLogado);
+		modelAndView.addObject("role", "admin");
 		return modelAndView;
 	}
 	
@@ -131,7 +132,7 @@ public class AdministradorController {
 	    	//Busca os alunos da unidFatec do admin para exibir
 	    	
 	    	//Busca os cursos da unidFatec do admin
-	    	List<Curso> cursos = cursoService.findByUnidFatecId(adminLogado.getUnidFatec().getId());
+	     	List<Curso> cursos = cursoService.findByUnidFatecId(adminLogado.getUnidFatec().getId());
 	    	//Cria a lista de alunos que vai ser populada com os alunos de cada curso da unidade
 	    	List<Aluno> alunos = new ArrayList<>();
 	    	cursos.forEach(curso -> {

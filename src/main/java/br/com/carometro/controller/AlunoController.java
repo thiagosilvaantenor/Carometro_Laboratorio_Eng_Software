@@ -20,7 +20,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
+import br.com.carometro.adm.Administrador;
 import br.com.carometro.aluno.Aluno;
 import br.com.carometro.aluno.AlunoRepository;
 import br.com.carometro.aluno.AlunoService;
@@ -35,6 +37,7 @@ import br.com.carometro.links.Links;
 import br.com.carometro.links.LinksRepository;
 import br.com.carometro.security.Criptografia;
 import br.com.carometro.unidfatec.UnidFatecService;
+import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
@@ -83,8 +86,6 @@ public class AlunoController {
 		}
 		//De toda maneira envia para a model a entidade aluno
 		model.addAttribute("aluno", aluno);
-//		List<DadosCadastroHistorico> historicoEntry = new ArrayList<>();
-//		model.addAttribute("historico", historicoEntry );
 		return "aluno/formulario";
 	}
 	
@@ -98,7 +99,6 @@ public class AlunoController {
 	@Transactional
 	public String cadastrar(@Valid
 			DadosCadastroAluno dados,
-			//@ModelAttribute("aluno.historico")List<DadosCadastroHistorico> dadosHistoricoSubmetidos,
 			@RequestParam("cursoId") Long cursoId) throws Exception {
 		
 		
@@ -128,7 +128,6 @@ public class AlunoController {
 					novo.setAluno(aluno);
 					historico.add(novo);
 					//Não precisa salvar historico devido ao cascade.TypeAll em Aluno
-					//repositoryHistorico.save(novo);
 				}
 			});
 			aluno.setHistorico(historico);
@@ -145,7 +144,6 @@ public class AlunoController {
 			links.setAluno(aluno);
 			aluno.setLinks(links);
 			//Salva primeiro os links no banco de dados
-			//repositoryLinks.save(links);
 		}
 		
 		 // convertendo a foto de MultipartFile para byte[]
@@ -161,8 +159,7 @@ public class AlunoController {
 	
 	@PutMapping
 	@Transactional
-	public String atualizar(@Valid DadosAtualizacaoAluno dados, 
-			List<DadosCadastroHistorico> dadosHistorico,
+	public String atualizar(@Valid DadosAtualizacaoAluno dados,
 			@RequestParam("cursoId") Long cursoId,
 			Model model) throws IOException, NoSuchAlgorithmException {
 		
@@ -189,34 +186,27 @@ public class AlunoController {
 		links.setLinkedIn(dados.linkedIn());
 		links.setLattesCNPQ(dados.lattesCNPQ());
 		
-		
-//		//Atualização do histórico
-//		// 1. Mapeia históricos existentes pelo ID
-//				Set<Historico> historicosSalvos = new HashSet<>(aluno.getHistorico()); // Copia para iterar sem problemas
-//				Map<Long, Historico> mapHistoricosSalvos = historicosSalvos.stream()
-//						.collect(Collectors.toMap(Historico::getId, Function.identity()));
-//
-//				// 2. Limpa a coleção no aluno para reconstruir
-//				aluno.getHistorico().clear();
+//		TODO: Verificar se o usuario vai atualizar o historico
+////		//Atualização do histórico
+////		// 1. Mapeia históricos existentes pelo ID
+//	    		List<DadosCadastroHistorico> dadosHistoricoSubmetidos = dados.historico();
 //
 //				// 3. Processa a lista de DTOs submetida
-//				Set<Historico> novoOuAtualizado = new HashSet<>();
-//				if (dadosHistorico != null) {
-//					for (DadosCadastroHistorico dto : dadosHistorico) {
+//				List<Historico> novoOuAtualizado = new ArrayList<>();
+//				if (dadosHistoricoSubmetidos != null) {
+//					for (DadosCadastroHistorico dto : dadosHistoricoSubmetidos) {
 //						// Ignora DTOs vazios que podem vir do formulário dinâmico
 //						if (dto.empresaTrabalho() != null && !dto.empresaTrabalho().trim().isEmpty()) {
-//							Historico entidadeHistorico = null;
+//							Historico entidadeHistorico = new Historico();
 //
 //							// Tenta encontrar um histórico existente pelo ID do DTO
-//							if (dto.id() != null && mapHistoricosSalvos.containsKey(dto.id())) {
-//								entidadeHistorico = mapHistoricosSalvos.get(dto.id());
+//							if (dto.id() != null) {
+//								entidadeHistorico.setId(dto.id());;
 //								// Atualiza a entidade existente com os dados do DTO
 //								entidadeHistorico.setEmpresaTrabalho(dto.empresaTrabalho());
 //								entidadeHistorico.setDescricaoTrabalho(dto.descricaoTrabalho());
 //								entidadeHistorico.setDtInicio(dto.dtInicio());
 //								entidadeHistorico.setDtFim(dto.dtFim());
-//								// Remove do mapa de existentes para saber quais foram removidos
-//								mapHistoricosSalvos.remove(dto.id());
 //							} else {
 //								// Cria um novo histórico se o ID for nulo ou não encontrado nos existentes
 //								entidadeHistorico = new Historico();
@@ -234,15 +224,8 @@ public class AlunoController {
 //
 //				// 4. Adiciona a coleção atualizada/nova de volta ao aluno
 //				aluno.setHistorico(novoOuAtualizado);
-//
-//				// 5. Remove históricos que estavam no banco mas não foram submetidos
-//				// Esses são os históricos que sobraram no mapHistoricosSalvos
-//				mapHistoricosSalvos.values().forEach(historico -> {
-//					// Remover a relação do aluno antes de deletar 
-//					historico.setAluno(null); 
-//					repositoryHistorico.delete(historico); // Deleta do banco
-//				});		
-	
+
+
 		
 		//Atualiza foto
 		if (dados.foto() != null && !dados.foto().isEmpty()) {
@@ -268,7 +251,20 @@ public class AlunoController {
 		return "redirect:aluno";
 	}
 	
-	//Mapeamento para exibir a foto
+	//Mapeamento da pagina inicio do administrador, para chegar lá é necessario ele se logar pelo LoginController
+	@GetMapping("/index")
+	public ModelAndView index(HttpSession session) {
+		//Pega o administrador recebido do login
+		Aluno alunoLogado = (Aluno) session.getAttribute("usuarioLogado");
+		
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("aluno/index");
+		modelAndView.addObject("aluno", alunoLogado);
+		modelAndView.addObject("role", "aluno");
+		return modelAndView;
+	}
+	
+//	Mapeamento para exibir a foto
 	@GetMapping("/{id}/foto")
 	@ResponseBody
 	public ResponseEntity<byte[]> getFoto(@PathVariable Long id) {
@@ -281,5 +277,7 @@ public class AlunoController {
 			return ResponseEntity.notFound().build();
 		}
 	}
+	
+	
 	
 }

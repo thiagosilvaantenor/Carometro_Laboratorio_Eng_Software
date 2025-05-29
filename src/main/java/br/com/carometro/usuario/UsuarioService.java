@@ -36,7 +36,7 @@ public class UsuarioService {
 	            if(adminService.findByEmail(email) != null) {
 	               return "administrador";
 	            }
-	            if (coordenadorService.findbyEmail(email) != null) {
+	            if (coordenadorService.findbyEmail(email).isPresent()) {
 	            	return "coordenador";
 	            }
 	            if (alunoService.findByEmail(email) != null) {

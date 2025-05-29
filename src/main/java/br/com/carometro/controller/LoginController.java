@@ -9,6 +9,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import br.com.carometro.adm.Administrador;
@@ -93,7 +94,7 @@ public class LoginController {
 					// Adicione esta linha para identificar o usuário
 					Aluno alunoEncontrado = aluno.get();
 					session.setAttribute("usuarioLogado", alunoEncontrado);
-					return "redirect:/aluno/listagem";
+					return "redirect:/aluno/index";
 				}
 	
 			default:
@@ -103,5 +104,9 @@ public class LoginController {
 			}
     }
 	
-	
+    @GetMapping("/logout")
+    public String logout(HttpSession session) {
+        session.invalidate();
+        return "redirect:/login";
+    }
 }
