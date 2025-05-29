@@ -54,11 +54,8 @@
 				<div class="col-md-8 home-card">
 					<h1 th:text="'Bem vindo à sua Home, ' + (${aluno.nome} ?: 'Aluno') + '!'">Bem-vindo à sua Home</h1>
 					<div class="d-flex justify-content-center flex-wrap">
-						<a th:href="@{/aluno}" class="btn btn-fatec">Validar Ex-alunos</a>
+						<a th:href="@{/aluno}" class="btn btn-fatec">Ver postagens de alunos</a>
 						<a th:href="@{/aluno/formulario(id=${aluno.id})}" class="btn btn-fatec">Editar Cadastro</a>
-						<!-- TODO: fazer logout 
-						<a th:href="#">LogoOut</a>
-						 -->
 					</div>
 				</div>
 			</div>
