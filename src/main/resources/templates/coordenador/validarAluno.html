@@ -37,13 +37,14 @@
 							<td scope="col" th:text="${aluno.comentarioFATEC}"></td>
 							<td scope="col" th:text="${aluno.comentario}"></td>
 							<td scope="col">
-							<!-- TODO: Logica de aprovação e rejeição do aluno -->
-							<a
-								th:href="@{/aluno/formulario?id={id}(id=${aluno.id})}">
-									<button class="btn btn-primary mb-3">Aprovar</button>
-							</a>
-
-								<form  action="/aluno" method="post">
+								<!-- Aprovar do coordenador, salva o aluno -->
+								<form action="/aluno/aprovar-coordenador" method="post">
+									<input type="hidden" name="id" th:value="${aluno.id}">
+								    <input type="submit" class="btn btn-primary mb-3" value="Aprovar">
+								</form>
+								<!-- Reprovar do Coordenador, já que não é um ex-aluno, deleta ele do banco de dados 
+									e quando ele tentar logar com esse email informa ele -->
+								<form  action="/aluno/reprovar-coordenador" method="post">
 									<input type="hidden" name="_method" value="delete">
 									<input type="hidden" name="id" th:value="${aluno.id}">
 									<input type="submit" class="btn btn-danger" value="Rejeitar">

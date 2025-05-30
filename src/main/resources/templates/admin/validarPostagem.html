@@ -35,17 +35,18 @@
 							<td scope="col" th:text="${aluno.comentarioFATEC}"></td>
 							<td scope="col" th:text="${aluno.comentario}"></td>
 							<td scope="col">
-							<!-- TODO: Logica de aprovação e rejeição do aluno -->
-							<a
-								th:href="@{/aluno/formulario?id={id}(id=${aluno.id})}">
-									<button class="btn btn-primary mb-3">Aprovar</button>
-							</a>
-
-								<form  action="/aluno" method="post">
-									<input type="hidden" name="_method" value="delete">
-									<input type="hidden" name="id" th:value="${aluno.id}">
-									<input type="submit" class="btn btn-danger" value="Rejeitar">
-								</form>
+							
+							<!-- Aprovar do admin, salva o comentario -->
+							<form action="/aluno/aprovar-admin" method="post">
+							    <input type="hidden" name="id" th:value="${aluno.id}">
+							    <input type="submit" class="btn btn-primary mb-3" value="Aprovar">
+							</form>
+							<!-- Reprovar do admin, deleta o comentario e avisa o aluno para que ele atualize e tente novamente -->
+							<form action="/aluno/reprovar-admin" method="post">
+								<input type="hidden" name="_method" value="delete">
+								<input type="hidden" name="id" th:value="${aluno.id}">
+								<input type="submit" class="btn btn-danger" value="Rejeitar">
+							</form>
 								
 							</td>
 						</tr>
