@@ -244,25 +244,17 @@
 							<td scope="col" th:text="${aluno.comentarioFATEC}"></td>
 							<td scope="col" th:text="${aluno.comentario}"></td>
 							<td scope="col" class="d-flex flex-column">
-								<a th:href="@{aluno.links.linkedIn}" target="_blank">LinkedIn</a>
-								<a th:href="@{aluno.links.gitHub}" target="_blank">GitHub</a>
+								<a th:href="${aluno.links.linkedIn}" target="_blank">LinkedIn</a>
+								<a th:href="${aluno.links.gitHub}" target="_blank">GitHub</a>
 								<!-- Verifica se o aluno tem LattesCNPQ -->
 								<a th:if="${not #strings.isEmpty(aluno.links.lattesCNPQ) and aluno.links.lattesCNPQ.startsWith('http')}"
 								   th:href="${aluno.links.lattesCNPQ}"
 								   target="_blank">Lattes</a>
 								
 								<span th:unless="${not #strings.isEmpty(aluno.links.lattesCNPQ) and aluno.links.lattesCNPQ.startsWith('http')}">
-								    Não tem
+								    Não tem Lattes
 								</span>
 							</td>
-							<!-- TODO: Pagina de detalhamento do aluno especifico, com os links das redes 
-							<td scope="col">
-							<a
-								th:href="@{/aluno/formulario?id={id}(id=${aluno.id})}">
-									<button class="btn btn-primary mb-3">Se conectar</button>
-							</a>								
-							</td>
-							-->
 						</tr>
 					</tbody>
 				</table>
