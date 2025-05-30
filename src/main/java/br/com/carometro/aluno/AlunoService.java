@@ -37,6 +37,7 @@ public class AlunoService {
 		repository.save(aluno);
 	}
 
+	//Verifica o login(email e senha) do aluno
 	public Optional<Aluno> login(String email, String senha) {
 		return repository.findByEmailAndSenha(email,senha);
 	}
@@ -44,9 +45,26 @@ public class AlunoService {
 	public Aluno findByEmail(String email) {
 		return repository.findByEmail(email);
 	}
-
 	
 	public List<Aluno> filtraAlunosPeloCurso(Long cursoId){
 		return repository.findByCursoId(cursoId);
 	}
+	
+	public List<Aluno> filtraAlunosPeloAnoSemestre(Integer ano){
+		return repository.findByAno(ano);		
+	}
+
+	public List<Aluno> filtrarAluno(Integer ano, Long cursoId){
+		 if (cursoId != null && ano != null && ano > 0) {
+		        return repository.findByCursoIdAndAno(cursoId, ano);
+		    } else if (cursoId != null) {
+		        return repository.findByCursoId(cursoId);
+		    } else if (ano != null && ano > 0) {
+		        return repository.findByAno(ano);
+		    } else {
+		        return repository.findAll();
+		    }
+	}
+	
+	
 }

@@ -101,17 +101,6 @@ public class Aluno {
 		if (dados.ano() != null) {
 			this.ano = dados.ano();
 		}	
-		//TODO: Método deve receber um set de históricos
-		
-//		if (dados.empresaTrabalho() != null) {
-//			this.historico.setEmpresaTrabalho(dados.empresaTrabalho());
-//		}
-//		if (dados.descricaoTrabalho() != null) {
-//			this.historico.setDescricaoTrabalho(dados.descricaoTrabalho());
-//		}
-//		if (dados.tempoTrabalho() != 0) {
-//			this.historico.setTempoTrabalho(dados.tempoTrabalho());
-//		}
 		if (dados.gitHub() != null) {
 			this.links.setGitHub(dados.gitHub());
 		}

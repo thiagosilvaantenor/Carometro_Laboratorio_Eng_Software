@@ -91,7 +91,41 @@ public class AlunoController {
 	
 	@GetMapping
 	public String carregaPaginaListagem(Model model) {
-		model.addAttribute("lista", repository.findAll(Sort.by("nome").ascending()));
+		//Lista de alunos
+		List<Aluno> alunos = repository.findAll(Sort.by("nome").ascending());
+		model.addAttribute("lista", alunos);
+		//Filtros
+		//Separa os anos semestres cadastrados e envia a lista para a model
+		List<Integer> anosSemestres = new ArrayList<>();
+		alunos.forEach( a -> {
+			//Verifica se o ano semestre ja esta na lista, se não adiciona
+			if(!anosSemestres.contains(a.getAno())) {
+				anosSemestres.add(a.getAno());							
+			}
+		});
+		model.addAttribute("anos", anosSemestres);
+		model.addAttribute("cursos", cursoService.getAllCursos());
+		return "aluno/listagem";
+	}
+	
+	@GetMapping("/filtrar")
+	public String filtrarPaginaListagem(@RequestParam(name ="cursoId", required=false) Long cursoId,
+			@RequestParam(name= "ano", required= false) Integer ano,
+			Model model) {
+		//Lista de alunos filtrados
+		List<Aluno> alunosFiltrados = service.filtrarAluno(ano, cursoId);
+		//Lista de todos os alunos para pegar os anos semestres
+		List<Aluno> alunos = service.getAllAluno();
+		List<Integer> anosSemestres = new ArrayList<>();
+		alunos.forEach( a -> {
+			//Verifica se o ano semestre ja esta na lista, se não adiciona
+			if(!anosSemestres.contains(a.getAno())) {
+				anosSemestres.add(a.getAno());							
+			}
+		});
+		 	model.addAttribute("lista", alunosFiltrados);
+		    model.addAttribute("anos", anosSemestres);
+		    model.addAttribute("cursos", cursoService.getAllCursos());
 		return "aluno/listagem";
 	}
 	
@@ -250,6 +284,9 @@ public class AlunoController {
 		repository.deleteById(id);
 		return "redirect:aluno";
 	}
+	
+	
+	
 	
 	//Mapeamento da pagina inicio do administrador, para chegar lá é necessario ele se logar pelo LoginController
 	@GetMapping("/index")

@@ -10,6 +10,19 @@
 	crossorigin="anonymous">
 	
 <style>
+		.aluno-foto {
+	    width: 100px;
+	    height: 100px;
+	    object-fit: cover;
+	    object-position: center;
+	    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+	    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+	}
+	
+	.aluno-foto:hover {
+	    transform: scale(1.1);
+	    box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+	}
 	.carousel-custom {
 	    border-radius: 8px;
 	    overflow: hidden;
@@ -137,7 +150,37 @@
 		<div class="row justify-content-md-center">
 			<div class="d-flex flex-column col mt-3">
 				<h1 class="text-center">Lista de Alunos / Postagens</h1>
-				<a class="mx-auto btn btn-success border p-2" href="/aluno/formulario">Novo</a>
+				<div class="d-flex justify-content-md-center">
+					<form method="get" action="/aluno/filtrar">
+						<h2 class="text-center">Filtros:</h2>
+						<!-- Curso -->
+						<div class="form-group mt-2">
+							<label for="cursoSelect"> Selecione o seu curso: </label>
+							<select class="form-control" name="cursoId" id="cursoId">
+								<option value="">-- Selecione --</option>
+								<option th:each="curso : ${cursos}"
+									th:value="${curso.id}"
+									th:text="${curso.nome}">
+								</option>
+							</select>
+						</div>
+						<!-- Ano semestre -->
+						<div class="form-group mt-2">
+							<label for="anoSelect"> Selecione o ano semestre 
+							(ex: 202401 = 1° semestre de 2024): </label>
+							<select class="form-control" name="ano" id="ano">
+								<option value="">-- Selecione --</option>
+								<option th:each="ano : ${anos}"
+									th:value="${ano}"
+									th:text="${ano}">
+								</option>
+							</select>
+						</div>
+						<button type="submit" class="btn btn-success p-3">
+								Filtrar por ano semestre concluido
+							</button>
+					</form>
+				</div>
 			</div>
 		</div>
 		<div class="row d-flex justify-content-center">
@@ -145,35 +188,32 @@
 				<table class="table table-responsive table-bordered table-hover">
 					<thead>
 						<tr scope="row" class="table-info">
-							<th scope="col">ID</th>
 							<th scope="col">Nome</th>
 							<th scope="col">Foto</th>
 							<th scope="col">Nome do curso</th>
 							<th scope="col">Historicos de trabalho</th>
 							<th scope="col">Comentario FATEC </th>
 							<th scope="col">Comentario Livre </th>
-							<th scope="col">Opções</th>
+							<!--  
+							<th scope="col">Opções</th>							
+							-->
+							<th scope="col">Redes</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr scope="row" class="table-primary" th:each="aluno : ${lista}">
-							<td scope="col" th:text="${aluno.id}"></td>
 							<td scope="col" th:text="${aluno.nome}"></td>
-							<td scope="col">
-								<img th:src="@{/aluno/{id}/foto(id=${aluno.id})}" alt="Foto do aluno" width="20%"/>
+							<td class="text-center align-middle">
+							    <img th:src="@{/aluno/{id}/foto(id=${aluno.id})}" 
+							         th:alt="'Foto de ' + ${aluno.nome}"
+							         th:title="${aluno.nome}"
+							         class="img-thumbnail rounded-circle aluno-foto"/>
 							</td>
 							<td scope="col" th:text="${aluno.curso.nome}"></td>
 							<!--  Carrosel de Histórico -->
 							 <td scope="col">
 						        <div th:attr="id='carouselHistoricos' + ${aluno.id}" class="carousel slide" data-bs-ride="carousel">
-						        <!-- Indicadores -->
-<!-- 						            <div class="carousel-indicators"> -->
-<!-- 						                <button th:each="historico, stat : ${aluno.historico}"  -->
-<!-- 						                        th:attr="data-bs-target='#carouselHistoricos' + ${aluno.id}, data-bs-slide-to=${stat.index}"  -->
-<!-- 						                        th:class="${stat.first} ? 'active' : ''" -->
-<!-- 						                        style="width: 10px; height: 10px; border-radius: 50%; margin: 0 5px;"> -->
-<!-- 						                </button> -->
-<!-- 						            </div> -->
+
 						            <!-- Conteudo do historico -->
 						            <div class="carousel-inner " >
 						                <div th:each="historico, stat : ${aluno.historico}" 
@@ -203,19 +243,26 @@
 						       </td>
 							<td scope="col" th:text="${aluno.comentarioFATEC}"></td>
 							<td scope="col" th:text="${aluno.comentario}"></td>
+							<td scope="col" class="d-flex flex-column">
+								<a th:href="@{aluno.links.linkedIn}" target="_blank">LinkedIn</a>
+								<a th:href="@{aluno.links.gitHub}" target="_blank">GitHub</a>
+								<!-- Verifica se o aluno tem LattesCNPQ -->
+								<a th:if="${not #strings.isEmpty(aluno.links.lattesCNPQ) and aluno.links.lattesCNPQ.startsWith('http')}"
+								   th:href="${aluno.links.lattesCNPQ}"
+								   target="_blank">Lattes</a>
+								
+								<span th:unless="${not #strings.isEmpty(aluno.links.lattesCNPQ) and aluno.links.lattesCNPQ.startsWith('http')}">
+								    Não tem
+								</span>
+							</td>
+							<!-- TODO: Pagina de detalhamento do aluno especifico, com os links das redes 
 							<td scope="col">
 							<a
 								th:href="@{/aluno/formulario?id={id}(id=${aluno.id})}">
-									<button class="btn btn-primary mb-3">Editar</button>
-							</a>
-
-								<form  action="/aluno" method="post">
-									<input type="hidden" name="_method" value="delete">
-									<input type="hidden" name="id" th:value="${aluno.id}">
-									<input type="submit" class="btn btn-danger" value="Excluir">
-								</form>
-								
+									<button class="btn btn-primary mb-3">Se conectar</button>
+							</a>								
 							</td>
+							-->
 						</tr>
 					</tbody>
 				</table>
