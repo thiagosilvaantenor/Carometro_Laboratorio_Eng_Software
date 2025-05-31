@@ -48,15 +48,10 @@ public class AlunoController {
 	private AlunoRepository repository;
 	@Autowired
 	private AlunoService service;
-	@Autowired
-	private HistoricoRepository repositoryHistorico;
-	@Autowired
-	private LinksRepository repositoryLinks;
+
 	@Autowired
 	private CursoService cursoService;
 	
-	@Autowired
-	private UnidFatecService unidFatecService;
 	
 	@GetMapping("/formulario")
 	public String carregaPaginaFormulario(Long id, Model model) {
@@ -91,8 +86,8 @@ public class AlunoController {
 	
 	@GetMapping
 	public String carregaPaginaListagem(Model model) {
-		//Lista de alunos
-		List<Aluno> alunos = repository.findAll(Sort.by("nome").ascending());
+		//Lista de alunos com cadastro aprovado pelo coordenador
+		List<Aluno> alunos = service.buscaAlunosPelaSituacaoCadastro(true);
 		model.addAttribute("lista", alunos);
 		//Filtros
 		//Separa os anos semestres cadastrados e envia a lista para a model
@@ -112,10 +107,10 @@ public class AlunoController {
 	public String filtrarPaginaListagem(@RequestParam(name ="cursoId", required=false) Long cursoId,
 			@RequestParam(name= "ano", required= false) Integer ano,
 			Model model) {
-		//Lista de alunos filtrados
-		List<Aluno> alunosFiltrados = service.filtrarAluno(ano, cursoId);
+		//Lista de alunos filtrados que tiveram cadastro aprovado pelo coordenador
+		List<Aluno> alunosFiltrados = service.filtrarAluno(ano, cursoId, true);
 		//Lista de todos os alunos para pegar os anos semestres
-		List<Aluno> alunos = service.getAllAluno();
+		List<Aluno> alunos = service.buscaAlunosPelaSituacaoCadastro(true);
 		List<Integer> anosSemestres = new ArrayList<>();
 		alunos.forEach( a -> {
 			//Verifica se o ano semestre ja esta na lista, se não adiciona
@@ -278,10 +273,7 @@ public class AlunoController {
 	@DeleteMapping
 	@Transactional
 	public String removeAluno(Long id) {
-		//Remove a relação de aluno e historico
-		List<Historico> historicosDoAluno = repositoryHistorico.findByAlunoId(id); 
-		historicosDoAluno.forEach(repositoryHistorico::delete);
-		repository.deleteById(id);
+		service.remover(id);
 		return "redirect:aluno";
 	}
 	

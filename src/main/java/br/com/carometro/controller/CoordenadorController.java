@@ -169,13 +169,16 @@ public class CoordenadorController {
 	}
 	
 	//Mapeamento da pagina de posts para validaçao dos alunos 
+	//Validação de Ex-aluno:Quando aluno é cadastrado, para ser exibido na listagem é necessario o coordenador verificar se ele é ex-aluno
 	@GetMapping("/validarAluno")
 	public ModelAndView paginaExibicaoPosts(HttpSession session) throws Exception {
 		//Busca o coordenador logado
 	    Coordenador coordenadorLogado = (Coordenador) session.getAttribute("usuarioLogado");
 	    if (coordenadorLogado != null) {
-	    	//Busca os alunos do curso do coordenador para exibir
-	        List<Aluno> alunos = alunoService.filtraAlunosPeloCurso(coordenadorLogado.getCurso().getId());			
+	    	//Busca os alunos do curso do coordenador com situação de cadastro false para ele realizar a validação
+	        List<Aluno> alunos = alunoService.filtraAlunosPeloCursoESituacaoCadastor
+	        		(coordenadorLogado.getCurso().getId(), false);
+	        
 	        ModelAndView modelAndView = new ModelAndView();
 	        modelAndView.addObject("alunos", alunos);
 	        modelAndView.setViewName("coordenador/validarAluno");
@@ -185,6 +188,37 @@ public class CoordenadorController {
 	    }
 	}
 
+	//Caso seja ex-aluno é aprovado, estado de situaçãoCadastro é mudado para TRUE
+	 @PostMapping("/aprovarAluno")
+	    public String aprovarAluno(@RequestParam("id") Long id, Model model, HttpSession session) {
+	        try {
+				alunoService.aprovarAluno(id);
+				//Busca o coordenador logado
+	    	    Coordenador coordenadorLogado = (Coordenador) session.getAttribute("usuarioLogado");
+	    	    List<Aluno> alunos = alunoService.filtraAlunosPeloCursoESituacaoCadastor
+		        		(coordenadorLogado.getCurso().getId(), false);			
+	 	        model.addAttribute("alunos", alunos);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+	        return "/coordenador/validarAluno";
+	    }
+	 
+	//Caso não seja ex-aluno é reprovado e deletado do banco de dados 
+    @DeleteMapping("/reprovarAluno")
+	    public String reprovarAluno(@RequestParam("id") Long id, Model model, HttpSession session) {
+	        try{
+	        	alunoService.reprovarAluno(id);
+	        	//Busca o coordenador logado
+	    	    Coordenador coordenadorLogado = (Coordenador) session.getAttribute("usuarioLogado");
+	    	    List<Aluno> alunos = alunoService.filtraAlunosPeloCursoESituacaoCadastor
+		        		(coordenadorLogado.getCurso().getId(), false);		
+	 	        model.addAttribute("alunos", alunos);
+	        }catch(Exception e) {
+	        	e.printStackTrace();
+	        }
+	        return "/coordenador/validarAluno";
+	    }
 
 	
 }

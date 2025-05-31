@@ -31,6 +31,7 @@
 					</thead>
 					<tbody>
 						<tr scope="row" class="table-primary" th:each="aluno : ${alunos}">
+							<!-- Caso o aluno tenha situaçãoCadastro = false exibe ele para ser aprovado ou reprovado -->
 							<td scope="col" th:text="${aluno.nome}"></td>
 							<td scope="col" th:text="${aluno.curso.nome}"></td>
 							<td scope="col" th:text="${aluno.ano}"></td>
@@ -38,13 +39,13 @@
 							<td scope="col" th:text="${aluno.comentario}"></td>
 							<td scope="col">
 								<!-- Aprovar do coordenador, salva o aluno -->
-								<form action="/aluno/aprovar-coordenador" method="post">
+								<form action="/coordenador/aprovarAluno" method="post">
 									<input type="hidden" name="id" th:value="${aluno.id}">
 								    <input type="submit" class="btn btn-primary mb-3" value="Aprovar">
 								</form>
 								<!-- Reprovar do Coordenador, já que não é um ex-aluno, deleta ele do banco de dados 
 									e quando ele tentar logar com esse email informa ele -->
-								<form  action="/aluno/reprovar-coordenador" method="post">
+								<form  action="/coordenador/reprovarAluno" method="post">
 									<input type="hidden" name="_method" value="delete">
 									<input type="hidden" name="id" th:value="${aluno.id}">
 									<input type="submit" class="btn btn-danger" value="Rejeitar">

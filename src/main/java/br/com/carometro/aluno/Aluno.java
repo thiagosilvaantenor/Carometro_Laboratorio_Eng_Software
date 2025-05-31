@@ -6,6 +6,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.hibernate.annotations.ColumnDefault;
+
 import br.com.carometro.curso.Curso;
 import br.com.carometro.historico.Historico;
 import br.com.carometro.links.Links;
@@ -49,6 +51,9 @@ public class Aluno {
 	private String comentarioFATEC;
 	private String comentario;
 	private Integer ano;
+	//Atributo usado para lidar com aprovação de aluno, se ainda não foi avaliado = false, se é aluno = true;
+	@ColumnDefault("false")
+	private Boolean situacaoCadastro;
 	//TODO: Trocar maneira de salvar a foto
 	@Lob
 	@Column(name = "foto", columnDefinition = "LONGBLOB")

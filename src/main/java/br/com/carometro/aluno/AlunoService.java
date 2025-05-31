@@ -7,12 +7,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import br.com.carometro.historico.Historico;
+import br.com.carometro.historico.HistoricoRepository;
 import br.com.carometro.security.Criptografia;
 
 @Service
 public class AlunoService {
 	@Autowired
 	private AlunoRepository repository;
+	
+	@Autowired
+	private HistoricoRepository repositoryHistorico;
 
 	public List<Aluno> getAllAluno() {
 		return repository.findAll(Sort.by("nome").ascending());
@@ -50,20 +55,72 @@ public class AlunoService {
 		return repository.findByCursoId(cursoId);
 	}
 	
+	public List<Aluno> filtraAlunosPeloCursoESituacaoCadastor(Long cursoId, Boolean situacaoCadastro){
+		return repository.findByCursoIdAndSituacaoCadastro(cursoId, situacaoCadastro);
+	}
+	
 	public List<Aluno> filtraAlunosPeloAnoSemestre(Integer ano){
 		return repository.findByAno(ano);		
 	}
-
-	public List<Aluno> filtrarAluno(Integer ano, Long cursoId){
-		 if (cursoId != null && ano != null && ano > 0) {
+	
+	public List<Aluno> buscaAlunosPelaSituacaoCadastro(Boolean situacao){
+		if (situacao != null)
+			return repository.findBySituacaoCadastro(situacao);
+		throw new IllegalArgumentException();
+	}
+		
+	//Filtra os alunos
+	public List<Aluno> filtrarAluno(Integer ano, Long cursoId, Boolean situacao){
+			//Informou tudo
+		 	if (cursoId != null && ano != null && ano > 0 && situacao != null) {
 		        return repository.findByCursoIdAndAno(cursoId, ano);
-		    } else if (cursoId != null) {
+		    } else if (cursoId != null && situacao != null) { // Informou curso e situacao
+		        return repository.findByCursoIdAndSituacaoCadastro(cursoId, situacao);
+		    } else if (cursoId != null ) { // Informou curso
 		        return repository.findByCursoId(cursoId);
-		    } else if (ano != null && ano > 0) {
+		    } else if (ano != null && ano > 0 && situacao != null) { // informou ano e situacao
+		        return repository.findByAnoAndSituacaoCadastro(ano, situacao);
+		    }  else if (ano != null && ano > 0) { // informou ano
 		        return repository.findByAno(ano);
-		    } else {
-		        return repository.findAll();
+		    }  else if (situacao != null){ // informou apenas situacao
+		        return repository.findBySituacaoCadastro(situacao);
+		    } else {// Não informou nada
+		    	return repository.findAll();
 		    }
+	}
+	
+	//Caso o aluno cadastrado for realmente ex-aluno, muda o estado de Situação cadastro e passa a listar ele na postagem
+	public void aprovarAluno(Long id) throws Exception {
+		Optional<Aluno> alunoBuscado = repository.findById(id);
+		if (alunoBuscado.isPresent()) {
+			Aluno aluno = alunoBuscado.get();
+			aluno.setSituacaoCadastro(true);
+			repository.save(aluno);
+		} else {
+			throw new Exception("Erro ao tentar buscar e aprovar aluno");
+		}
+		
+	}
+	//Caso o aluno cadastrado não for ex-aluno, não tem motivo deixar ele no banco de dados, então deleta ele
+	public void reprovarAluno(Long id) throws Exception {
+		Optional<Aluno> alunoBuscado = repository.findById(id);
+		if (alunoBuscado.isPresent()) {
+			remover(id);
+		} else {
+			throw new Exception("Erro ao tentar buscar e aprovar aluno");
+		}
+		
+	}
+
+	public void remover(Long id) {
+		Optional<Aluno> alunoBuscado = repository.findById(id);
+		if (alunoBuscado.isPresent()) {			
+			//Remove a relação de aluno e historico
+			List<Historico> historicosDoAluno = repositoryHistorico.findByAlunoId(id); 
+			historicosDoAluno.forEach(repositoryHistorico::delete);
+			repository.deleteById(id);
+		}
+		
 	}
 	
 	
