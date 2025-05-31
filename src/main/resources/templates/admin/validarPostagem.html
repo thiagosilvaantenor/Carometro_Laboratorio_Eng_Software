@@ -29,7 +29,10 @@
 						</tr>
 					</thead>
 					<tbody>
-						<tr scope="row" class="table-primary" th:each="aluno : ${alunos}">
+						<!-- Só exibe se o aluno tiver comentario e comentario FATEC diferentes de null -->
+						<tr scope="row" class="table-primary" th:each="aluno : ${alunos}"
+							th:if="${aluno.comentario != null && aluno.comentarioFATEC != null}"
+						>
 							<td scope="col" th:text="${aluno.nome}"></td>
 							<td scope="col" th:text="${aluno.curso.nome}"></td>
 							<td scope="col" th:text="${aluno.comentarioFATEC}"></td>
@@ -37,15 +40,26 @@
 							<td scope="col">
 							
 							<!-- Aprovar do admin, salva o comentario -->
-							<form action="/aluno/aprovar-admin" method="post">
+							<form action="/admin/aprovarComentario" method="post">
 							    <input type="hidden" name="id" th:value="${aluno.id}">
 							    <input type="submit" class="btn btn-primary mb-3" value="Aprovar">
 							</form>
 							<!-- Reprovar do admin, deleta o comentario e avisa o aluno para que ele atualize e tente novamente -->
-							<form action="/aluno/reprovar-admin" method="post">
-								<input type="hidden" name="_method" value="delete">
+							<form action="/admin/reprovarComentario" method="post">
+								<input type="hidden" name="_method" value="put">
+								<div class="form-group">
+ 								<!-- Quais comentarios serão reprovados -->
+						        <label for="">Selecione antes de reprovar :</label>
+						        <select class="form-control" id="tipoComentario" name="tipoComentario">
+						            <option disabled>-- Selecione antes de reprovar --</option>
+									<option value="fatec">Reprovar comentario Fatec</option>
+									<option value="geral">Reprovar comentario Geral</option>
+									<option value="comentarios">Reprovar ambos comentarios</option>
+						        </select>
+							</div>
 								<input type="hidden" name="id" th:value="${aluno.id}">
-								<input type="submit" class="btn btn-danger" value="Rejeitar">
+								<input type="submit" class="btn btn-danger" value="Reprovar">
+								
 							</form>
 								
 							</td>

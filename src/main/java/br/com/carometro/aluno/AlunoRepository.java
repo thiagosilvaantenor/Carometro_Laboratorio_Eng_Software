@@ -18,7 +18,9 @@ public interface AlunoRepository extends JpaRepository<Aluno, Long>{
 	public List<Aluno> findBySituacaoCadastro(Boolean situacaoCadastro);
 	
 	public List<Aluno> findByCursoIdAndSituacaoCadastro(Long cursoId, Boolean situacaoCadastro);
-
+	
+	public List<Aluno> findByCursoIdAndSituacaoComentario(Long cursoId, Boolean situacaoComentario);
+	
 	public List<Aluno> findByAno(Integer ano);
 	
 	public List<Aluno> findByAnoAndSituacaoCadastro(Integer ano, Boolean situacao);

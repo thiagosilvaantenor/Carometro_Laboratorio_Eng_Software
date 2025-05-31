@@ -58,9 +58,7 @@ public class Coordenador {
 		if (dados.email() != null) {
 			this.email = dados.email();
 		}
-		if (dados.senha() != null) {
-			this.senha = dados.senha();
-		}
+		//Senha é criptografada e alterada no controller
 		if (dados.vencimentoMandato() != null) {
 			this.vencimentoMandato = dados.vencimentoMandato();
 		}

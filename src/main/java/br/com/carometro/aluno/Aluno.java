@@ -51,9 +51,12 @@ public class Aluno {
 	private String comentarioFATEC;
 	private String comentario;
 	private Integer ano;
-	//Atributo usado para lidar com aprovação de aluno, se ainda não foi avaliado = false, se é aluno = true;
+	//Atributo usado para lidar com aprovação de cadastro aluno, se ainda não foi avaliado = false, se é aluno = true;
 	@ColumnDefault("false")
 	private Boolean situacaoCadastro;
+	//Atributo usado para lidar com aprovação dos comentarios do aluno
+	@ColumnDefault("false")
+	private Boolean situacaoComentario;
 	//TODO: Trocar maneira de salvar a foto
 	@Lob
 	@Column(name = "foto", columnDefinition = "LONGBLOB")
@@ -91,9 +94,7 @@ public class Aluno {
 		if (dados.email() != null) {
 			this.email = dados.email();
 		}
-		if (dados.senha() != null) {
-			this.senha = dados.senha();
-		}		
+		//Senha é criptografada e alterada no controller		
 		if (dados.dtNascimento() != null) {
 			this.dtNascimento = dados.dtNascimento();
 		}

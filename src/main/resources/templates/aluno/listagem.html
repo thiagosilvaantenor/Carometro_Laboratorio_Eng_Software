@@ -194,7 +194,6 @@
 							<th scope="col">Historicos de trabalho</th>
 							<th scope="col">Comentario FATEC </th>
 							<th scope="col">Comentario Livre </th>
-
 							<th scope="col">Redes</th>
 						</tr>
 					</thead>
@@ -239,8 +238,21 @@
 						           </button>
 						       </div>
 						       </td>
-							<td scope="col" th:text="${aluno.comentarioFATEC}"></td>
-							<td scope="col" th:text="${aluno.comentario}"></td>
+						      <!-- Comentarios, só exibe se for diferente de null e vazio -->
+						     
+						    <td scope="col" th:if="${aluno.comentarioFATEC != null and not #strings.isEmpty(aluno.comentarioFATEC)}" 
+											th:text="${aluno.comentarioFATEC}" >
+							</td> 
+							<td th:if="${aluno.comentarioFATEC == null or #strings.isEmpty(aluno.comentarioFATEC)}" 
+											>Ainda não comentou</td>
+						      
+							<td scope="col" th:if="${aluno.comentario != null and not #strings.isEmpty(aluno.comentario)}" 
+												th:text="${aluno.comentario}">
+							</td>
+							<td th:if="${aluno.comentario == null or #strings.isEmpty(aluno.comentario)}" 
+														>Ainda não comentou</span>
+													
+							
 							<td scope="col" class="d-flex flex-column">
 								<a th:href="${aluno.links.linkedIn}" target="_blank">LinkedIn</a>
 								<a th:href="${aluno.links.gitHub}" target="_blank">GitHub</a>

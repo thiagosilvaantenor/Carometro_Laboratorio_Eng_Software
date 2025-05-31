@@ -129,8 +129,6 @@ public class AlunoController {
 	public String cadastrar(@Valid
 			DadosCadastroAluno dados,
 			@RequestParam("cursoId") Long cursoId) throws Exception {
-		
-		
 		 // A lista de histórico já estará em dados.getHistorico()
 	    List<DadosCadastroHistorico> dadosHistoricoSubmetidos = dados.historico();
 		Curso curso = cursoService.getCursoById(cursoId);
@@ -263,7 +261,7 @@ public class AlunoController {
 		
 		//codifica a senha nova
 		if (dados.senha() != null) {
-			aluno.setSenha(Criptografia.md5(aluno.getSenha()));
+			aluno.setSenha(dados.senha());
 		}
 		
 		aluno.atualizarInformacoes(dados);

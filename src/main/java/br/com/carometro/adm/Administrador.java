@@ -57,9 +57,6 @@ public class Administrador {
 		if (dados.email() != null) {
 			this.email = dados.email();
 		}
-		if (dados.senha() != null) {
-			this.senha = dados.senha();
-		}
-		//Atualização da unidFatec é feita no controller
+		//Atualização da unidFatec e da senha é feita no controller
 	}
 }

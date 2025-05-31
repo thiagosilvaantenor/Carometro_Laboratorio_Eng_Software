@@ -59,6 +59,10 @@ public class AlunoService {
 		return repository.findByCursoIdAndSituacaoCadastro(cursoId, situacaoCadastro);
 	}
 	
+	public List<Aluno> filtrarAlunosPeloCursoESituacaoComentario(Long cursoId, Boolean situacaoComentario){
+		return repository.findByCursoIdAndSituacaoComentario(cursoId, situacaoComentario);
+	}
+	
 	public List<Aluno> filtraAlunosPeloAnoSemestre(Integer ano){
 		return repository.findByAno(ano);		
 	}
@@ -90,27 +94,63 @@ public class AlunoService {
 	}
 	
 	//Caso o aluno cadastrado for realmente ex-aluno, muda o estado de Situação cadastro e passa a listar ele na postagem
-	public void aprovarAluno(Long id) throws Exception {
+	public void aprovarAluno(Long id) throws IllegalArgumentException {
 		Optional<Aluno> alunoBuscado = repository.findById(id);
 		if (alunoBuscado.isPresent()) {
 			Aluno aluno = alunoBuscado.get();
 			aluno.setSituacaoCadastro(true);
 			repository.save(aluno);
 		} else {
-			throw new Exception("Erro ao tentar buscar e aprovar aluno");
+			throw new IllegalArgumentException("Erro ao tentar buscar e aprovar aluno");
 		}
 		
 	}
 	//Caso o aluno cadastrado não for ex-aluno, não tem motivo deixar ele no banco de dados, então deleta ele
-	public void reprovarAluno(Long id) throws Exception {
+	public void reprovarAluno(Long id) throws IllegalArgumentException {
 		Optional<Aluno> alunoBuscado = repository.findById(id);
 		if (alunoBuscado.isPresent()) {
 			remover(id);
 		} else {
-			throw new Exception("Erro ao tentar buscar e aprovar aluno");
+			throw new IllegalArgumentException("Erro ao tentar buscar e aprovar aluno");
 		}
 		
 	}
+	
+	
+	//Caso os comentarios forem aprovados, muda estado de situacaoComentario
+		public void aprovarComentario(Long id) throws IllegalArgumentException {
+			Optional<Aluno> alunoBuscado = repository.findById(id);
+			if (alunoBuscado.isPresent()) {
+				Aluno aluno = alunoBuscado.get();
+				aluno.setSituacaoComentario(true);
+				repository.save(aluno);
+			} else {
+				throw new IllegalArgumentException("Erro ao tentar buscar e aprovar comentario do aluno");
+			}
+			
+		}
+		//Caso pelo menos 1 dos comentarios não foi reprovado, apaga os comentarios reprovados
+		public void reprovarComentario(Long id, String tipoComentario) throws IllegalArgumentException {
+			Optional<Aluno> alunoBuscado = repository.findById(id);
+			if (alunoBuscado.isPresent() && (tipoComentario.equalsIgnoreCase("geral") 
+					|| tipoComentario.equalsIgnoreCase("fatec") || tipoComentario.equalsIgnoreCase("comentarios") )) {
+				
+				Aluno aluno = alunoBuscado.get();
+				//verifica qual comentario foi reprovado e atualiza o aluno
+				if (tipoComentario.equalsIgnoreCase("geral"))
+					aluno.setComentario(null);
+				else if (tipoComentario.equalsIgnoreCase("fatec"))
+					aluno.setComentarioFATEC(null);
+				else {
+					aluno.setComentarioFATEC(null);
+					aluno.setComentario(null);
+				}
+				repository.save(aluno);
+			} else {
+				throw new IllegalArgumentException("Erro ao tentar buscar e aprovar aluno");
+			}
+			
+		}
 
 	public void remover(Long id) {
 		Optional<Aluno> alunoBuscado = repository.findById(id);

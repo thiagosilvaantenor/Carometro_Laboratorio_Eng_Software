@@ -114,7 +114,7 @@ public class CoordenadorController {
 		}
 		//Encripta a senha
 		if (dados.senha() != null) {
-			coordenador.setSenha(Criptografia.md5(coordenador.getSenha()));
+			coordenador.setSenha(Criptografia.md5(dados.senha()));
 		}
 		//Unid fatec
 		//Busca no banco de dados a unid fatec escolhida, se for diferente realiza a troca

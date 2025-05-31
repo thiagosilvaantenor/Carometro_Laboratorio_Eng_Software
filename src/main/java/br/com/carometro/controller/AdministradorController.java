@@ -96,7 +96,7 @@ public class AdministradorController {
 	public String atualizar(DadosAtualizacaoAdministrador dados) throws NoSuchAlgorithmException {
 		var admin = repository.getReferenceById(dados.id());
 		if (dados.senha() != null) {
-			admin.setSenha(Criptografia.md5(admin.getSenha()));
+			admin.setSenha(Criptografia.md5(dados.senha()));
 		}
 		admin.atualizarInformacoes(dados);
 		return "redirect:admin";
@@ -123,7 +123,7 @@ public class AdministradorController {
 		return modelAndView;
 	}
 	
-	//Mapeamento da pagina de posts para validaçao dos alunos 
+	//Mapeamento da pagina de posts para validaçao dos comentarios dos alunos
 	@GetMapping("/validarPostagem")
 	public ModelAndView paginaExibicaoPosts(HttpSession session) throws Exception {
 		//Busca o admin logado
@@ -149,11 +149,49 @@ public class AdministradorController {
 	    }
 	}
 	
-	
+	//Caso seja os comentarios estejam de acordo é aprovado e o estado de situacaoComentario muda
+	 @PostMapping("/aprovarComentario")
+	    public String aprovarComentario(@RequestParam("id") Long id, Model model, HttpSession session) {
+	        try {
+				alunoService.aprovarComentario(id);
+				//Busca o admin logado
+	    	    Administrador adminLogado = (Administrador) session.getAttribute("usuarioLogado");
+	    	    //Busca os cursos da unidFatec do admin
+		     	List<Curso> cursos = cursoService.findByUnidFatecId(adminLogado.getUnidFatec().getId());
+		    	//Cria a lista de alunos que vai ser populada com os alunos de cada curso da unidade
+		     	List<Aluno> alunos = new ArrayList<>();
+		    	cursos.forEach(curso -> {
+		    		 alunos.addAll( alunoService.
+		    				 filtrarAlunosPeloCursoESituacaoComentario(curso.getId(), false));
+		    	});
+		    	model.addAttribute("alunos", alunos);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+	        return "/admin/validarPostagem";
+	    }
+	 
+	//Caso pelo menos 1 dos comentarios não esteja de acordo
+   @PutMapping("/reprovarComentario")
+	    public String reprovarComentario(@RequestParam("id") Long id, 
+	    		@RequestParam("tipoComentario") String tipoComentario, Model model, HttpSession session) {
+	        try{
+	        	alunoService.reprovarComentario(id, tipoComentario);
+	        	//Busca o admin logado
+	        	Administrador adminLogado = (Administrador) session.getAttribute("usuarioLogado");
+	        	//Busca os cursos da unidFatec do admin
+		     	List<Curso> cursos = cursoService.findByUnidFatecId(adminLogado.getUnidFatec().getId());
+		    	//Cria a lista de alunos que vai ser populada com os alunos de cada curso da unidade
+		    	List<Aluno> alunos = new ArrayList<>();
+		    	cursos.forEach(curso ->
+		    		 alunos.addAll( alunoService.
+		    				 filtrarAlunosPeloCursoESituacaoComentario(curso.getId(), false))
+		    		 );		
+	 	        model.addAttribute("alunos", alunos);
+	        }catch(Exception e) {
+	        	e.printStackTrace();
+	        }
+	        return "/coordenador/validarPostagem";
+	    }
 
-//    @PostMapping("/logout")
-//    public ModelAndView logout(HttpSession session) {
-//        session.invalidate();
-//        return login();
-//    }
 }
