@@ -52,6 +52,9 @@ public class AlunoController {
 	@Autowired
 	private CursoService cursoService;
 	
+	@Autowired
+	private HistoricoRepository historicoRepository;
+	
 	
 	@GetMapping("/formulario")
 	public String carregaPaginaFormulario(Long id, Model model) {
@@ -154,7 +157,7 @@ public class AlunoController {
 					}
 					novo.setAluno(aluno);
 					historico.add(novo);
-					//Não precisa salvar historico devido ao cascade.TypeAll em Aluno
+					historicoRepository.save(novo);
 				}
 			});
 			aluno.setHistorico(historico);
@@ -212,48 +215,43 @@ public class AlunoController {
 		links.setGitHub(dados.gitHub());
 		links.setLinkedIn(dados.linkedIn());
 		links.setLattesCNPQ(dados.lattesCNPQ());
+//		//Atualização do histórico
 		
-//		TODO: Verificar se o usuario vai atualizar o historico
-////		//Atualização do histórico
-////		// 1. Mapeia históricos existentes pelo ID
-//	    		List<DadosCadastroHistorico> dadosHistoricoSubmetidos = dados.historico();
-//
-//				// 3. Processa a lista de DTOs submetida
-//				List<Historico> novoOuAtualizado = new ArrayList<>();
-//				if (dadosHistoricoSubmetidos != null) {
-//					for (DadosCadastroHistorico dto : dadosHistoricoSubmetidos) {
-//						// Ignora DTOs vazios que podem vir do formulário dinâmico
-//						if (dto.empresaTrabalho() != null && !dto.empresaTrabalho().trim().isEmpty()) {
-//							Historico entidadeHistorico = new Historico();
-//
-//							// Tenta encontrar um histórico existente pelo ID do DTO
-//							if (dto.id() != null) {
-//								entidadeHistorico.setId(dto.id());;
-//								// Atualiza a entidade existente com os dados do DTO
-//								entidadeHistorico.setEmpresaTrabalho(dto.empresaTrabalho());
-//								entidadeHistorico.setDescricaoTrabalho(dto.descricaoTrabalho());
-//								entidadeHistorico.setDtInicio(dto.dtInicio());
-//								entidadeHistorico.setDtFim(dto.dtFim());
-//							} else {
-//								// Cria um novo histórico se o ID for nulo ou não encontrado nos existentes
-//								entidadeHistorico = new Historico();
-//								entidadeHistorico.setEmpresaTrabalho(dto.empresaTrabalho());
-//								entidadeHistorico.setDescricaoTrabalho(dto.descricaoTrabalho());
-//								entidadeHistorico.setDtInicio(dto.dtInicio());
-//								entidadeHistorico.setDtFim(dto.dtFim());
-//								entidadeHistorico.setAluno(aluno); // Define a relação para o novo histórico
-//							}
-//							// Adiciona o histórico (atualizado ou novo) à nova coleção
-//							novoOuAtualizado.add(entidadeHistorico);
-//						}
-//					}
-//				}
-//
-//				// 4. Adiciona a coleção atualizada/nova de volta ao aluno
-//				aluno.setHistorico(novoOuAtualizado);
-
-
-		
+		if (dados.historico() != null) {
+			List<DadosCadastroHistorico> dadosHistoricoSubmetidos = dados.historico();
+			List<Historico> novoOuAtualizado = new ArrayList<>();
+			
+			for (DadosCadastroHistorico dto : dadosHistoricoSubmetidos) {
+				// Ignora DTOs vazios que podem vir do formulário dinâmico
+				if (dto.empresaTrabalho() != null && !dto.empresaTrabalho().trim().isEmpty()) {
+					Historico entidadeHistorico;
+					
+					//Se tem id é atualização de um histórico já cadastrado
+					if (dto.id() != null) {
+						entidadeHistorico = historicoRepository.findById(dto.id()).orElse(new Historico());
+						entidadeHistorico.setId(dto.id());
+				} else {
+					// Cria um novo histórico se o ID for nulo ou não encontrado nos existentes
+					entidadeHistorico = new Historico();
+				}
+					
+				entidadeHistorico.setEmpresaTrabalho(dto.empresaTrabalho());
+				entidadeHistorico.setDescricaoTrabalho(dto.descricaoTrabalho());
+				entidadeHistorico.setDtInicio(dto.dtInicio());
+				entidadeHistorico.setDtFim(dto.dtFim());
+				entidadeHistorico.setAluno(aluno); // Define a relação para o novo histórico	
+				
+				//Salva na lista
+				novoOuAtualizado.add(entidadeHistorico);	
+			}
+		}
+			// Adiciona a lista original sem trocar a referencia
+			List<Historico> historicosAtuais = aluno.getHistorico();
+			// Limpa a lista
+			historicosAtuais.clear();
+			historicosAtuais.addAll(novoOuAtualizado);
+			
+		}
 		//Atualiza foto
 		if (dados.foto() != null && !dados.foto().isEmpty()) {
 	        aluno.setFoto(dados.foto().getBytes());
@@ -261,7 +259,7 @@ public class AlunoController {
 		
 		//codifica a senha nova
 		if (dados.senha() != null) {
-			aluno.setSenha(dados.senha());
+			aluno.setSenha(Criptografia.md5(dados.senha()));
 		}
 		
 		aluno.atualizarInformacoes(dados);

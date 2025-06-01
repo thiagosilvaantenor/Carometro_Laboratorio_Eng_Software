@@ -136,6 +136,7 @@ public class AlunoService {
 					|| tipoComentario.equalsIgnoreCase("fatec") || tipoComentario.equalsIgnoreCase("comentarios") )) {
 				
 				Aluno aluno = alunoBuscado.get();
+				aluno.setSituacaoComentario(false);
 				//verifica qual comentario foi reprovado e atualiza o aluno
 				if (tipoComentario.equalsIgnoreCase("geral"))
 					aluno.setComentario(null);
@@ -145,6 +146,7 @@ public class AlunoService {
 					aluno.setComentarioFATEC(null);
 					aluno.setComentario(null);
 				}
+				
 				repository.save(aluno);
 			} else {
 				throw new IllegalArgumentException("Erro ao tentar buscar e aprovar aluno");

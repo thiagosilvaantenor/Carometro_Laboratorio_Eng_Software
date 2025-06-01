@@ -112,7 +112,13 @@
 								<div class="form-row">
 									<div class="form-group col-md-6">
 										<label th:for="${#ids.next('dtInicio')}"> Data Início: </label>
-										<input type="date" class="form-control" th:field="*{historico[__${stat.index}__].dtInicio}" required/>
+										<input type="date" class="form-control" 
+										th:field="*{historico[__${stat.index}__].dtInicio}"
+										th:attr="value=${#temporals.format(historicoEntry.dtInicio, 'yyyy-MM-dd')}"
+										 required/>
+										 
+										 
+
 									</div>
 									<div class="form-group col-md-6">
 										<label th:for="${#ids.next('dtFim')}"> Data Fim (caso não seja o seu trabalho atual): </label>
@@ -232,12 +238,30 @@
 				removeBtn.dataset.listenerAttached = 'true'; // Marca que o listener foi anexado
 			}
 		}
+				
+		// Função para renumerar todas as entradas após remoção para manter os índices corretos
+		function renumerarHistoricos() {
+			const historicos = historicosContainer.querySelectorAll('.historico-entry:not(.historico-template)');
+			historicos.forEach((entry, index) => {
+				// Atualiza os names
+				entry.querySelectorAll('[name]').forEach(input => {
+					input.name = input.name.replace(/historico\[\d+\]/, `historico[${index}]`);
+				});
+				// Atualiza os ids
+				entry.querySelectorAll('[id]').forEach(input => {
+					input.id = input.id.replace(/__\d+__/, `__${index}__`);
+				});
+			});
+		}
 
 		// Função para lidar com a remoção de histórico
 		function handleRemoveHistorico(event) {
+			event.preventDefault();
 			const historicoEntry = event.target.closest('.historico-entry');
 			if (historicoEntry && !historicoEntry.classList.contains('historico-template')) {
 				historicoEntry.remove();
+				// renumera para corrigir índices
+				renumerarHistoricos(); 
 			}
 		}
 
