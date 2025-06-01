@@ -65,10 +65,10 @@ public class LoginController {
 		    				"Senha incorreta. Tente novamente");
 					return "redirect:/login";
 				} else {
-					System.out.println("ACHOU O ADMIN");
 					// Adicione esta linha para identificar o usuário
 					Administrador adminEncontrado = admin.get();
 					session.setAttribute("usuarioLogado", adminEncontrado);
+					session.setAttribute("role", "admin");
 					return "redirect:/admin/index";
 				}
 			case "coordenador":
@@ -81,6 +81,7 @@ public class LoginController {
 					// Adicione esta linha para identificar o usuário
 					Coordenador cooordenadorEncotrado = coordenador.get();
 					session.setAttribute("usuarioLogado", cooordenadorEncotrado);
+					session.setAttribute("role", "coordenador");
 					return "redirect:/coordenador/index";
 
 				}
@@ -94,6 +95,7 @@ public class LoginController {
 					// Adicione esta linha para identificar o usuário
 					Aluno alunoEncontrado = aluno.get();
 					session.setAttribute("usuarioLogado", alunoEncontrado);
+					session.setAttribute("role", "aluno");
 					return "redirect:/aluno/index";
 				}
 	
