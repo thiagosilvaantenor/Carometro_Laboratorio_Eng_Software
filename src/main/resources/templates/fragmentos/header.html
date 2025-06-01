@@ -88,7 +88,7 @@ Estilo para o navbar
 <header th:fragment="header(activePage)">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
-			<a class="navbar-brand" href="#"> 
+			<a class="navbar-brand" th:href="@{/}"> 
 				<i class="fas fa-film me-2"></i>
 				Carômetro
 			</a>
@@ -104,7 +104,7 @@ Estilo para o navbar
 					<!-- Redireciona a pagina Inicial, funciona apenas fora da pagina /inicio -->
 					<li class="nav-item"><a class="nav-link"
 						th:classappend="${activePage != 'inicio'} ? 'active' : ''"
-						th:href="@{/}"> <i class="fas fa-home me-1"></i>
+						th:href="@{/login}"> <i class="fas fa-home me-1"></i>
 							Início
 					</a></li>
 
@@ -112,14 +112,14 @@ Estilo para o navbar
 					<li class="nav-item dropdown">
 						<a class="nav-link dropdown-toggle" id="filmesDropdown"
 						role="button" data-bs-toggle="dropdown" aria-expanded="false"
-						th:classappend="${activePage != formularioAluno} ? 'active' : ''"
+						th:classappend="${activePage != formularioAluno || activePage != 'listagemAluno' } ? 'active' : ''"
 						style="cursor: pointer;"> <i class="fas fa-film me-1"></i>
 							Aluno
 						</a>
 						<ul class="dropdown-menu" aria-labelledby="filmesDropdown">
 							<li><a class="dropdown-item"
 								th:classappend="${activePage != 'listagemAluno'} ? 'active' : ''"
-								th:href="@{/aluno}"> <i class="fas fa-list me-1"></i> Listagem Alunos</a>
+								th:href="@{/aluno}"> <i class="fas fa-list me-1"></i> Ver postagens de alunos</a>
 							</li>
 							<li><a class="dropdown-item"
 								th:classappend="${activePage != 'formularioAluno'} ? 'active' : ''"
@@ -137,11 +137,7 @@ Estilo para o navbar
 						</a>
 						<ul class="dropdown-menu" aria-labelledby="filmesDropdown">
 							<li><a class="dropdown-item"
-								th:classappend="${activePage != 'listagemAdmin'} ? 'active' : ''"
-								th:href="@{/admin}"> <i class="fas fa-list me-1"></i> Listagem Admin</a>
-							</li>
-							<li><a class="dropdown-item"
-								th:classappend="${activePage != 'formularioAluno'} ? 'active' : ''"
+								th:classappend="${activePage != 'formularioAdmin'} ? 'active' : ''"
 								th:href="@{/admin/formulario}"> <i class="fas fa-star me-1"></i> Cadastrar Admin
 							</a></li>
 						</ul>
@@ -156,11 +152,7 @@ Estilo para o navbar
 						</a>
 						<ul class="dropdown-menu" aria-labelledby="filmesDropdown">
 							<li><a class="dropdown-item"
-								th:classappend="${activePage != 'listagemCoordenador'} ? 'active' : ''"
-								th:href="@{/coordenador}"> <i class="fas fa-list me-1"></i> Listagem Coordenador</a>
-							</li>
-							<li><a class="dropdown-item"
-								th:classappend="${activePage != 'formularioAluno'} ? 'active' : ''"
+								th:classappend="${activePage != 'formularioCoordenador'} ? 'active' : ''"
 								th:href="@{/coordenador/formulario}"> <i class="fas fa-star me-1"></i> Cadastrar Coordenador
 							</a></li>
 						</ul>
@@ -168,7 +160,7 @@ Estilo para o navbar
 					<!-- Login -->
 					<li class="nav-item dropdown">
 						<a class="nav-link"
-								th:classappend="${activePage != 'formularioAluno'} ? 'active' : ''"
+								th:classappend="${activePage != 'login'} ? 'active' : ''"
 								th:href="@{/login}">
 								<i class="fas fa-star me-1"></i> Login
 							</a>
@@ -177,7 +169,6 @@ Estilo para o navbar
 					
 				<div th:if ="${session.usuarioLogado != null}" class="d-flex align-items-center">
 				<!-- Verifica qual o ator para mostrar apenas o botão home que redireciona para o Index adequado -->
-							<!-- TODO: Botão Home nao aparece -->
 							    <a class="nav-link text-success"
 							       th:if="${session.role == 'aluno'}"
 							       th:href="@{/aluno/index}">
@@ -198,6 +189,7 @@ Estilo para o navbar
 								<a class="nav-link text-danger" th:href="@{/login/logout}">
 							    	<i class="fas fa-sign-out-alt me-2"></i> Sair
 							    </a>
+
                 </div>
             </div>
         </div>

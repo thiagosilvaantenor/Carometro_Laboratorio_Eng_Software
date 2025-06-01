@@ -8,48 +8,13 @@
 	href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css"
 	integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
 	crossorigin="anonymous">
-
-	<style>
-	body {
-			background-color: #f2f2f2;
-		}
-
-		.card-form {
-			background-color: white;
-			border-radius: 10px;
-			padding: 30px;
-			box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
-			margin-top: 40px;
-			margin-bottom: 40px;
-		}
-
-		.fatec-title {
-			color: #990000;
-			font-weight: bold;
-			margin-bottom: 20px;
-		}
-
-		.btn-fatec {
-			background-color: #990000;
-			color: white;
-			border: none;
-			padding: 10px 30px;
-			border-radius: 5px;
-			transition: background-color 0.3s ease;
-		}
-
-		.btn-fatec:hover {
-			background-color: #b30000;
-			color: white;
-		}
-</style>
 </head>
 <body>
 		<header th:replace="~{fragmentos/header :: header(activePage='formularioAluno')}"></header>
 		<div class="container">
 			<div class="row justify-content-md-center">
-				<div class="d-flex flex-column col mt-3 card-form">
-					<h1 class="text-center mt-3 fatec-title">Cadastrar Aluno</h1>
+				<div class="d-flex flex-column col mt-3">
+					<h1 class="text-center mt-3">Cadastrar Aluno</h1>
 					<form th:object="${aluno}" method="post" action="/aluno" enctype="multipart/form-data">
 
 						<input type="hidden" name="_method" value="put"
@@ -179,7 +144,7 @@
 						
 					
 						<div class="d-flex justify-content-center">
-							<input class="btn btn-success p-3 btn-fatec" type="submit"
+							<input class="btn btn-success p-3" type="submit"
 								value="Cadastrar">
 						</div>
 					</form>

@@ -2,16 +2,14 @@ package br.com.carometro.aluno;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.hibernate.annotations.ColumnDefault;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import br.com.carometro.curso.Curso;
 import br.com.carometro.historico.Historico;
 import br.com.carometro.links.Links;
-import br.com.carometro.unidfatec.UnidFatec;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -47,6 +45,7 @@ public class Aluno {
 	@Email
 	private String email;
 	private String senha;
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDate dtNascimento;	
 	private String comentarioFATEC;
 	private String comentario;
@@ -67,7 +66,7 @@ public class Aluno {
 	@JoinColumn(name="curso_id", nullable=false)
 	private Curso curso;
 	//1 Aluno para N Historicos , cascata do tipo All para quando for salvar um aluno salvar o histórico e o mesmo para remover
-	@OneToMany(mappedBy = "aluno", cascade = CascadeType.ALL)
+	@OneToMany(mappedBy = "aluno", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Historico> historico = new ArrayList<>();
 	//Um aluno para 1 lista de redes, cascata do tipo All para quando for salvar um aluno salvar os links e o mesmo para remover
 	@OneToOne(mappedBy = "aluno", cascade = CascadeType.ALL)
