@@ -190,21 +190,19 @@ public class CoordenadorController {
 
 	//Caso seja ex-aluno é aprovado, estado de situaçãoCadastro é mudado para TRUE
 	 @PostMapping("/aprovarAluno")
-	    public ModelAndView aprovarAluno(@RequestParam("id") Long id,  HttpSession session) {
+	    public String aprovarAluno(@RequestParam("id") Long id,  Model model, HttpSession session) {
 		 
-		 ModelAndView modelAndView = new ModelAndView();
 	        try {
 				alunoService.aprovarAluno(id);
 				//Busca o coordenador logado
 	    	    Coordenador coordenadorLogado = (Coordenador) session.getAttribute("usuarioLogado");
 	    	    List<Aluno> alunos = alunoService.filtraAlunosPeloCursoESituacaoCadastor
 		        		(coordenadorLogado.getCurso().getId(), false);
-	    	    modelAndView.addObject("alunos", alunos);
-	    	    modelAndView.setViewName("coordenador/validarAluno");
+	    	    model.addAttribute("alunos", alunos);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-	        return modelAndView;
+	        return "redirect:/coordenador/validarAluno";
 	    }
 	 
 	//Caso não seja ex-aluno é reprovado e deletado do banco de dados 
@@ -220,7 +218,7 @@ public class CoordenadorController {
 	        }catch(Exception e) {
 	        	e.printStackTrace();
 	        }
-	        return "/coordenador/validarAluno";
+	        return "redirect:/coordenador/validarAluno";
 	    }
 
 	

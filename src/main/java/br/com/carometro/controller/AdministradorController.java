@@ -168,7 +168,7 @@ public class AdministradorController {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-	        return "/admin/validarPostagem";
+	        return "redirect:/admin/validarPostagem";
 	    }
 	 
 	//Caso pelo menos 1 dos comentarios não esteja de acordo
@@ -191,7 +191,7 @@ public class AdministradorController {
 	        }catch(Exception e) {
 	        	e.printStackTrace();
 	        }
-	        return "/coordenador/validarPostagem";
+	        return "redirect:/admin/validarPostagem";
 	    }
 
 }
