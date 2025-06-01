@@ -104,10 +104,10 @@ Estilo para o navbar
 					<!-- Redireciona a pagina Inicial, funciona apenas fora da pagina /inicio -->
 					<li class="nav-item"><a class="nav-link"
 						th:classappend="${activePage != 'inicio'} ? 'active' : ''"
-						th:href="@{/login}"> <i class="fas fa-home me-1"></i>
+						th:href="@{/}"> <i class="fas fa-home me-1"></i>
 							Início
 					</a></li>
-
+		
 					<!-- Dropdown de Aluno -->
 					<li class="nav-item dropdown">
 						<a class="nav-link dropdown-toggle" id="filmesDropdown"
@@ -121,14 +121,16 @@ Estilo para o navbar
 								th:classappend="${activePage != 'listagemAluno'} ? 'active' : ''"
 								th:href="@{/aluno}"> <i class="fas fa-list me-1"></i> Ver postagens de alunos</a>
 							</li>
-							<li><a class="dropdown-item"
+							<!-- Cadastro é uma opção visivel apenas quando não esta logado -->
+							<li th:if ="${session.usuarioLogado == null}">
+							<a class="dropdown-item"
 								th:classappend="${activePage != 'formularioAluno'} ? 'active' : ''"
 								th:href="@{/aluno/formulario}"> <i class="fas fa-star me-1"></i> Cadastrar Aluno
 							</a></li>
 						</ul>
 					</li>
 					<!-- Dropdown de Admin -->
-					<li class="nav-item dropdown">
+					<li  th:if ="${session.usuarioLogado == null}" class="nav-item dropdown">
 						<a class="nav-link dropdown-toggle" id="filmesDropdown"
 						role="button" data-bs-toggle="dropdown" aria-expanded="false"
 						th:classappend="${activePage != formularioAdmin} ? 'active' : ''"
@@ -143,7 +145,7 @@ Estilo para o navbar
 						</ul>
 					</li>
 					<!-- Dropdown de Coordenador -->
-					<li class="nav-item dropdown">
+					<li th:if ="${session.usuarioLogado == null}" class="nav-item dropdown">
 						<a class="nav-link dropdown-toggle" id="filmesDropdown"
 						role="button" data-bs-toggle="dropdown" aria-expanded="false"
 						th:classappend="${activePage != formularioCoordenador || activePage != listagemCoordenador} ? 'active' : ''"
@@ -158,7 +160,7 @@ Estilo para o navbar
 						</ul>
 					</li>
 					<!-- Login -->
-					<li class="nav-item dropdown">
+					<li th:if ="${session.usuarioLogado == null}" class="nav-item dropdown">
 						<a class="nav-link"
 								th:classappend="${activePage != 'login'} ? 'active' : ''"
 								th:href="@{/login}">

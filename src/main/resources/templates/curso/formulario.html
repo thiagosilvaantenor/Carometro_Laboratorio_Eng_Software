@@ -100,7 +100,7 @@
 						
 						<div class="form-group">
  								<!-- Unidade Fatec -->
-						        <label for="unidFatec">Selecione a sua Unidade FATEC:</label>
+						        <label for="unidFatec">Selecione a Unidade FATEC desse curso:</label>
 						        <select class="form-control" id="nomeFatec" name = "nomeFatec">
 						            <option value="">-- Selecione --</option>
 									<option th:each="unidade : ${unidades}"
@@ -108,7 +108,6 @@
 											th:text="${unidade.nome}"
 											th:selected="${curso?.unidFatec?.nome} == ${unidade.nome}">
 									</option>
-							 		<option value="outra">Outra Unidade</option>
 						        </select>
 						</div>
 						<div class="text-center mt-4">

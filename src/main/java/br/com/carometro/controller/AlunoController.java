@@ -157,10 +157,11 @@ public class AlunoController {
 					}
 					novo.setAluno(aluno);
 					historico.add(novo);
-					historicoRepository.save(novo);
+					
 				}
 			});
 			aluno.setHistorico(historico);
+			//Não precisa usar repository.save pois o CASCADE.ALL garante que ao salvar o aluno salva historicos
 		}
 		
 		//Links
@@ -173,7 +174,7 @@ public class AlunoController {
 			
 			links.setAluno(aluno);
 			aluno.setLinks(links);
-			//Salva primeiro os links no banco de dados
+			//Não precisa usar repository.save pois o CASCADE.ALL garante que ao salvar o aluno salva links
 		}
 		
 		 // convertendo a foto de MultipartFile para byte[]
@@ -210,7 +211,6 @@ public class AlunoController {
 			links.setAluno(aluno); // Define a relação
 			aluno.setLinks(links); // Associa ao aluno
 			// Não precisa salvar links explicitamente se cascade está configurado
-			// repositoryLinks.save(links); // Remova se estiver usando cascade
 		}
 		links.setGitHub(dados.gitHub());
 		links.setLinkedIn(dados.linkedIn());

@@ -23,6 +23,7 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -44,6 +45,7 @@ public class Aluno {
 	private String nome;
 	@Email
 	private String email;
+	//TODO: VALIDAÇÃO DE SENHA 
 	private String senha;
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDate dtNascimento;	
@@ -52,10 +54,10 @@ public class Aluno {
 	private Integer ano;
 	//Atributo usado para lidar com aprovação de cadastro aluno, se ainda não foi avaliado = false, se é aluno = true;
 	@ColumnDefault("false")
-	private Boolean situacaoCadastro;
+	private Boolean situacaoCadastro = false;
 	//Atributo usado para lidar com aprovação dos comentarios do aluno
 	@ColumnDefault("false")
-	private Boolean situacaoComentario;
+	private Boolean situacaoComentario = false;
 	//TODO: Trocar maneira de salvar a foto
 	@Lob
 	@Column(name = "foto", columnDefinition = "LONGBLOB")

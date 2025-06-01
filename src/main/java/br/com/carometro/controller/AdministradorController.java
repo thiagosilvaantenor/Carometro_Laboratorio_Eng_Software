@@ -137,7 +137,7 @@ public class AdministradorController {
 	    	List<Aluno> alunos = new ArrayList<>();
 	    	cursos.forEach(curso -> {
 	    		 alunos.addAll( alunoService.
-	    				filtraAlunosPeloCurso(curso.getId()) );
+	    				filtrarAlunosPeloCursoESituacaoComentario(curso.getId(), false));
 	    	});
 	    	//Envia para a model a lista de alunos
 	        ModelAndView modelAndView = new ModelAndView();
