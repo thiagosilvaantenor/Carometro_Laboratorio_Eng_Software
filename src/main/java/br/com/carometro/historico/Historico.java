@@ -4,7 +4,7 @@ import java.time.LocalDate;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
-import br.com.carometro.aluno.Aluno;
+import br.com.carometro.egresso.Egresso;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -39,7 +39,7 @@ public class Historico {
 	
 	
 	@ManyToOne
-	@JoinColumn(name="aluno_id", nullable=false)
-	private Aluno aluno;
+	@JoinColumn(name="egresso_id", nullable=false)
+	private Egresso egresso;
 	
 }

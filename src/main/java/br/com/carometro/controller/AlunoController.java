@@ -20,13 +20,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
-import br.com.carometro.aluno.Aluno;
-import br.com.carometro.aluno.AlunoRepository;
-import br.com.carometro.aluno.AlunoService;
-import br.com.carometro.aluno.DadosAtualizacaoAluno;
-import br.com.carometro.aluno.DadosCadastroAluno;
 import br.com.carometro.curso.Curso;
 import br.com.carometro.curso.CursoService;
+import br.com.carometro.egresso.DadosAtualizacaoEgresso;
+import br.com.carometro.egresso.DadosCadastroEgresso;
+import br.com.carometro.egresso.Egresso;
+import br.com.carometro.egresso.EgressoRepository;
+import br.com.carometro.egresso.EgressoService;
 import br.com.carometro.historico.DadosCadastroHistorico;
 import br.com.carometro.historico.Historico;
 import br.com.carometro.historico.HistoricoRepository;
@@ -40,9 +40,9 @@ import jakarta.validation.Valid;
 @RequestMapping("/aluno")
 public class AlunoController {
 	@Autowired
-	private AlunoRepository repository;
+	private EgressoRepository repository;
 	@Autowired
-	private AlunoService service;
+	private EgressoService service;
 
 	@Autowired
 	private CursoService cursoService;
@@ -55,7 +55,7 @@ public class AlunoController {
 	public String carregaPaginaFormulario(Long id, Model model) {
 		//Manda a lista de cursos do banco de dados
 		model.addAttribute("cursos", cursoService.getAllCursos());
-		Aluno aluno = null;
+		Egresso aluno = null;
 		//Caso seja uma edição(PUT)
 		if (id != null) {
 			aluno = repository.getReferenceById(id);
@@ -73,7 +73,7 @@ public class AlunoController {
 		}//Caso seja um cadastro (POST) 
 		else {
 			
-			aluno = new Aluno();
+			aluno = new Egresso();
 			aluno.setHistorico(new ArrayList<>());
 			aluno.setLinks(new Links());
 		}
@@ -85,7 +85,7 @@ public class AlunoController {
 	@GetMapping
 	public String carregaPaginaListagem(Model model) {
 		//Lista de alunos com cadastro aprovado pelo coordenador
-		List<Aluno> alunos = service.buscaAlunosPelaSituacaoCadastro(true);
+		List<Egresso> alunos = service.buscaAlunosPelaSituacaoCadastro(true);
 		model.addAttribute("lista", alunos);
 		//Filtros
 		//Separa os anos semestres cadastrados e envia a lista para a model
@@ -106,9 +106,9 @@ public class AlunoController {
 			@RequestParam(name= "ano", required= false) Integer ano,
 			Model model) {
 		//Lista de alunos filtrados que tiveram cadastro aprovado pelo coordenador
-		List<Aluno> alunosFiltrados = service.filtrarAluno(ano, cursoId, true);
+		List<Egresso> alunosFiltrados = service.filtrarAluno(ano, cursoId, true);
 		//Lista de todos os alunos para pegar os anos semestres
-		List<Aluno> alunos = service.buscaAlunosPelaSituacaoCadastro(true);
+		List<Egresso> alunos = service.buscaAlunosPelaSituacaoCadastro(true);
 		List<Integer> anosSemestres = new ArrayList<>();
 		alunos.forEach( a -> {
 			//Verifica se o ano semestre ja esta na lista, se não adiciona
@@ -125,15 +125,15 @@ public class AlunoController {
 	@PostMapping
 	@Transactional
 	public String cadastrar(@Valid
-			DadosCadastroAluno dados,
+			DadosCadastroEgresso dados,
 			@RequestParam("cursoId") Long cursoId) throws Exception {
 		 // A lista de histórico já estará em dados.getHistorico()
 	    List<DadosCadastroHistorico> dadosHistoricoSubmetidos = dados.historico();
 		Curso curso = cursoService.getCursoById(cursoId);
-		Aluno aluno = new Aluno(dados);
+		Egresso egresso = new Egresso(dados);
 		// adiciona o aluno na lista de alunos
-		curso.getAlunos().add(aluno);
-		aluno.setCurso(curso);
+		curso.getAlunos().add(egresso);
+		egresso.setCurso(curso);
 		
 
 		// Historico
@@ -150,12 +150,12 @@ public class AlunoController {
 					if (item.dtFim() != null) {
 						novo.setDtFim(item.dtFim());						
 					}
-					novo.setAluno(aluno);
+					novo.setEgresso(egresso);
 					historico.add(novo);
 					
 				}
 			});
-			aluno.setHistorico(historico);
+			egresso.setHistorico(historico);
 			//Não precisa usar repository.save pois o CASCADE.ALL garante que ao salvar o aluno salva historicos
 		}
 		
@@ -167,44 +167,44 @@ public class AlunoController {
 			links.setLinkedIn(dados.linkedIn());
 			links.setLattesCNPQ(dados.lattesCNPQ());
 			
-			links.setAluno(aluno);
-			aluno.setLinks(links);
+			links.setEgresso(egresso);
+			egresso.setLinks(links);
 			//Não precisa usar repository.save pois o CASCADE.ALL garante que ao salvar o aluno salva links
 		}
 		
 		 // convertendo a foto de MultipartFile para byte[]
 	    if (dados.foto() != null && !dados.foto().isEmpty()) {
-	        aluno.setFoto(dados.foto().getBytes());
+	        egresso.setFoto(dados.foto().getBytes());
 	    }
 				
 
-		service.salvar(aluno);
+		service.salvar(egresso);
 		
 		return "redirect:aluno";
 	}
 	
 	@PutMapping
 	@Transactional
-	public String atualizar(@Valid DadosAtualizacaoAluno dados,
+	public String atualizar(@Valid DadosAtualizacaoEgresso dados,
 			@RequestParam("cursoId") Long cursoId,
 			Model model) throws IOException, NoSuchAlgorithmException {
 		
 		//Busca o aluno existente
-		var aluno = repository.getReferenceById(dados.id());
+		var egresso = repository.getReferenceById(dados.id());
 		//Atualiza curso
 		if (dados.curso() != null) {
 			//Remove o curso antigo
-			aluno.getCurso().getAlunos().remove(aluno);
+			egresso.getCurso().getAlunos().remove(egresso);
 			//Adiciona o curso novo
-			aluno.setCurso(dados.curso());
-			dados.curso().getAlunos().add(aluno);
+			egresso.setCurso(dados.curso());
+			dados.curso().getAlunos().add(egresso);
 		}
 		// Se Links já existe, atualiza. Se não, cria um novo.
-		Links links = aluno.getLinks();
+		Links links = egresso.getLinks();
 		if (links == null) {
 			links = new Links();
-			links.setAluno(aluno); // Define a relação
-			aluno.setLinks(links); // Associa ao aluno
+			links.setEgresso(egresso); // Define a relação
+			egresso.setLinks(links); // Associa ao aluno
 			// Não precisa salvar links explicitamente se cascade está configurado
 		}
 		links.setGitHub(dados.gitHub());
@@ -234,14 +234,14 @@ public class AlunoController {
 				entidadeHistorico.setDescricaoTrabalho(dto.descricaoTrabalho());
 				entidadeHistorico.setDtInicio(dto.dtInicio());
 				entidadeHistorico.setDtFim(dto.dtFim());
-				entidadeHistorico.setAluno(aluno); // Define a relação para o novo histórico	
+				entidadeHistorico.setEgresso(egresso); // Define a relação para o novo histórico	
 				
 				//Salva na lista
 				novoOuAtualizado.add(entidadeHistorico);	
 			}
 		}
 			// Adiciona a lista original sem trocar a referencia
-			List<Historico> historicosAtuais = aluno.getHistorico();
+			List<Historico> historicosAtuais = egresso.getHistorico();
 			// Limpa a lista
 			historicosAtuais.clear();
 			historicosAtuais.addAll(novoOuAtualizado);
@@ -249,15 +249,15 @@ public class AlunoController {
 		}
 		//Atualiza foto
 		if (dados.foto() != null && !dados.foto().isEmpty()) {
-	        aluno.setFoto(dados.foto().getBytes());
+	        egresso.setFoto(dados.foto().getBytes());
 	    }
 		
 		//codifica a senha nova
 		if (dados.senha() != null) {
-			aluno.setSenha(Criptografia.md5(dados.senha()));
+			egresso.setSenha(Criptografia.md5(dados.senha()));
 		}
 		
-		aluno.atualizarInformacoes(dados);
+		egresso.atualizarInformacoes(dados);
 		return "redirect:aluno";
 	}
 
@@ -275,7 +275,7 @@ public class AlunoController {
 	@GetMapping("/index")
 	public ModelAndView index(HttpSession session) {
 		//Pega o administrador recebido do login
-		Aluno alunoLogado = (Aluno) session.getAttribute("usuarioLogado");
+		Egresso alunoLogado = (Egresso) session.getAttribute("usuarioLogado");
 		
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("aluno/index");
@@ -288,7 +288,7 @@ public class AlunoController {
 	@GetMapping("/{id}/foto")
 	@ResponseBody
 	public ResponseEntity<byte[]> getFoto(@PathVariable Long id) {
-		Aluno aluno = repository.findById(id).orElse(null);
+		Egresso aluno = repository.findById(id).orElse(null);
 		if (aluno != null && aluno.getFoto() != null) {
 			return ResponseEntity.ok()
 					.contentType(MediaType.IMAGE_JPEG)

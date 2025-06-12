@@ -15,8 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
-import br.com.carometro.aluno.Aluno;
-import br.com.carometro.aluno.AlunoService;
 import br.com.carometro.coordenador.Coordenador;
 import br.com.carometro.coordenador.CoordenadorRepository;
 import br.com.carometro.coordenador.CoordenadorService;
@@ -24,6 +22,8 @@ import br.com.carometro.coordenador.DadosAtualizacaoCoordenador;
 import br.com.carometro.coordenador.DadosCadastroCoordenador;
 import br.com.carometro.curso.Curso;
 import br.com.carometro.curso.CursoService;
+import br.com.carometro.egresso.Egresso;
+import br.com.carometro.egresso.EgressoService;
 import br.com.carometro.security.Criptografia;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
@@ -43,7 +43,7 @@ public class CoordenadorController {
 	
 	
 	@Autowired
-	private AlunoService alunoService;
+	private EgressoService alunoService;
 
 	@GetMapping("/formulario")
 	public String carregaPaginaFormulario(Long id, Model model) {
@@ -140,7 +140,7 @@ public class CoordenadorController {
 	    Coordenador coordenadorLogado = (Coordenador) session.getAttribute("usuarioLogado");
 	    if (coordenadorLogado != null) {
 	    	//Busca os alunos do curso do coordenador com situação de cadastro false para ele realizar a validação
-	        List<Aluno> alunos = alunoService.filtraAlunosPeloCursoESituacaoCadastor
+	        List<Egresso> alunos = alunoService.filtraAlunosPeloCursoESituacaoCadastor
 	        		(coordenadorLogado.getCurso().getId(), false);
 	        
 	        ModelAndView modelAndView = new ModelAndView();
@@ -160,7 +160,7 @@ public class CoordenadorController {
 				alunoService.aprovarAluno(id);
 				//Busca o coordenador logado
 	    	    Coordenador coordenadorLogado = (Coordenador) session.getAttribute("usuarioLogado");
-	    	    List<Aluno> alunos = alunoService.filtraAlunosPeloCursoESituacaoCadastor
+	    	    List<Egresso> alunos = alunoService.filtraAlunosPeloCursoESituacaoCadastor
 		        		(coordenadorLogado.getCurso().getId(), false);
 	    	    model.addAttribute("alunos", alunos);
 			} catch (Exception e) {
@@ -176,7 +176,7 @@ public class CoordenadorController {
 	        	alunoService.reprovarAluno(id);
 	        	//Busca o coordenador logado
 	    	    Coordenador coordenadorLogado = (Coordenador) session.getAttribute("usuarioLogado");
-	    	    List<Aluno> alunos = alunoService.filtraAlunosPeloCursoESituacaoCadastor
+	    	    List<Egresso> alunos = alunoService.filtraAlunosPeloCursoESituacaoCadastor
 		        		(coordenadorLogado.getCurso().getId(), false);		
 	 	        model.addAttribute("alunos", alunos);
 	        }catch(Exception e) {

@@ -1,4 +1,4 @@
-package br.com.carometro.aluno;
+package br.com.carometro.egresso;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -9,7 +9,7 @@ import br.com.carometro.curso.Curso;
 import br.com.carometro.historico.DadosCadastroHistorico;
 import jakarta.validation.constraints.NotBlank;
 
-public record DadosCadastroAluno(
+public record DadosCadastroEgresso(
 		@NotBlank
 		String nome,
 		@NotBlank

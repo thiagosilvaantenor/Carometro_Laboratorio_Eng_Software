@@ -1,6 +1,6 @@
 package br.com.carometro.links;
 
-import br.com.carometro.aluno.Aluno;
+import br.com.carometro.egresso.Egresso;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -28,6 +28,6 @@ public class Links {
 	private String linkedIn;
 	
 	@OneToOne
-	@JoinColumn(name = "aluno_id", referencedColumnName = "aluno_id", nullable = false)
-	private Aluno aluno;
+	@JoinColumn(name = "egresso_id", referencedColumnName = "egresso_id", nullable = false)
+	private Egresso egresso;
 }

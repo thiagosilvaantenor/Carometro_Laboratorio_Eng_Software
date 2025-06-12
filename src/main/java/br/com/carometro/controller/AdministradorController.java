@@ -21,10 +21,10 @@ import br.com.carometro.adm.AdministradorRepository;
 import br.com.carometro.adm.AdministradorService;
 import br.com.carometro.adm.DadosAtualizacaoAdministrador;
 import br.com.carometro.adm.DadosCadastroAdministrador;
-import br.com.carometro.aluno.Aluno;
-import br.com.carometro.aluno.AlunoService;
 import br.com.carometro.curso.Curso;
 import br.com.carometro.curso.CursoService;
+import br.com.carometro.egresso.Egresso;
+import br.com.carometro.egresso.EgressoService;
 import br.com.carometro.security.Criptografia;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
@@ -42,7 +42,7 @@ public class AdministradorController {
 
 	
 	@Autowired
-	private AlunoService alunoService;
+	private EgressoService alunoService;
 	
 	@Autowired
 	private CursoService cursoService;
@@ -119,7 +119,7 @@ public class AdministradorController {
 	    	//Busca os cursos
 	     	List<Curso> cursos = cursoService.getAllCursos();
 	    	//Cria a lista de alunos que vai ser populada com os alunos de cada curso da unidade
-	    	List<Aluno> alunos = new ArrayList<>();
+	    	List<Egresso> alunos = new ArrayList<>();
 	    	cursos.forEach(curso -> {
 	    		 alunos.addAll( alunoService.
 	    				filtrarAlunosPeloCursoESituacaoComentario(curso.getId(), false));
@@ -144,7 +144,7 @@ public class AdministradorController {
 	    	    //Busca os cursos
 		     	List<Curso> cursos = cursoService.getAllCursos();
 		    	//Cria a lista de alunos que vai ser populada com os alunos de cada curso da unidade
-		     	List<Aluno> alunos = new ArrayList<>();
+		     	List<Egresso> alunos = new ArrayList<>();
 		    	cursos.forEach(curso -> {
 		    		 alunos.addAll( alunoService.
 		    				 filtrarAlunosPeloCursoESituacaoComentario(curso.getId(), false));
@@ -167,7 +167,7 @@ public class AdministradorController {
 	        	//Busca os cursos
 		     	List<Curso> cursos = cursoService.getAllCursos();
 		    	//Cria a lista de alunos que vai ser populada com os alunos de cada curso da unidade
-		    	List<Aluno> alunos = new ArrayList<>();
+		    	List<Egresso> alunos = new ArrayList<>();
 		    	cursos.forEach(curso ->
 		    		 alunos.addAll( alunoService.
 		    				 filtrarAlunosPeloCursoESituacaoComentario(curso.getId(), false))

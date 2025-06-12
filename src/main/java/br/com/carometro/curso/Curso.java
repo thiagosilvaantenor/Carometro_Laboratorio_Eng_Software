@@ -2,8 +2,8 @@ package br.com.carometro.curso;
 
 import java.util.List;
 
-import br.com.carometro.aluno.Aluno;
 import br.com.carometro.coordenador.Coordenador;
+import br.com.carometro.egresso.Egresso;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -50,7 +50,7 @@ public class Curso {
 	private Coordenador coordenador;
 	
 	@OneToMany(mappedBy = "curso")
-	private List<Aluno> alunos;
+	private List<Egresso> alunos;
 
 
 	public void atualizarInformacoes(DadosAtualizacaoCurso dados) {

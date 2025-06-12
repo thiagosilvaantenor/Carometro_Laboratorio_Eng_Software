@@ -8,12 +8,12 @@ import org.springframework.stereotype.Service;
 import br.com.carometro.adm.Administrador;
 import br.com.carometro.adm.AdministradorRepository;
 import br.com.carometro.adm.AdministradorService;
-import br.com.carometro.aluno.Aluno;
-import br.com.carometro.aluno.AlunoRepository;
-import br.com.carometro.aluno.AlunoService;
 import br.com.carometro.coordenador.Coordenador;
 import br.com.carometro.coordenador.CoordenadorRepository;
 import br.com.carometro.coordenador.CoordenadorService;
+import br.com.carometro.egresso.Egresso;
+import br.com.carometro.egresso.EgressoRepository;
+import br.com.carometro.egresso.EgressoService;
 
 @Service
 public class UsuarioService {
@@ -28,7 +28,7 @@ public class UsuarioService {
 	private AdministradorService adminService;
 	
 	@Autowired
-	private AlunoService alunoService;
+	private EgressoService alunoService;
 	
 	
 	public String verificaAtor(String email) {
@@ -56,7 +56,7 @@ public class UsuarioService {
 		return coordenadorService.login(email, senha);
 	}
 	//Verifica se o login do admin esta correto
-	public Optional<Aluno> verificaLoginAluno(String email, String senha) {
+	public Optional<Egresso> verificaLoginAluno(String email, String senha) {
 		return alunoService.login(email, senha);
 	}
 	

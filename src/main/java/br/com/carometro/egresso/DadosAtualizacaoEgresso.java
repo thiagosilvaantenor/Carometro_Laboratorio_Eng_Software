@@ -1,4 +1,4 @@
-package br.com.carometro.aluno;
+package br.com.carometro.egresso;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -8,7 +8,7 @@ import org.springframework.web.multipart.MultipartFile;
 import br.com.carometro.curso.Curso;
 import br.com.carometro.historico.DadosCadastroHistorico;
 
-public record DadosAtualizacaoAluno(Long id, 
+public record DadosAtualizacaoEgresso(Long id, 
 		String nome, 
 		String email, 
 		String senha, 
