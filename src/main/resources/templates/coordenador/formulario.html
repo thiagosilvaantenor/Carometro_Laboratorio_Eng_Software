@@ -76,26 +76,13 @@
 							</div>
 						</div>
 
-						<div class="form-group">
- 								<!-- Unidade Fatec -->
-						        <label for="unidFATEC">Selecione a sua Unidade FATEC:</label>
-						        <select class="form-control" id="fatecId" name="fatecId">
-						            <option value="">-- Selecione --</option>
-									<option th:each="unidade : ${unidades}"
-											th:value="${unidade.id}"
-											th:text="${unidade.nome}"
-											th:selected="${coordenador?.unidFatec?.id} == ${unidade.id}">
-									</option>
-						        </select>
-						</div>
-						
 
 						<div class="form-row">
 							<div class="form-group col-md-3">
 								<label for="vencimentoMandato">Data de Vencimento do Mandato:</label>
 								<input type="date" id="vencimentoMandato" class="form-control"
 									name="vencimentoMandato" th:value="${coordenador?.vencimentoMandato}">
-							</div>
+						</div>
 							<div class="form-group col-md-4">
 								<label for="cursoSelect">Curso:</label>
 								<select class="form-control" name="cursoId" id="cursoId">

@@ -4,14 +4,11 @@ import java.util.List;
 
 import br.com.carometro.aluno.Aluno;
 import br.com.carometro.coordenador.Coordenador;
-import br.com.carometro.unidfatec.UnidFatec;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -54,10 +51,7 @@ public class Curso {
 	
 	@OneToMany(mappedBy = "curso")
 	private List<Aluno> alunos;
-	
-	@ManyToOne
-	@JoinColumn(name="unidfatec_id", nullable=false)
-	private UnidFatec unidFatec;
+
 
 	public void atualizarInformacoes(DadosAtualizacaoCurso dados) {
 		if (dados.nome() != null) {

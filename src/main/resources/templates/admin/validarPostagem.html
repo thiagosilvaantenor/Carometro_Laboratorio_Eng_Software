@@ -22,6 +22,7 @@
 					<thead>
 						<tr scope="row" class="table-info">
 							<th scope="col">Nome</th>
+							<th>Foto</th>
 							<th scope="col">Nome do curso</th>
 							<th scope="col">Comentario FATEC </th>
 							<th scope="col">Comentario Livre </th>
@@ -34,6 +35,12 @@
 							th:if="${aluno.comentario != null && aluno.comentarioFATEC != null}"
 						>
 							<td scope="col" th:text="${aluno.nome}"></td>
+							<td class="text-center align-middle">
+							    <img th:src="@{/aluno/{id}/foto(id=${aluno.id})}" 
+							         th:alt="'Foto de ' + ${aluno.nome}"
+							         th:title="${aluno.nome}"
+							         class="img-thumbnail rounded-circle aluno-foto"/>
+							</td>
 							<td scope="col" th:text="${aluno.curso.nome}"></td>
 							<td scope="col" th:text="${aluno.comentarioFATEC}"></td>
 							<td scope="col" th:text="${aluno.comentario}"></td>

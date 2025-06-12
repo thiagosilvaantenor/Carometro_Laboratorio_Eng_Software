@@ -2,7 +2,6 @@ package br.com.carometro.controller;
 
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -26,8 +25,6 @@ import br.com.carometro.coordenador.DadosCadastroCoordenador;
 import br.com.carometro.curso.Curso;
 import br.com.carometro.curso.CursoService;
 import br.com.carometro.security.Criptografia;
-import br.com.carometro.unidfatec.UnidFatec;
-import br.com.carometro.unidfatec.UnidFatecService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -44,15 +41,12 @@ public class CoordenadorController {
 	@Autowired
 	private CoordenadorService service;
 	
-	@Autowired
-	private UnidFatecService unidFatecService;
 	
 	@Autowired
 	private AlunoService alunoService;
 
 	@GetMapping("/formulario")
 	public String carregaPaginaFormulario(Long id, Model model) {
-		model.addAttribute("unidades", unidFatecService.buscaTodas());
 		model.addAttribute("cursos", cursoService.getAllCursos());
 		if(id != null) {
 	        var coordenador = repository.getReferenceById(id);
@@ -73,26 +67,12 @@ public class CoordenadorController {
 	@PostMapping
 	@Transactional
 	public String cadastrar(@Valid
-			DadosCadastroCoordenador dados, @RequestParam("cursoId") Long cursoId,
-			@RequestParam("fatecId") Long fatecId) throws Exception {
+			DadosCadastroCoordenador dados, @RequestParam("cursoId") Long cursoId) throws Exception {
 		
 		Coordenador coordenador = new Coordenador(dados);
 		// Busca o curso selecionado no formulario
 		Curso curso = cursoService.getCursoById(cursoId);
 		coordenador.setCurso(curso);
-		
-		//UnidFATEC
-		Optional<UnidFatec> unidFatec = unidFatecService.getUnidFatecById(fatecId);
-		
-		if (unidFatec.isEmpty()) {
-			throw new Exception("Unidade fatec não encontrada");
-		}
-		//Se encontrou
-		UnidFatec unidFatecEncontrada = unidFatec.get();
-		// adiciona a relação coordenador e unidFatec
-		coordenador.setUnidFatec(unidFatecEncontrada);
-		unidFatecEncontrada.getCoordenadores().add(coordenador);	
-		
 		
 		service.salvar(coordenador); 
 		return "redirect:coordenador";
@@ -100,8 +80,7 @@ public class CoordenadorController {
 	
 	@PutMapping
 	@Transactional
-	public String atualizar(DadosAtualizacaoCoordenador dados,
-			@RequestParam("fatecId") Long fatecId ) throws NoSuchAlgorithmException {
+	public String atualizar(DadosAtualizacaoCoordenador dados ) throws NoSuchAlgorithmException {
 		var coordenador = repository.getReferenceById(dados.id());
 		//Atualiza curso
 		if (dados.curso() != null) {
@@ -116,14 +95,7 @@ public class CoordenadorController {
 		if (dados.senha() != null) {
 			coordenador.setSenha(Criptografia.md5(dados.senha()));
 		}
-		//Unid fatec
-		//Busca no banco de dados a unid fatec escolhida, se for diferente realiza a troca
-		UnidFatec fatecRecebida = unidFatecService.getUnidFatecById(fatecId).get();
-		if ( fatecRecebida.getId() != coordenador.getUnidFatec().getId()) {
-			UnidFatec unidAntiga = coordenador.getUnidFatec();
-			unidAntiga.getCoordenadores().remove(coordenador);
-			coordenador.setUnidFatec(fatecRecebida);
-		}
+		
 		coordenador.atualizarInformacoes(dados);
 		repository.save(coordenador);
 	    return "redirect:coordenador";
@@ -141,15 +113,7 @@ public class CoordenadorController {
 		    curso.setCoordenador(null);
 		    
 		}
-		//Desfaz o vinculo de unidFATEC
-		if (coordenador.getUnidFatec() != null) {
-			Optional<UnidFatec> unidFatec = unidFatecService.getUnidFatecById
-					(coordenador.getUnidFatec().getId());
-			if (unidFatec.isPresent()) {
-				unidFatec.get().getCoordenadores().remove(coordenador);
-				coordenador.setUnidFatec(null);
-			}
-		}
+		
 		repository.delete(coordenador);
 		return "redirect:coordenador";
 	}

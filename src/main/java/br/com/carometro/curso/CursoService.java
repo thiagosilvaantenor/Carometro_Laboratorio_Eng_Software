@@ -23,8 +23,6 @@ public class CursoService {
 		return repository.findAllById(cursoIds);
 	}
 
-	public List<Curso> findByUnidFatecId(Long unidFatecId) {
-		return repository.findByUnidFatecId(unidFatecId);
-	}
+
 
 }

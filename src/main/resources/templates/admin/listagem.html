@@ -74,7 +74,6 @@
 								<tr>
 									<th>Id</th>
 									<th>Nome</th>
-									<th>Unidade FATEC</th>
 									<th>Email</th>
 									<th>Senha</th>
 									<th>Ações</th>
@@ -84,7 +83,6 @@
 								<tr th:each="admin : ${lista}" class="text-center">
 									<td th:text="${admin.id}"></td>
 									<td th:text="${admin.nome}"></td>
-									<td th:text="${admin.unidFatec.nome}"></td>
 									<td th:text="${admin.email}"></td>
 									<td th:text="${admin.senha}"></td>
 									<td>

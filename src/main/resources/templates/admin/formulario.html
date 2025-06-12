@@ -63,27 +63,6 @@
                                 <input class="form-control" type="text" id="nome" name="nome" th:value="${admin?.nome}">
                             </div>
      
-                            <div class="form-group">
- 								<!-- Unidade Fatec -->
-						        <label for="unidFATEC">Selecione a sua Unidade FATEC:</label>
-						        <select class="form-control" id="nomeFatec">
-						            <option value="">-- Selecione --</option>
-									<option th:each="unidade : ${unidades}"
-											th:value="${unidade.nome}"
-											th:text="${unidade.administrador == null ? unidade.nome : unidade.nome + ' (Já possui administrador)'}"
-											th:selected="${admin?.unidFatec?.id} == ${unidade.id}"
-											th:disabled="${unidade.administrador != null}">
-									</option>
-									<!-- Apenas o administrador pode cadastrar outras Unidades Fatec, sendo valido apenas a unidade dele -->
-							 		<option value="outra">Outra Unidade</option>
-						        </select>
-						        
-						        <div id="outraUnidDiv" class="mr-5 mt-3" style="display:none;">
-								    <label for="outraUnidFATEC">Digite o nome da sua unidade FATEC:</label>
-								    <input type="text" class="form-control" id="outraUnidFATEC" placeholder="Digite o nome da sua unidade">
-								</div>
-						        <input type="hidden" id="inputOculto" name="nomeFatec"/>
-                            </div>
                                                                                    
                             <div class="form-group">
                                 <label for="email">E-mail</label>
@@ -104,36 +83,7 @@
             </div>
         </div>
       </div>
-<script>
- 	// Função para lidar com Unidade Fatec, caso usuário escolha "Outra Unidade"
- 	document.addEventListener("DOMContentLoaded", function (){
- 		const select = document.getElementById("nomeFatec");
- 		const outraDiv = document.getElementById("outraUnidDiv");
- 		const outraInput = document.getElementById("outraUnidFATEC");   
- 		const inputOculto = document.getElementById("inputOculto");
- 		
- 		function atualizaCampoOculto() {
- 			if (select.value === "outra") {
- 				inputOculto.value = outraInput.value;
- 			} else {
- 				inputOculto.value = select.value
- 			}
- 		}
- 		
- 		select.addEventListener("change", function() {
- 			if (select.value === "outra") {
- 				outraDiv.style.display = "block";
- 			} else{
- 				outraDiv.style.display = "none";
- 			}
- 			atualizaCampoOculto();
- 		});
- 		
-     	outraInput.addEventListener("input", atualizaCampoOculto);
- 		
-     	document.querySelector("form").addEventListener("submit", atualizaCampoOculto);
- 	});
- </script>
+
  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

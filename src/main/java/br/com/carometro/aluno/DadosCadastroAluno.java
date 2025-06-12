@@ -7,7 +7,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import br.com.carometro.curso.Curso;
 import br.com.carometro.historico.DadosCadastroHistorico;
-import br.com.carometro.unidfatec.UnidFatec;
 import jakarta.validation.constraints.NotBlank;
 
 public record DadosCadastroAluno(

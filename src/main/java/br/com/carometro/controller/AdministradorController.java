@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,18 +17,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import br.com.carometro.adm.Administrador;
-import br.com.carometro.adm.AdministradorService;
 import br.com.carometro.adm.AdministradorRepository;
+import br.com.carometro.adm.AdministradorService;
 import br.com.carometro.adm.DadosAtualizacaoAdministrador;
 import br.com.carometro.adm.DadosCadastroAdministrador;
 import br.com.carometro.aluno.Aluno;
 import br.com.carometro.aluno.AlunoService;
-import br.com.carometro.coordenador.Coordenador;
 import br.com.carometro.curso.Curso;
 import br.com.carometro.curso.CursoService;
 import br.com.carometro.security.Criptografia;
-import br.com.carometro.unidfatec.UnidFatec;
-import br.com.carometro.unidfatec.UnidFatecService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
@@ -44,8 +40,6 @@ public class AdministradorController {
 	@Autowired
 	private AdministradorService service;
 
-	@Autowired
-	private UnidFatecService unidFatecService;
 	
 	@Autowired
 	private AlunoService alunoService;
@@ -55,7 +49,6 @@ public class AdministradorController {
 	
 	@GetMapping("/formulario")
 	public String carregaPaginaFormulario(Long id, Model model) {
-		model.addAttribute("unidades", unidFatecService.buscaTodas());
 		if (id != null) {
 			var admin = repository.getReferenceById(id);
 			model.addAttribute("admin", admin);
@@ -74,19 +67,11 @@ public class AdministradorController {
 
 	@PostMapping
 	@Transactional
-	public String cadastrar(@Valid DadosCadastroAdministrador dados, @RequestParam("nomeFatec") String nomeFatec) throws Exception {
+	public String cadastrar(@Valid DadosCadastroAdministrador dados) throws Exception {
 		if (dados == null || dados.email().isBlank() || dados.nome().isBlank() || dados.senha().isBlank()) {
 			throw new Exception("Dados invalidos, cadastro não realizado");
 		}
-		UnidFatec unidade = unidFatecService.buscarPorNome(nomeFatec);
-		//Caso o nome da unidade não foi encontrado então cria essa unidadeFatec
-		if (unidade == null) {
-			    unidade = new UnidFatec();
-			    unidade.setNome(nomeFatec);
-			    unidFatecService.salvar(unidade);
-		}
 		Administrador admin = new Administrador(dados);
-		admin.setUnidFatec(unidade);
 		service.salvarAdmin(admin);
 		return "redirect:admin"; 
 	}
@@ -131,8 +116,8 @@ public class AdministradorController {
 	    if (adminLogado != null) {
 	    	//Busca os alunos da unidFatec do admin para exibir
 	    	
-	    	//Busca os cursos da unidFatec do admin
-	     	List<Curso> cursos = cursoService.findByUnidFatecId(adminLogado.getUnidFatec().getId());
+	    	//Busca os cursos
+	     	List<Curso> cursos = cursoService.getAllCursos();
 	    	//Cria a lista de alunos que vai ser populada com os alunos de cada curso da unidade
 	    	List<Aluno> alunos = new ArrayList<>();
 	    	cursos.forEach(curso -> {
@@ -156,8 +141,8 @@ public class AdministradorController {
 				alunoService.aprovarComentario(id);
 				//Busca o admin logado
 	    	    Administrador adminLogado = (Administrador) session.getAttribute("usuarioLogado");
-	    	    //Busca os cursos da unidFatec do admin
-		     	List<Curso> cursos = cursoService.findByUnidFatecId(adminLogado.getUnidFatec().getId());
+	    	    //Busca os cursos
+		     	List<Curso> cursos = cursoService.getAllCursos();
 		    	//Cria a lista de alunos que vai ser populada com os alunos de cada curso da unidade
 		     	List<Aluno> alunos = new ArrayList<>();
 		    	cursos.forEach(curso -> {
@@ -179,8 +164,8 @@ public class AdministradorController {
 	        	alunoService.reprovarComentario(id, tipoComentario);
 	        	//Busca o admin logado
 	        	Administrador adminLogado = (Administrador) session.getAttribute("usuarioLogado");
-	        	//Busca os cursos da unidFatec do admin
-		     	List<Curso> cursos = cursoService.findByUnidFatecId(adminLogado.getUnidFatec().getId());
+	        	//Busca os cursos
+		     	List<Curso> cursos = cursoService.getAllCursos();
 		    	//Cria a lista de alunos que vai ser populada com os alunos de cada curso da unidade
 		    	List<Aluno> alunos = new ArrayList<>();
 		    	cursos.forEach(curso ->
