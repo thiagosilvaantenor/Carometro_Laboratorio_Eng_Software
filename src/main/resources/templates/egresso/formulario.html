@@ -3,7 +3,7 @@
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{template.html}">
 <head>
-<title>Cadastro de Aluno</title>
+<title>Cadastro de egresso</title>
 <link rel="stylesheet"
 	href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css"
 	integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
@@ -44,56 +44,47 @@
 
 </head>
 <body>
-		<header th:replace="~{fragmentos/header :: header(activePage='formularioAluno')}"></header>
+		<header th:replace="~{fragmentos/header :: header(activePage='formularioEgresso')}"></header>
 		<div class="container">
 			<div class="row justify-content-md-center">
 				<div class="d-flex flex-column col mt-3 card-form">
-					<h1 class="text-center mt-3 fatec-title">Cadastrar Aluno</h1>
-					<form th:object="${aluno}" method="post" action="/aluno" enctype="multipart/form-data">
+					<h1 class="text-center mt-3 fatec-title">Cadastrar Egresso</h1>
+					<form th:object="${egresso}" method="post" action="/egresso" enctype="multipart/form-data">
 
 						<input type="hidden" name="_method" value="put"
-						       th:if="${aluno?.id != null}">
-						<input type="hidden" name="id" th:value="${aluno?.id}"/>
+						       th:if="${egresso?.id != null}">
+						<input type="hidden" name="id" th:value="${egresso?.id}"/>
 
 						<div class="form-group">
 							<label for="nome">Nome: </label>
 							<input class="form-control" type="text" id="nome" name="nome"
-								th:value="${aluno?.nome}" required/>
+								th:value="${egresso?.nome}" required/>
 						</div>
 						<div class="form-row">
 							<div class="form-group col-md-3">
 								<label for="email"> Email: </label>
 								<input type="email" class="form-control" id="email"
-								 name="email" th:value="${aluno?.email}" required/>
+								 name="email" th:value="${egresso?.email}" required/>
 							</div>
 							
 						<div class="form-group col-md-3">
 								<label for="senha"> Senha: </label>
 								<input type="password" class="form-control" id="senha"
-								 name="senha" th:value="${aluno?.senha}" required/>
+								 name="senha" th:value="${egresso?.senha}" required/>
 							</div>				
 						</div>
 						
-						<!-- DT nascimento -->
-						<div class="form-row">
-							<div class="form-group col-md-4">
-								<label for="dtNascimento"> data de Nascimento: </label>
-								<input type="date" class="form-control" id="dtNascimento"
-									name="dtNascimento" th:value="${aluno?.dtNascimento}" required/>
-							</div>
-
 						<!-- FOTO -->
 							<div class="form-group col-md-3">
 								<label for="foto"> Foto, precisa ser JPG no maximo 2MB: </label>
 								<input type="file" accept="image/jpeg" class="form-control" id="foto"
-									name="foto" th:value="${aluno?.foto}"/>
+									name="foto" th:value="${egresso?.foto}"/>
 							</div>
 						<!-- Ano e Semestre de conclusão -->
 							<div class="form-group col-md-5 mt-3">
-									<label for="ano"> Informe o ano e semestre em que se formou Ex:(202401): </label>
+									<label for="ano"> Informe o ano em que se formou Ex:(2024): </label>
 									<input type="number" class="form-control" id="ano"
-										name="ano" th:value="${aluno?.ano}"/>
-								</div>
+										name="ano" th:value="${egresso?.ano}"/>
 							</div>
 
 					<!-- Curso -->
@@ -104,7 +95,7 @@
 								<option th:each="curso : ${cursos}"
 									th:value="${curso.id}"
 									th:text="${curso.nome}"
-									th:selected="${aluno?.curso?.id} == ${curso.id}">
+									th:selected="${egresso?.curso?.id} == ${curso.id}">
 								</option>
 							</select>
 						</div>
@@ -114,21 +105,21 @@
 							<label for="linkedIn"> Caso tenha, informe o seu linkedIn: </label>
 							<input type="url" placeholder="https://likedin/in/.com"
 								pattern="https://.*" name="linkedIn" id="linkedIn" 
-								th:value="${aluno?.links.linkedIn}"/>
+								th:value="${egresso?.links.linkedIn}"/>
 						</div>
 						
 						<div class="form-group col-md-4">
 							<label for="gitHub"> Caso tenha, informe o seu Github: </label>
 							<input type="url" placeholder="https://github/.com"
 								pattern="https://.*" name="gitHub" id="gitHub" 
-								th:value="${aluno?.links.gitHub}"/>
+								th:value="${egresso?.links.gitHub}"/>
 						</div>
 						
 						<div class="form-group col-md-4">
 							<label for="lattesCNPQ"> Caso tenha, informe o seu lattes CNPQ: </label>
 							<input type="url" placeholder=" http://lattes.cnpq.br/"
 								pattern="https://.*" name="lattesCNPQ" id="lattesCNPQ" 
-								th:value="${aluno?.links.lattesCNPQ}"/>
+								th:value="${egresso?.links.lattesCNPQ}"/>
 						</div>
 					</div>
 
@@ -169,15 +160,17 @@
 
 						<!-- Comentarios -->
 						<div class="form-row">
+						<!-- FATEC -->
 							<div class="form-group col-md-4">
 								<label for="comentarioFATEC"> Faça um comentario sobre sua FATEC: </label>
 								<input type="text" id="comentarioFATEC" class="form-control"
-									name="comentarioFATEC" th:value="${aluno?.comentarioFATEC}">
+									name="comentarioFATEC" th:value="${egresso?.comentarioFATEC}">
 							</div>
+						<!-- Geral -->
 							<div class="form-group col-md-4">
 								<label for="comentario"> Faça um comentario: </label>
 								<input type="text" id="comentario" class="form-control"
-									name="comentario" th:value="${aluno?.comentario}">
+									name="comentario" th:value="${egresso?.comentario}">
 							</div>
 						</div>
 						

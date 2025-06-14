@@ -50,7 +50,7 @@ public class Curso {
 	private Coordenador coordenador;
 	
 	@OneToMany(mappedBy = "curso")
-	private List<Egresso> alunos;
+	private List<Egresso> egressos;
 
 
 	public void atualizarInformacoes(DadosAtualizacaoCurso dados) {

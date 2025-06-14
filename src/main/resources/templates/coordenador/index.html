@@ -54,7 +54,7 @@
 				<div class="col-md-8 home-card">
 					<h1 th:text="'Bem vindo à sua Home, ' + (${coordenador.nome} ?: 'Coordenador') + '!'">Bem-vindo à sua Home</h1>
 					<div class="d-flex justify-content-center flex-wrap">
-						<a th:href="@{/coordenador/validarAluno}" class="btn btn-fatec">Validar Ex-alunos</a>
+						<a th:href="@{/coordenador/validarEgresso}" class="btn btn-fatec">Validar Egresso</a>
 						<a th:href="@{/coordenador/formulario(id=${coordenador.id})}" class="btn btn-fatec">Editar Cadastro</a>
 
 					</div>

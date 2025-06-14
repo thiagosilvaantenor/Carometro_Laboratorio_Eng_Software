@@ -58,6 +58,8 @@ public class Egresso {
 	@Column(name = "foto", columnDefinition = "LONGBLOB")
 	private byte[] foto;
 
+	private Boolean situacaoFoto = false;
+	
 	//1 curso para N alunos
 	@ManyToOne
 	@JoinColumn(name="curso_id", nullable=false)

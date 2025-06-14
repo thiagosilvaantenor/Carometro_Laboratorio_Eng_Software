@@ -37,8 +37,8 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
 @Controller
-@RequestMapping("/aluno")
-public class AlunoController {
+@RequestMapping("/egresso")
+public class EgressoController {
 	@Autowired
 	private EgressoRepository repository;
 	@Autowired
@@ -55,71 +55,71 @@ public class AlunoController {
 	public String carregaPaginaFormulario(Long id, Model model) {
 		//Manda a lista de cursos do banco de dados
 		model.addAttribute("cursos", cursoService.getAllCursos());
-		Egresso aluno = null;
+		Egresso egresso = null;
 		//Caso seja uma edição(PUT)
 		if (id != null) {
-			aluno = repository.getReferenceById(id);
-			//Verifica e garante que tanto historico como links não sejam nulos ao editar aluno
-			if (aluno.getHistorico() == null) {
+			egresso = repository.getReferenceById(id);
+			//Verifica e garante que tanto historico como links não sejam nulos ao editar egresso
+			if (egresso.getHistorico() == null) {
 				List<Historico> historico = new ArrayList<>();
 				historico.add(new Historico());
 				
-				aluno.setHistorico(historico);
+				egresso.setHistorico(historico);
 				
 			}
-			if (aluno.getLinks() == null) {
-				aluno.setLinks(new Links());
+			if (egresso.getLinks() == null) {
+				egresso.setLinks(new Links());
 			}			
 		}//Caso seja um cadastro (POST) 
 		else {
 			
-			aluno = new Egresso();
-			aluno.setHistorico(new ArrayList<>());
-			aluno.setLinks(new Links());
+			egresso = new Egresso();
+			egresso.setHistorico(new ArrayList<>());
+			egresso.setLinks(new Links());
 		}
-		//De toda maneira envia para a model a entidade aluno
-		model.addAttribute("aluno", aluno);
-		return "aluno/formulario";
+		//De toda maneira envia para a model a entidade egresso
+		model.addAttribute("egresso", egresso);
+		return "egresso/formulario";
 	}
 	
 	@GetMapping
 	public String carregaPaginaListagem(Model model) {
-		//Lista de alunos com cadastro aprovado pelo coordenador
-		List<Egresso> alunos = service.buscaAlunosPelaSituacaoCadastro(true);
-		model.addAttribute("lista", alunos);
+		//Lista de egressos com cadastro aprovado pelo coordenador
+		List<Egresso> egresso = service.buscaEgressoPelaSituacaoCadastro(true);
+		model.addAttribute("lista", egresso);
 		//Filtros
 		//Separa os anos semestres cadastrados e envia a lista para a model
-		List<Integer> anosSemestres = new ArrayList<>();
-		alunos.forEach( a -> {
+		List<Integer> anos = new ArrayList<>();
+		egresso.forEach( e -> {
 			//Verifica se o ano semestre ja esta na lista, se não adiciona
-			if(!anosSemestres.contains(a.getAno())) {
-				anosSemestres.add(a.getAno());							
+			if(!anos.contains(e.getAno())) {
+				anos.add(e.getAno());							
 			}
 		});
-		model.addAttribute("anos", anosSemestres);
+		model.addAttribute("anos", anos);
 		model.addAttribute("cursos", cursoService.getAllCursos());
-		return "aluno/listagem";
+		return "egresso/listagem";
 	}
 	
 	@GetMapping("/filtrar")
 	public String filtrarPaginaListagem(@RequestParam(name ="cursoId", required=false) Long cursoId,
 			@RequestParam(name= "ano", required= false) Integer ano,
 			Model model) {
-		//Lista de alunos filtrados que tiveram cadastro aprovado pelo coordenador
-		List<Egresso> alunosFiltrados = service.filtrarAluno(ano, cursoId, true);
-		//Lista de todos os alunos para pegar os anos semestres
-		List<Egresso> alunos = service.buscaAlunosPelaSituacaoCadastro(true);
-		List<Integer> anosSemestres = new ArrayList<>();
-		alunos.forEach( a -> {
+		//Lista de egressos filtrados que tiveram cadastro aprovado pelo coordenador
+		List<Egresso> egressosFiltrados = service.filtrarEgresso(ano, cursoId, true);
+		//Lista de todos os egresso para pegar os anos semestres
+		List<Egresso> egresso = service.buscaEgressoPelaSituacaoCadastro(true);
+		List<Integer> anos = new ArrayList<>();
+		egresso.forEach( a -> {
 			//Verifica se o ano semestre ja esta na lista, se não adiciona
-			if(!anosSemestres.contains(a.getAno())) {
-				anosSemestres.add(a.getAno());							
+			if(!anos.contains(a.getAno())) {
+				anos.add(a.getAno());							
 			}
 		});
-		 	model.addAttribute("lista", alunosFiltrados);
-		    model.addAttribute("anos", anosSemestres);
+		 	model.addAttribute("lista", egressosFiltrados);
+		    model.addAttribute("anos", anos);
 		    model.addAttribute("cursos", cursoService.getAllCursos());
-		return "aluno/listagem";
+		return "egresso/listagem";
 	}
 	
 	@PostMapping
@@ -131,8 +131,8 @@ public class AlunoController {
 	    List<DadosCadastroHistorico> dadosHistoricoSubmetidos = dados.historico();
 		Curso curso = cursoService.getCursoById(cursoId);
 		Egresso egresso = new Egresso(dados);
-		// adiciona o aluno na lista de alunos
-		curso.getAlunos().add(egresso);
+		// adiciona o egresso na lista de egressos
+		curso.getEgressos().add(egresso);
 		egresso.setCurso(curso);
 		
 
@@ -156,7 +156,7 @@ public class AlunoController {
 				}
 			});
 			egresso.setHistorico(historico);
-			//Não precisa usar repository.save pois o CASCADE.ALL garante que ao salvar o aluno salva historicos
+			//Não precisa usar repository.save pois o CASCADE.ALL garante que ao salvar o egresso salva historicos
 		}
 		
 		//Links
@@ -169,7 +169,7 @@ public class AlunoController {
 			
 			links.setEgresso(egresso);
 			egresso.setLinks(links);
-			//Não precisa usar repository.save pois o CASCADE.ALL garante que ao salvar o aluno salva links
+			//Não precisa usar repository.save pois o CASCADE.ALL garante que ao salvar o egresso salva links
 		}
 		
 		 // convertendo a foto de MultipartFile para byte[]
@@ -180,7 +180,7 @@ public class AlunoController {
 
 		service.salvar(egresso);
 		
-		return "redirect:aluno";
+		return "redirect:egresso";
 	}
 	
 	@PutMapping
@@ -189,22 +189,23 @@ public class AlunoController {
 			@RequestParam("cursoId") Long cursoId,
 			Model model) throws IOException, NoSuchAlgorithmException {
 		
-		//Busca o aluno existente
+		//Busca o egresso existente
 		var egresso = repository.getReferenceById(dados.id());
 		//Atualiza curso
 		if (dados.curso() != null) {
+			System.out.println(dados.historico().toString());
 			//Remove o curso antigo
-			egresso.getCurso().getAlunos().remove(egresso);
+			egresso.getCurso().getEgressos().remove(egresso);
 			//Adiciona o curso novo
 			egresso.setCurso(dados.curso());
-			dados.curso().getAlunos().add(egresso);
+			dados.curso().getEgressos().add(egresso);
 		}
 		// Se Links já existe, atualiza. Se não, cria um novo.
 		Links links = egresso.getLinks();
 		if (links == null) {
 			links = new Links();
 			links.setEgresso(egresso); // Define a relação
-			egresso.setLinks(links); // Associa ao aluno
+			egresso.setLinks(links); // Associa ao egresso
 			// Não precisa salvar links explicitamente se cascade está configurado
 		}
 		links.setGitHub(dados.gitHub());
@@ -258,29 +259,27 @@ public class AlunoController {
 		}
 		
 		egresso.atualizarInformacoes(dados);
-		return "redirect:aluno";
+		return "redirect:egresso";
 	}
 
 	@DeleteMapping
 	@Transactional
-	public String removeAluno(Long id) {
+	public String removeEgresso(Long id) {
 		service.remover(id);
-		return "redirect:aluno";
+		return "redirect:egresso";
 	}
-	
-	
 	
 	
 	//Mapeamento da pagina inicio do administrador, para chegar lá é necessario ele se logar pelo LoginController
 	@GetMapping("/index")
 	public ModelAndView index(HttpSession session) {
 		//Pega o administrador recebido do login
-		Egresso alunoLogado = (Egresso) session.getAttribute("usuarioLogado");
+		Egresso egressoLogado = (Egresso) session.getAttribute("usuarioLogado");
 		
 		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.setViewName("aluno/index");
-		modelAndView.addObject("aluno", alunoLogado);
-		modelAndView.addObject("role", "aluno");
+		modelAndView.setViewName("egresso/index");
+		modelAndView.addObject("egresso", egressoLogado);
+		modelAndView.addObject("role", "egresso");
 		return modelAndView;
 	}
 	
@@ -288,11 +287,11 @@ public class AlunoController {
 	@GetMapping("/{id}/foto")
 	@ResponseBody
 	public ResponseEntity<byte[]> getFoto(@PathVariable Long id) {
-		Egresso aluno = repository.findById(id).orElse(null);
-		if (aluno != null && aluno.getFoto() != null) {
+		Egresso egresso = repository.findById(id).orElse(null);
+		if (egresso != null && egresso.getFoto() != null) {
 			return ResponseEntity.ok()
 					.contentType(MediaType.IMAGE_JPEG)
-					.body(aluno.getFoto());
+					.body(egresso.getFoto());
 		}else {
 			return ResponseEntity.notFound().build();
 		}

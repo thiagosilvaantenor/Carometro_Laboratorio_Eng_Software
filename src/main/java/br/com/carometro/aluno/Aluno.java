@@ -23,7 +23,7 @@ public class Aluno {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "egresso_id")
+	@Column(name = "aluno_id")
 	private Long id;
 	private String nome;
 	@Email

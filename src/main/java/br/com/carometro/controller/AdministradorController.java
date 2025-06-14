@@ -21,6 +21,7 @@ import br.com.carometro.adm.AdministradorRepository;
 import br.com.carometro.adm.AdministradorService;
 import br.com.carometro.adm.DadosAtualizacaoAdministrador;
 import br.com.carometro.adm.DadosCadastroAdministrador;
+import br.com.carometro.coordenador.Coordenador;
 import br.com.carometro.curso.Curso;
 import br.com.carometro.curso.CursoService;
 import br.com.carometro.egresso.Egresso;
@@ -42,7 +43,7 @@ public class AdministradorController {
 
 	
 	@Autowired
-	private EgressoService alunoService;
+	private EgressoService egressoService;
 	
 	@Autowired
 	private CursoService cursoService;
@@ -108,25 +109,27 @@ public class AdministradorController {
 		return modelAndView;
 	}
 	
-	//Mapeamento da pagina de posts para validaçao dos comentarios dos alunos
+	//Mapeamento da pagina de posts para validaçao dos comentarios dos egressos
 	@GetMapping("/validarPostagem")
 	public ModelAndView paginaExibicaoPosts(HttpSession session) throws Exception {
 		//Busca o admin logado
 		Administrador adminLogado = (Administrador) session.getAttribute("usuarioLogado");
 	    if (adminLogado != null) {
-	    	//Busca os alunos da unidFatec do admin para exibir
+	    	//Busca os egressos da unidFatec do admin para exibir
 	    	
 	    	//Busca os cursos
 	     	List<Curso> cursos = cursoService.getAllCursos();
-	    	//Cria a lista de alunos que vai ser populada com os alunos de cada curso da unidade
-	    	List<Egresso> alunos = new ArrayList<>();
+	    	//Cria a lista de egressos que vai ser populada com os egressos que ainda não foram validados
+	     	//TODO: buscar quem ainda não teve comentario ou foto ou cadastro avaliado
+	    	List<Egresso> egressos = new ArrayList<>();
 	    	cursos.forEach(curso -> {
-	    		 alunos.addAll( alunoService.
-	    				filtrarAlunosPeloCursoESituacaoComentario(curso.getId(), false));
+	    		 egressos.addAll( egressoService.
+	    				filtrarEgressoPeloCursoESituacaoComentario(curso.getId(), false));
 	    	});
-	    	//Envia para a model a lista de alunos
+	    	//Envia para a model a lista de egressos
 	        ModelAndView modelAndView = new ModelAndView();
-	        modelAndView.addObject("alunos", alunos);
+	        modelAndView.addObject("egressos", egressos);
+	        modelAndView.addObject("cursos", cursoService.getAllCursos());
 	        modelAndView.setViewName("admin/validarPostagem");
 	        return modelAndView; 
 	    } else {
@@ -136,47 +139,118 @@ public class AdministradorController {
 	
 	//Caso seja os comentarios estejam de acordo é aprovado e o estado de situacaoComentario muda
 	 @PostMapping("/aprovarComentario")
-	    public String aprovarComentario(@RequestParam("id") Long id, Model model, HttpSession session) {
+	    public String aprovarComentariosOuFoto(@RequestParam("id") Long id, @RequestParam("tipo") String tipo, 
+	    		Model model, HttpSession session) {
 	        try {
-				alunoService.aprovarComentario(id);
-				//Busca o admin logado
-	    	    Administrador adminLogado = (Administrador) session.getAttribute("usuarioLogado");
+	        	switch(tipo) {
+	        		//Caso seja aprovação de comentario, verifical qual ou quais
+	        		case "fatec","geral","comentarios":
+	        			egressoService.aprovarComentario(id);
+	        		break;
+	        		//caso seja reprovação de foto
+	        		case "foto":
+	        			egressoService.aprovarFoto(id);
+	        		break;
+	        	}
 	    	    //Busca os cursos
 		     	List<Curso> cursos = cursoService.getAllCursos();
-		    	//Cria a lista de alunos que vai ser populada com os alunos de cada curso da unidade
-		     	List<Egresso> alunos = new ArrayList<>();
+		    	//Cria a lista de egressos que vai ser populada com os egressos de cada curso da unidade
+		     	List<Egresso> egressos = new ArrayList<>();
 		    	cursos.forEach(curso -> {
-		    		 alunos.addAll( alunoService.
-		    				 filtrarAlunosPeloCursoESituacaoComentario(curso.getId(), false));
+		    		 egressos.addAll( egressoService.
+		    				 filtrarEgressoPeloCursoESituacaoComentario(curso.getId(), false));
 		    	});
-		    	model.addAttribute("alunos", alunos);
+		    	model.addAttribute("egressos", egressos);
+		    	model.addAttribute("cursos", cursos);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 	        return "redirect:/admin/validarPostagem";
 	    }
 	 
-	//Caso pelo menos 1 dos comentarios não esteja de acordo
+	//Reprovação dos comentarios ou foto
    @PutMapping("/reprovarComentario")
-	    public String reprovarComentario(@RequestParam("id") Long id, 
-	    		@RequestParam("tipoComentario") String tipoComentario, Model model, HttpSession session) {
+	    public String reprovarComentarioOuFoto(@RequestParam("id") Long id, 
+	    		@RequestParam("tipo") String tipo, Model model, HttpSession session) {
 	        try{
-	        	alunoService.reprovarComentario(id, tipoComentario);
-	        	//Busca o admin logado
-	        	Administrador adminLogado = (Administrador) session.getAttribute("usuarioLogado");
+	        	switch(tipo) {
+	        		//Caso seja reprovação de comentario, verifical qual ou quais
+	        		case "fatec","geral","comentarios":
+	        			egressoService.reprovarComentario(id, tipo);
+	        		break;
+	        		//caso seja reprovação de foto
+	        		case "foto":
+	        			egressoService.reprovarFoto(id);
+	        		break;
+	        	}
 	        	//Busca os cursos
 		     	List<Curso> cursos = cursoService.getAllCursos();
-		    	//Cria a lista de alunos que vai ser populada com os alunos de cada curso da unidade
-		    	List<Egresso> alunos = new ArrayList<>();
+		    	//Cria a lista de egressos que vai ser populada com os egressos de cada curso da unidade
+		    	List<Egresso> egressos = new ArrayList<>();
 		    	cursos.forEach(curso ->
-		    		 alunos.addAll( alunoService.
-		    				 filtrarAlunosPeloCursoESituacaoComentario(curso.getId(), false))
+		    		 egressos.addAll( egressoService.
+		    				 filtrarEgressoPeloCursoESituacaoComentario(curso.getId(), false))
 		    		 );		
-	 	        model.addAttribute("alunos", alunos);
+	 	        model.addAttribute("egressos", egressos);
+	 	        model.addAttribute("cursos", cursos);
+	        }catch(Exception e) {
+	        	e.printStackTrace();
+	        }
+	        return "redirect:/admin/validarPostagem";
+	    }
+   
+	//Caso seja ex-aluno é aprovado, estado de situaçãoCadastro é mudado para TRUE
+	 @PostMapping("/aprovarEgresso")
+	    public String aprovarEgresso(@RequestParam("id") Long id,  Model model, HttpSession session) {
+		 
+	        try {
+				egressoService.aprovarEgresso(id);
+				//Busca os egressos ainda não avaliados
+	    	    List<Egresso> egressos = egressoService.filtraEgressoPelaSituacaoCadastro(false);
+	    	    model.addAttribute("egressos", egressos);
+	    	    model.addAttribute("cursos", cursoService.getAllCursos());
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+	        return "redirect:/admin/validarPostagem";
+	    }
+	 
+	//Caso não seja ex-aluno é reprovado e deletado do banco de dados 
+  @DeleteMapping("/reprovarEgresso")
+	    public String reprovarEgresso(@RequestParam("id") Long id, Model model, HttpSession session) {
+	        try{
+	        	egressoService.reprovarEgresso(id);
+	        	//Busca os egressos ainda não avaliados
+	    	    List<Egresso> egressos = egressoService.filtraEgressoPelaSituacaoCadastro(false);
+	    	    model.addAttribute("egressos", egressos);
+	    	    model.addAttribute("cursos", cursoService.getAllCursos());
 	        }catch(Exception e) {
 	        	e.printStackTrace();
 	        }
 	        return "redirect:/admin/validarPostagem";
 	    }
 
+  
+  @GetMapping("/filtrar")
+	public String filtrarPaginaListagem(@RequestParam(name ="cursoId", required=false) Long cursoId,
+			@RequestParam(name= "ano", required= false) Integer ano,
+			Model model) {
+		//Lista de egressos filtrados que tiveram cadastro aprovado pelo coordenador
+		List<Egresso> egressosFiltrados = egressoService.filtrarEgresso(ano, cursoId, false);
+		//Lista de todos os egresso para pegar os anos semestres
+		List<Egresso> egresso = egressoService.buscaEgressoPelaSituacaoCadastro(false);
+		List<Integer> anos = new ArrayList<>();
+		egresso.forEach( a -> {
+			//Verifica se o ano semestre ja esta na lista, se não adiciona
+			if(!anos.contains(a.getAno())) {
+				anos.add(a.getAno());							
+			}
+		});
+		 	model.addAttribute("lista", egressosFiltrados);
+		    model.addAttribute("anos", anos);
+		    model.addAttribute("cursos", cursoService.getAllCursos());
+		return "egresso/listagem";
+	}
+  
+  
 }

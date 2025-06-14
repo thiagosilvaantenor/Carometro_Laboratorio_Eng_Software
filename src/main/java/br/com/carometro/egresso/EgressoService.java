@@ -19,27 +19,27 @@ public class EgressoService {
 	@Autowired
 	private HistoricoRepository repositoryHistorico;
 
-	public List<Egresso> getAllAluno() {
+	public List<Egresso> getAllEgresso() {
 		return repository.findAll(Sort.by("nome").ascending());
 	}
 
-	public Egresso getAlunoById(Long id) {
+	public Egresso getEgressoById(Long id) {
 		return repository.getReferenceById(id);
 	}
 
 	
-	public void salvar(Egresso aluno) throws Exception {
+	public void salvar(Egresso egresso) throws Exception {
 		try {
-			if (repository.findByEmail(aluno.getEmail()) != null) {
-				throw new Exception("Este email já está cadastrado: " + aluno.getEmail());
+			if (repository.findByEmail(egresso.getEmail()) != null) {
+				throw new Exception("Este email já está cadastrado: " + egresso.getEmail());
 			}
 	
-			aluno.setSenha(Criptografia.md5(aluno.getSenha()));
+			egresso.setSenha(Criptografia.md5(egresso.getSenha()));
 
 		} catch (Exception e) {
 			throw new Exception("Erro na criptografia da senha");
 		}
-		repository.save(aluno);
+		repository.save(egresso);
 	}
 
 	//Verifica o login(email e senha) do aluno
@@ -51,30 +51,30 @@ public class EgressoService {
 		return repository.findByEmail(email);
 	}
 	
-	public List<Egresso> filtraAlunosPeloCurso(Long cursoId){
+	public List<Egresso> filtraEgressoPeloCurso(Long cursoId){
 		return repository.findByCursoId(cursoId);
 	}
 	
-	public List<Egresso> filtraAlunosPeloCursoESituacaoCadastor(Long cursoId, Boolean situacaoCadastro){
+	public List<Egresso> filtraEgressoPeloCursoESituacaoCadastor(Long cursoId, Boolean situacaoCadastro){
 		return repository.findByCursoIdAndSituacaoCadastro(cursoId, situacaoCadastro);
 	}
 	
-	public List<Egresso> filtrarAlunosPeloCursoESituacaoComentario(Long cursoId, Boolean situacaoComentario){
+	public List<Egresso> filtrarEgressoPeloCursoESituacaoComentario(Long cursoId, Boolean situacaoComentario){
 		return repository.findByCursoIdAndSituacaoComentario(cursoId, situacaoComentario);
 	}
 	
-	public List<Egresso> filtraAlunosPeloAnoSemestre(Integer ano){
+	public List<Egresso> filtraEgressoPeloAnoSemestre(Integer ano){
 		return repository.findByAno(ano);		
 	}
 	
-	public List<Egresso> buscaAlunosPelaSituacaoCadastro(Boolean situacao){
+	public List<Egresso> buscaEgressoPelaSituacaoCadastro(Boolean situacao){
 		if (situacao != null)
 			return repository.findBySituacaoCadastro(situacao);
 		throw new IllegalArgumentException();
 	}
 		
 	//Filtra os alunos
-	public List<Egresso> filtrarAluno(Integer ano, Long cursoId, Boolean situacao){
+	public List<Egresso> filtrarEgresso(Integer ano, Long cursoId, Boolean situacao){
 			//Informou tudo
 		 	if (cursoId != null && ano != null && ano > 0 && situacao != null) {
 		        return repository.findByCursoIdAndAno(cursoId, ano);
@@ -94,24 +94,24 @@ public class EgressoService {
 	}
 	
 	//Caso o aluno cadastrado for realmente ex-aluno, muda o estado de Situação cadastro e passa a listar ele na postagem
-	public void aprovarAluno(Long id) throws IllegalArgumentException {
-		Optional<Egresso> alunoBuscado = repository.findById(id);
-		if (alunoBuscado.isPresent()) {
-			Egresso aluno = alunoBuscado.get();
-			aluno.setSituacaoCadastro(true);
-			repository.save(aluno);
+	public void aprovarEgresso(Long id) throws IllegalArgumentException {
+		Optional<Egresso> egressoBuscado = repository.findById(id);
+		if (egressoBuscado.isPresent()) {
+			Egresso egresso = egressoBuscado.get();
+			egresso.setSituacaoCadastro(true);
+			repository.save(egresso);
 		} else {
-			throw new IllegalArgumentException("Erro ao tentar buscar e aprovar aluno");
+			throw new IllegalArgumentException("Erro ao tentar buscar e aprovar egresso");
 		}
 		
 	}
 	//Caso o aluno cadastrado não for ex-aluno, não tem motivo deixar ele no banco de dados, então deleta ele
-	public void reprovarAluno(Long id) throws IllegalArgumentException {
-		Optional<Egresso> alunoBuscado = repository.findById(id);
-		if (alunoBuscado.isPresent()) {
+	public void reprovarEgresso(Long id) throws IllegalArgumentException {
+		Optional<Egresso> egressoBuscado = repository.findById(id);
+		if (egressoBuscado.isPresent()) {
 			remover(id);
 		} else {
-			throw new IllegalArgumentException("Erro ao tentar buscar e aprovar aluno");
+			throw new IllegalArgumentException("Erro ao tentar buscar e aprovar egresso");
 		}
 		
 	}
@@ -119,50 +119,78 @@ public class EgressoService {
 	
 	//Caso os comentarios forem aprovados, muda estado de situacaoComentario
 		public void aprovarComentario(Long id) throws IllegalArgumentException {
-			Optional<Egresso> alunoBuscado = repository.findById(id);
-			if (alunoBuscado.isPresent()) {
-				Egresso aluno = alunoBuscado.get();
-				aluno.setSituacaoComentario(true);
-				repository.save(aluno);
+			Optional<Egresso> egressoBuscado = repository.findById(id);
+			if (egressoBuscado.isPresent()) {
+				Egresso egresso = egressoBuscado.get();
+				egresso.setSituacaoComentario(true);
+				repository.save(egresso);
 			} else {
-				throw new IllegalArgumentException("Erro ao tentar buscar e aprovar comentario do aluno");
+				throw new IllegalArgumentException("Erro ao tentar buscar e aprovar comentario do egresso");
 			}
 			
 		}
 		//Caso pelo menos 1 dos comentarios não foi reprovado, apaga os comentarios reprovados
 		public void reprovarComentario(Long id, String tipoComentario) throws IllegalArgumentException {
-			Optional<Egresso> alunoBuscado = repository.findById(id);
-			if (alunoBuscado.isPresent() && (tipoComentario.equalsIgnoreCase("geral") 
+			Optional<Egresso> egressoBuscado = repository.findById(id);
+			if (egressoBuscado.isPresent() && (tipoComentario.equalsIgnoreCase("geral") 
 					|| tipoComentario.equalsIgnoreCase("fatec") || tipoComentario.equalsIgnoreCase("comentarios") )) {
 				
-				Egresso aluno = alunoBuscado.get();
-				aluno.setSituacaoComentario(false);
-				//verifica qual comentario foi reprovado e atualiza o aluno
+				Egresso egresso = egressoBuscado.get();
+				egresso.setSituacaoComentario(false);
+				//verifica qual comentario foi reprovado e atualiza o egresso
 				if (tipoComentario.equalsIgnoreCase("geral"))
-					aluno.setComentario(null);
+					egresso.setComentario(null);
 				else if (tipoComentario.equalsIgnoreCase("fatec"))
-					aluno.setComentarioFATEC(null);
+					egresso.setComentarioFATEC(null);
 				else {
-					aluno.setComentarioFATEC(null);
-					aluno.setComentario(null);
+					egresso.setComentarioFATEC(null);
+					egresso.setComentario(null);
 				}
 				
-				repository.save(aluno);
+				repository.save(egresso);
 			} else {
-				throw new IllegalArgumentException("Erro ao tentar buscar e aprovar aluno");
+				throw new IllegalArgumentException("Erro ao tentar buscar e aprovar egresso");
 			}
 			
 		}
 
 	public void remover(Long id) {
-		Optional<Egresso> alunoBuscado = repository.findById(id);
-		if (alunoBuscado.isPresent()) {			
+		Optional<Egresso> egressoBuscado = repository.findById(id);
+		if (egressoBuscado.isPresent()) {			
 			//Remove a relação de aluno e historico
-			List<Historico> historicosDoAluno = repositoryHistorico.findByAlunoId(id); 
-			historicosDoAluno.forEach(repositoryHistorico::delete);
+			List<Historico> historicosDoEgresso = repositoryHistorico.findByEgressoId(id); 
+			historicosDoEgresso.forEach(repositoryHistorico::delete);
 			repository.deleteById(id);
 		}
 		
+	}
+
+	public void reprovarFoto(Long id) {
+		Optional<Egresso> egressoBuscado = repository.findById(id);
+		if (egressoBuscado.isPresent() ) {
+			Egresso egresso = egressoBuscado.get();
+			egresso.setFoto(null);
+			//Garante que a foto não vai ser exibida na postagem
+			egresso.setSituacaoFoto(false);
+			repository.save(egresso);
+		}
+			
+	}
+
+	public void aprovarFoto(Long id) {
+		//Busca egresso
+		Optional<Egresso> egressoBuscado = repository.findById(id);
+		//Se achou muda o estado de situacaoFoto
+		if (egressoBuscado.isPresent() ) {
+			Egresso egresso = egressoBuscado.get();
+			egresso.setSituacaoFoto(true);
+			repository.save(egresso);
+		}
+		
+	}
+
+	public List<Egresso> filtraEgressoPelaSituacaoCadastro(boolean situacao) {
+		return repository.findBySituacaoCadastro(situacao);
 	}
 	
 	

@@ -108,24 +108,24 @@ Estilo para o navbar
 							Início
 					</a></li>
 		
-					<!-- Dropdown de Aluno -->
+					<!-- Dropdown de egresso -->
 					<li class="nav-item dropdown">
 						<a class="nav-link dropdown-toggle" id="filmesDropdown"
 						role="button" data-bs-toggle="dropdown" aria-expanded="false"
-						th:classappend="${activePage != formularioAluno || activePage != 'listagemAluno' } ? 'active' : ''"
+						th:classappend="${activePage != formularioEgresso || activePage != 'listagemEgresso' } ? 'active' : ''"
 						style="cursor: pointer;"> <i class="fas fa-film me-1"></i>
-							Aluno
+							Egresso
 						</a>
 						<ul class="dropdown-menu" aria-labelledby="filmesDropdown">
 							<li><a class="dropdown-item"
-								th:classappend="${activePage != 'listagemAluno'} ? 'active' : ''"
-								th:href="@{/aluno}"> <i class="fas fa-list me-1"></i> Ver postagens de alunos</a>
+								th:classappend="${activePage != 'listagemEgresso'} ? 'active' : ''"
+								th:href="@{/egresso}"> <i class="fas fa-list me-1"></i> Ver postagens de alunos</a>
 							</li>
 							<!-- Cadastro é uma opção visivel apenas quando não esta logado -->
 							<li th:if ="${session.usuarioLogado == null}">
 							<a class="dropdown-item"
-								th:classappend="${activePage != 'formularioAluno'} ? 'active' : ''"
-								th:href="@{/aluno/formulario}"> <i class="fas fa-star me-1"></i> Cadastrar Aluno
+								th:classappend="${activePage != 'formularioEgresso'} ? 'active' : ''"
+								th:href="@{/egresso/formulario}"> <i class="fas fa-star me-1"></i> Cadastrar Egresso
 							</a></li>
 						</ul>
 					</li>
@@ -172,7 +172,7 @@ Estilo para o navbar
 				<div th:if ="${session.usuarioLogado != null}" class="d-flex align-items-center">
 				<!-- Verifica qual o ator para mostrar apenas o botão home que redireciona para o Index adequado -->
 							    <a class="nav-link text-success"
-							       th:if="${session.role == 'aluno'}"
+							       th:if="${session.role == 'egresso'}"
 							       th:href="@{/aluno/index}">
 							        <i class="fas fa-home me-2"></i> Home
 							    </a>

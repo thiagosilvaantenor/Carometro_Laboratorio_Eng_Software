@@ -43,7 +43,7 @@ public class CoordenadorController {
 	
 	
 	@Autowired
-	private EgressoService alunoService;
+	private EgressoService egressoService;
 
 	@GetMapping("/formulario")
 	public String carregaPaginaFormulario(Long id, Model model) {
@@ -132,58 +132,59 @@ public class CoordenadorController {
 		return modelAndView;
 	}
 	
-	//Mapeamento da pagina de posts para validaçao dos alunos 
-	//Validação de Ex-aluno:Quando aluno é cadastrado, para ser exibido na listagem é necessario o coordenador verificar se ele é ex-aluno
-	@GetMapping("/validarAluno")
+	//TODO: Colocar um botão para linkar o coordenador a página de postagens com o filtro do curso dele
+	//Mapeamento da pagina de posts para validaçao dos egressos 
+	//Validação de egresso:Quando egresso é cadastrado, para ser exibido na listagem é necessario o coordenador verificar se ele é ex-egresso
+	@GetMapping("/validarEgresso")
 	public ModelAndView paginaExibicaoPosts(HttpSession session) throws Exception {
 		//Busca o coordenador logado
 	    Coordenador coordenadorLogado = (Coordenador) session.getAttribute("usuarioLogado");
 	    if (coordenadorLogado != null) {
-	    	//Busca os alunos do curso do coordenador com situação de cadastro false para ele realizar a validação
-	        List<Egresso> alunos = alunoService.filtraAlunosPeloCursoESituacaoCadastor
+	    	//Busca os egressos do curso do coordenador com situação de cadastro false para ele realizar a validação
+	        List<Egresso> egressos = egressoService.filtraEgressoPeloCursoESituacaoCadastor
 	        		(coordenadorLogado.getCurso().getId(), false);
 	        
 	        ModelAndView modelAndView = new ModelAndView();
-	        modelAndView.addObject("alunos", alunos);
-	        modelAndView.setViewName("coordenador/validarAluno");
+	        modelAndView.addObject("egressos", egressos);
+	        modelAndView.setViewName("coordenador/validarEgresso");
 	        return modelAndView;
 	    } else {
 	        throw new Exception("Usuário não está logado.");
 	    }
 	}
 
-	//Caso seja ex-aluno é aprovado, estado de situaçãoCadastro é mudado para TRUE
-	 @PostMapping("/aprovarAluno")
-	    public String aprovarAluno(@RequestParam("id") Long id,  Model model, HttpSession session) {
-		 
-	        try {
-				alunoService.aprovarAluno(id);
-				//Busca o coordenador logado
-	    	    Coordenador coordenadorLogado = (Coordenador) session.getAttribute("usuarioLogado");
-	    	    List<Egresso> alunos = alunoService.filtraAlunosPeloCursoESituacaoCadastor
-		        		(coordenadorLogado.getCurso().getId(), false);
-	    	    model.addAttribute("alunos", alunos);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-	        return "redirect:/coordenador/validarAluno";
-	    }
-	 
-	//Caso não seja ex-aluno é reprovado e deletado do banco de dados 
-    @DeleteMapping("/reprovarAluno")
-	    public String reprovarAluno(@RequestParam("id") Long id, Model model, HttpSession session) {
-	        try{
-	        	alunoService.reprovarAluno(id);
-	        	//Busca o coordenador logado
-	    	    Coordenador coordenadorLogado = (Coordenador) session.getAttribute("usuarioLogado");
-	    	    List<Egresso> alunos = alunoService.filtraAlunosPeloCursoESituacaoCadastor
-		        		(coordenadorLogado.getCurso().getId(), false);		
-	 	        model.addAttribute("alunos", alunos);
-	        }catch(Exception e) {
-	        	e.printStackTrace();
-	        }
-	        return "redirect:/coordenador/validarAluno";
-	    }
+//	//Caso seja ex-aluno é aprovado, estado de situaçãoCadastro é mudado para TRUE
+//	 @PostMapping("/aprovarEgresso")
+//	    public String aprovarEgresso(@RequestParam("id") Long id,  Model model, HttpSession session) {
+//		 
+//	        try {
+//				egressoService.aprovarEgresso(id);
+//				//Busca o coordenador logado
+//	    	    Coordenador coordenadorLogado = (Coordenador) session.getAttribute("usuarioLogado");
+//	    	    List<Egresso> egressos = egressoService.filtraEgressoPeloCursoESituacaoCadastor
+//		        		(coordenadorLogado.getCurso().getId(), false);
+//	    	    model.addAttribute("egressos", egressos);
+//			} catch (Exception e) {
+//				e.printStackTrace();
+//			}
+//	        return "redirect:/coordenador/validarEgresso";
+//	    }
+//	 
+//	//Caso não seja ex-aluno é reprovado e deletado do banco de dados 
+//    @DeleteMapping("/reprovarAluno")
+//	    public String reprovarEgresso(@RequestParam("id") Long id, Model model, HttpSession session) {
+//	        try{
+//	        	egressoService.reprovarEgresso(id);
+//	        	//Busca o coordenador logado
+//	    	    Coordenador coordenadorLogado = (Coordenador) session.getAttribute("usuarioLogado");
+//	    	    List<Egresso> egressos = egressoService.filtraEgressoPeloCursoESituacaoCadastor
+//		        		(coordenadorLogado.getCurso().getId(), false);		
+//	 	        model.addAttribute("egressos", egressos);
+//	        }catch(Exception e) {
+//	        	e.printStackTrace();
+//	        }
+//	        return "redirect:/coordenador/validarEgresso";
+//	    }
 
 	
 }
