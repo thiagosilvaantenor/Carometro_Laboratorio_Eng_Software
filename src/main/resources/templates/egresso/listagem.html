@@ -195,6 +195,7 @@
 							<th scope="col">Comentario FATEC </th>
 							<th scope="col">Comentario Livre </th>
 							<th scope="col">Redes</th>
+							<th scope="col">Perfil</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -251,11 +252,17 @@
 							</td>
 							<td th:if="${egresso.comentario == null or #strings.isEmpty(egresso.comentario)}" 
 														>Ainda não comentou</span>
-													
-							
+												
 							<td scope="col" class="d-flex flex-column">
-								<a th:href="${egresso.links.linkedIn}" target="_blank">LinkedIn</a>
-								<a th:href="${egresso.links.gitHub}" target="_blank">GitHub</a>
+								<a th:if="${not #strings.isEmpty(egresso.links.linkedIn) and egresso.links.linkedIn.startsWith('http')}"  th:href="${egresso.links.linkedIn}" target="_blank">LinkedIn</a>
+								<span th:unless="${not #strings.isEmpty(egresso.links.linkedIn) and egresso.links.linkedIn.startsWith('http')}">
+								    Não tem LinkedIn
+								</span>
+								<a th:if="${not #strings.isEmpty(egresso.links.gitHub) and egresso.links.gitHub.startsWith('http')}" 
+								th:href="${egresso.links.gitHub}" target="_blank">GitHub</a>
+								<span th:unless="${not #strings.isEmpty(egresso.links.gitHub) and egresso.links.gitHub.startsWith('http')}">
+								    Não tem GitHub
+								</span>
 								<!-- Verifica se o egresso tem LattesCNPQ -->
 								<a th:if="${not #strings.isEmpty(egresso.links.lattesCNPQ) and egresso.links.lattesCNPQ.startsWith('http')}"
 								   th:href="${egresso.links.lattesCNPQ}"
@@ -264,6 +271,9 @@
 								<span th:unless="${not #strings.isEmpty(egresso.links.lattesCNPQ) and egresso.links.lattesCNPQ.startsWith('http')}">
 								    Não tem Lattes
 								</span>
+							</td>
+							<td scope="col">
+							<a th:href="@{/egresso/perfil/}+ (${egresso.id})" class="btn btn-fatec">Ver Perfil</a>
 							</td>
 						</tr>
 					</tbody>
