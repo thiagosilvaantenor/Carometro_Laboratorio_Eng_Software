@@ -1,6 +1,7 @@
 package br.com.carometro.aluno;
 
 import br.com.carometro.curso.Curso;
+import br.com.carometro.egresso.DadosAtualizacaoEgresso;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -25,15 +26,42 @@ public class Aluno {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "aluno_id")
 	private Long id;
+	@Column(nullable = false)
 	private String nome;
 	@Email
+	@Column(nullable = false)
 	private String email;
-	//TODO: VALIDAÇÃO DE SENHA 
+	//TODO: VALIDAÇÃO DE SENHA
+	//Senha do aluno pode ser nula, caso quem cadastre ele não seja ele
+	@Column(nullable = true)
 	private String senha;
+	@Column(nullable = true)
 	private String telefone;
 	//1 curso para N alunos
 	@ManyToOne
 	@JoinColumn(name="curso_id", nullable=false)
 	private Curso curso;
 
+	public Aluno(AlunoDadosCadastro dados) {
+		this.nome = dados.nome();
+		this.email = dados.email();
+		this.senha = dados.senha();
+		this.telefone = dados.telefone();
+	}
+	
+	public void atualizarInformacoes(AlunoDadosCadastro dados) {
+		if(dados.nome() != null) {
+			this.nome = dados.nome();
+		}
+		if(dados.email() != null) {
+			this.email = dados.email();
+		}
+		if(dados.senha() != null) {
+			this.senha = dados.senha();
+		}
+		if(dados.telefone() != null) {
+			this.telefone = dados.telefone();
+		}
+		//Atualização do curso é feita no controller
+	}
 }

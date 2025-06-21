@@ -54,42 +54,52 @@
 						<input type="hidden" name="_method" value="put"
 						       th:if="${egresso?.id != null}">
 						<input type="hidden" name="id" th:value="${egresso?.id}"/>
-
-						<div class="form-group">
-							<label for="nome">Nome: </label>
-							<input class="form-control" type="text" id="nome" name="nome"
-								th:value="${egresso?.nome}" required/>
-						</div>
+						<h5 class="text-center"> Campos com o simbolo * são obrigatórios</h5>
+						
+						<!-- Linha 1: Nome, Email e Senha-->
 						<div class="form-row">
-							<div class="form-group col-md-3">
-								<label for="email"> Email: </label>
-								<input type="email" class="form-control" id="email"
-								 name="email" th:value="${egresso?.email}" required/>
+							<div class="form-group col-md-5">
+								<label for="nome">* Nome: </label>
+								<input class="form-control" type="text" id="nome" name="nome"
+									th:value="${egresso?.nome}" required/>
 							</div>
 							
-						<div class="form-group col-md-3">
-								<label for="senha"> Senha: </label>
+							<div class="form-group col-md-3 ml-2">
+									<label for="email">* Email: </label>
+									<input type="email" class="form-control" id="email"
+									 name="email" th:value="${egresso?.email}" required/>
+							</div>
+							
+							<div class="form-group col-md-3 ml-2">
+								<label for="senha">* Senha: </label>
 								<input type="password" class="form-control" id="senha"
 								 name="senha" th:value="${egresso?.senha}" required/>
 							</div>				
 						</div>
 						
+						<!-- Linha 2: Foto e Ano -->
+						<div class="form-row">
+
 						<!-- FOTO -->
-							<div class="form-group col-md-3">
-								<label for="foto"> Foto, precisa ser JPG no maximo 2MB: </label>
+							<div class="form-group col-md-4">
+								<label for="foto">* Foto, precisa ser JPG no maximo 2MB: </label>
 								<input type="file" accept="image/jpeg" class="form-control" id="foto"
 									name="foto" th:value="${egresso?.foto}"/>
 							</div>
 						<!-- Ano e Semestre de conclusão -->
-							<div class="form-group col-md-5 mt-3">
-									<label for="ano"> Informe o ano em que se formou Ex:(2024): </label>
+							<div class="form-group col-md-4 ml-2">
+									<label for="ano">* Informe o ano em que se formou Ex:(2024): </label>
 									<input type="number" class="form-control" id="ano"
 										name="ano" th:value="${egresso?.ano}"/>
 							</div>
-
+					</div>
+						
+						
+					<!-- Linha 3:Curso,Sobre mim, resumo profissional -->
+					<div class="form-row">
 					<!-- Curso -->
 						<div class="form-group mt-2">
-							<label for="cursoSelect"> Selecione o seu curso: </label>
+							<label for="cursoSelect">* Selecione o seu curso: </label>
 							<select class="form-control" name="cursoId" id="cursoId">
 								<option value="">-- Selecione --</option>
 								<option th:each="curso : ${cursos}"
@@ -99,29 +109,54 @@
 								</option>
 							</select>
 						</div>
-					<!-- Links -->
-					<div class="form-row">
-						<div class="form-group col-md-4">
-							<label for="linkedIn"> Caso tenha, informe o seu linkedIn: </label>
-							<input type="url" placeholder="https://likedin/in/.com"
-								pattern="https://.*" name="linkedIn" id="linkedIn" 
-								th:value="${egresso?.links.linkedIn}"/>
-						</div>
-						
-						<div class="form-group col-md-4">
-							<label for="gitHub"> Caso tenha, informe o seu Github: </label>
-							<input type="url" placeholder="https://github/.com"
-								pattern="https://.*" name="gitHub" id="gitHub" 
-								th:value="${egresso?.links.gitHub}"/>
-						</div>
-						
-						<div class="form-group col-md-4">
-							<label for="lattesCNPQ"> Caso tenha, informe o seu lattes CNPQ: </label>
-							<input type="url" placeholder=" http://lattes.cnpq.br/"
-								pattern="https://.*" name="lattesCNPQ" id="lattesCNPQ" 
-								th:value="${egresso?.links.lattesCNPQ}"/>
-						</div>
+												
+					<!-- Sobre mim Opcional-->
+							<div class="form-group col-md-4 ml-2">
+									<label for="sobre"> Escreva sobre você: </label>
+									<textarea class="form-control" id="sobre"
+										name="sobre" th:value="${egresso?.sobre}">
+									</textarea>
+							</div>
+					<!-- Resumo(Sobre) profissional Opcional-->
+							<div class="form-group col-md-4 ml-2">
+									<label for="sobre"> Resumo Profissional: </label>
+									<textarea class="form-control" id="sobre"
+										name="sobre" th:value="${egresso?.sobreProfissional}">
+									</textarea>
+							</div>			
 					</div>
+					
+						
+						<!-- Linha 4: resumo da experiência com a fatec, linkedin,  -->
+						<div class="form-row">
+							<!-- Sobre Fatec (resumo da experiência do egresso com a FATEC Opcional-->
+								<div class="form-group col-md-5">
+										<label for="sobre"> Escreva sobre sua experiência com a FATEC: </label>
+										<textarea class="form-control" id="sobre"
+											name="sobre" th:value="${egresso?.sobreFatec}">
+										</textarea>
+								</div>
+							<!-- Links -->
+								<div class="form-group col-md-2 ml-3">
+									<label for="linkedIn"> Caso tenha, informe o seu linkedIn: </label>
+									<input type="url" placeholder="https://likedin/in/.com"
+										pattern="https://.*" name="linkedIn" id="linkedIn" 
+										th:value="${egresso?.links.linkedIn}"/>
+								</div>					
+								<div class="form-group col-md-2 ml-4">
+									<label for="gitHub"> Caso tenha, informe o seu Github: </label>
+									<input type="url" placeholder="https://github/.com"
+										pattern="https://.*" name="gitHub" id="gitHub" 
+										th:value="${egresso?.links.gitHub}"/>
+								</div>
+								
+								<div class="form-group col-md-2 ml-4">
+									<label for="lattesCNPQ"> Caso tenha, informe o seu lattes CNPQ: </label>
+									<input type="url" placeholder=" http://lattes.cnpq.br/"
+										pattern="https://.*" name="lattesCNPQ" id="lattesCNPQ" 
+										th:value="${egresso?.links.lattesCNPQ}"/>
+								</div>
+							</div>
 
 					<!-- Historico -->					
 					<div id="historicosContainer">
@@ -156,19 +191,19 @@
 								<button class="remove-historico btn btn-danger">Remover</button>
 							</div>
 						</div>
-						<button type="button" class="btn btn-success mt-2" id="addHistoricoBtn">Adicionar Histórico</button>
+						<button type="button" class="btn btn-success mt-2" id="addHistoricoBtn">* Adicionar Histórico Profissional</button>
 
 						<!-- Comentarios -->
 						<div class="form-row">
 						<!-- FATEC -->
 							<div class="form-group col-md-4">
-								<label for="comentarioFATEC"> Faça um comentario sobre sua FATEC: </label>
+								<label for="comentarioFATEC">* Faça um comentario sobre sua FATEC: </label>
 								<input type="text" id="comentarioFATEC" class="form-control"
 									name="comentarioFATEC" th:value="${egresso?.comentarioFATEC}">
 							</div>
 						<!-- Geral -->
 							<div class="form-group col-md-4">
-								<label for="comentario"> Faça um comentario: </label>
+								<label for="comentario">* Faça um comentario Geral: </label>
 								<input type="text" id="comentario" class="form-control"
 									name="comentario" th:value="${egresso?.comentario}">
 							</div>

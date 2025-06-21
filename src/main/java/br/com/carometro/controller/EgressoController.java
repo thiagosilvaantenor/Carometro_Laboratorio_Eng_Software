@@ -297,6 +297,16 @@ public class EgressoController {
 		}
 	}
 	
+	@GetMapping("perfil/{id}")
+	public String exibirTelaPerfil(@PathVariable Long id, Model model) {
+		Egresso egresso = repository.findById(id).orElse(null);
+		if (egresso != null) {
+			model.addAttribute("egresso", egresso);
+			return "egresso/perfil";
+		}
+		return "egresso/listagem";
+		
+	}
 	
 	
 }

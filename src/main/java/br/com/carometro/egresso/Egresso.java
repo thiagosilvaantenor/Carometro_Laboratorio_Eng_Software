@@ -47,6 +47,15 @@ public class Egresso {
 	private String comentarioFATEC;
 	private String comentario;
 	private Integer ano;
+	//Atributo texto'sobre mim' do egresso, opcional
+	@Column(nullable = true)
+	private String sobre;
+	//Atributo texo 'sobre mim profissional', opcional
+	@Column(name = "sobre_profissional",nullable = true) 
+	private String sobreProfissional;
+	//Atributo texo 'sobre mim profissional', opcional
+	@Column(name = "sobre_Fatec",nullable = true)
+	private String sobreFatec;
 	//Atributo usado para lidar com aprovação de cadastro aluno, se ainda não foi avaliado = false, se é aluno = true;
 	@ColumnDefault("false")
 	private Boolean situacaoCadastro = false;
@@ -80,6 +89,9 @@ public class Egresso {
 		this.comentario = dados.comentario();
 		this.ano = dados.ano();
 		this.curso = dados.curso();
+		this.sobre = dados.sobre();
+		this.sobreFatec = dados.sobreFatec();
+		this.sobreProfissional = dados.sobreProfissional();
 		//DTO do historico é adicionado no controller
 		//Relações de historico e links são feitas no controller
 	}
@@ -110,6 +122,14 @@ public class Egresso {
 		if (dados.lattesCNPQ() != null) {
 			this.links.setLattesCNPQ(dados.lattesCNPQ());
 		}
-		
+		if (dados.sobre() != null) {
+			this.sobre = dados.sobre();
+		}
+		if (dados.sobreProfissional() != null) {
+			this.sobreProfissional = dados.sobreProfissional();
+		}
+		if (dados.sobreFatec() != null) {
+			this.sobreFatec = dados.sobreFatec();
+		}
 	}
 }
