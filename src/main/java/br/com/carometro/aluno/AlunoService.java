@@ -50,8 +50,7 @@ public class AlunoService {
 	}
 
 	public List<Aluno> filtarPorNomeECurso(String nome, Long cursoId) {
-		Curso curso = cursoService.getCursoById(cursoId);
-		return repository.findByNomeAndCurso(nome, curso);
+		return repository.findByNomeAndCursoId(nome, cursoId);
 	}
 
 	public List<Aluno> filtarPorNome(String nome) {
@@ -59,8 +58,7 @@ public class AlunoService {
 	}
 
 	public List<Aluno> filtarPorCurso(Long cursoId) {
-		Curso curso = cursoService.getCursoById(cursoId);
-		return repository.findByCurso(curso);
+		return repository.findByCursoId(cursoId);
 	}
 	
 	//Método para lidar com cadastro através de envio de arquivo csv

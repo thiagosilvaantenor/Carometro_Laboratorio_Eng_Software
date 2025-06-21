@@ -85,7 +85,7 @@ public class AlunoController {
 	@GetMapping("/filtrar")
 	public String filtrar(@RequestParam(name = "nome", required = false) String nome, 
 				@RequestParam(name = "cursoId", required = false)  Long cursoId, Model model) {
-		List<Aluno> alunos = new ArrayList<>();
+		List<Aluno> alunos = null;
 		//Envia a lista de cursos da seleção de filtro
 		List<Curso> cursos = cursoService.getAllCursos();
 		model.addAttribute("cursos", cursos);
