@@ -1,6 +1,7 @@
 package br.com.carometro.curso;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -23,6 +24,8 @@ public class CursoService {
 		return repository.findAllById(cursoIds);
 	}
 
-
+	public Optional<Curso> getByNome(String nome){
+		return repository.findByNome(nome);
+	}
 
 }

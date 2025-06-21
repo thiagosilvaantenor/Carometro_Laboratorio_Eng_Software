@@ -31,7 +31,6 @@ public class Aluno {
 	@Email
 	@Column(nullable = false)
 	private String email;
-	//TODO: VALIDAÇÃO DE SENHA
 	//Senha do aluno pode ser nula, caso quem cadastre ele não seja ele
 	@Column(nullable = true)
 	private String senha;
@@ -63,5 +62,12 @@ public class Aluno {
 			this.telefone = dados.telefone();
 		}
 		//Atualização do curso é feita no controller
+	}
+	
+	//Construtor para dados vindos de arquivo
+	public Aluno(String nome, String email, String telefone) {
+		this.nome = nome;
+		this.email = email;
+		this.telefone = telefone;
 	}
 }

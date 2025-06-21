@@ -52,7 +52,7 @@ public class LoginController {
     		return "login/login";
     	}
     	// Verifica no banco de dados o email e senha estão cadastrados
-    	//se sim verifica qual ator esta logando (admin, coodenador ou aluno)
+    	//se sim verifica qual ator esta logando (admin, coodenador ou egresso)
     	
     	String ator = serviceUsuario.verificaAtor(dados.email());
     	//Transforma a senha enviada em md5 para ser comparada com a senha do banco de dados
@@ -85,18 +85,18 @@ public class LoginController {
 					return "redirect:/coordenador/index";
 
 				}
-			case "aluno":
-				Optional<Egresso> aluno = serviceUsuario.verificaLoginAluno(dados.email(), senhaCript);
-				if (aluno.isEmpty()) {
+			case "egresso":
+				Optional<Egresso> egresso = serviceUsuario.verificaLoginEgresso(dados.email(), senhaCript);
+				if (egresso.isEmpty()) {
 					redirectAttributes.addFlashAttribute("mensagemErro", 
 		    				"Senha incorreta. Tente novamente");
 					return "redirect:/login";
 				}else {
 					// Adicione esta linha para identificar o usuário
-					Egresso alunoEncontrado = aluno.get();
-					session.setAttribute("usuarioLogado", alunoEncontrado);
-					session.setAttribute("role", "aluno");
-					return "redirect:/aluno/index";
+					Egresso egressoEncontrado = egresso.get();
+					session.setAttribute("usuarioLogado", egressoEncontrado);
+					session.setAttribute("role", "egresso");
+					return "redirect:/egresso/index";
 				}
 	
 			default:

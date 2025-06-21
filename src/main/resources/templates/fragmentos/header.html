@@ -159,6 +159,31 @@ Estilo para o navbar
 							</a></li>
 						</ul>
 					</li>
+					
+						<!-- Dropdown de Aluno (futuros egressos) -->
+					<!-- Caso seja aluno deslogado, pode se cadastrar, caso seja admin logado pode listar alunos -->
+					<li th:if ="${session.usuarioLogado == null || session.role == 'coordenador' || session.role == 'admin'}" class="nav-item dropdown">
+						<a class="nav-link dropdown-toggle" id="filmesDropdown"
+						role="button" data-bs-toggle="dropdown" aria-expanded="false"
+						th:classappend="${activePage != formularioAluno || activePage != listagemAluno} ? 'active' : ''"
+						style="cursor: pointer;"> <i class="fas fa-film me-1"></i>
+							Aluno
+						</a>
+						<ul class="dropdown-menu" aria-labelledby="filmesDropdown">
+							<li><a class="dropdown-item"
+								th:classappend="${activePage != 'formularioCoordenador'} ? 'active' : ''"
+								th:href="@{/aluno/formulario}"> <i class="fas fa-star me-1"></i> Cadastrar Aluno
+							</a></li>
+							<li>
+							<a class="dropdown-item"
+								th:classappend="${activePage != 'formularioAluno'} ? 'active' : ''"
+								th:href="@{/aluno}">
+								<i class="fas fa-star me-1"></i> Listar Alunos
+							</a></li>
+						</ul>
+						
+					</li>
+					
 					<!-- Login -->
 					<li th:if ="${session.usuarioLogado == null}" class="nav-item dropdown">
 						<a class="nav-link"

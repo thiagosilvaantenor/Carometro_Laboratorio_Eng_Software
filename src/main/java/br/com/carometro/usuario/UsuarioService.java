@@ -18,9 +18,8 @@ import br.com.carometro.egresso.EgressoService;
 @Service
 public class UsuarioService {
 	
-	//Classe service para verificar o login e logout, podendo ser coordenador, admin ou aluno
+	//Classe service para verificar o login e logout, podendo ser coordenador, admin ou egresso
 
-	//FIXME: Em vez de usar repository usar service
 	@Autowired
 	private CoordenadorService coordenadorService;
 
@@ -28,7 +27,7 @@ public class UsuarioService {
 	private AdministradorService adminService;
 	
 	@Autowired
-	private EgressoService alunoService;
+	private EgressoService egressoService;
 	
 	
 	public String verificaAtor(String email) {
@@ -39,8 +38,8 @@ public class UsuarioService {
 	            if (coordenadorService.findbyEmail(email).isPresent()) {
 	            	return "coordenador";
 	            }
-	            if (alunoService.findByEmail(email) != null) {
-	            	return "aluno";
+	            if (egressoService.findByEmail(email) != null) {
+	            	return "egresso";
 	            }
 	            //Se não encontrar é por que o email não esta cadastrado
 	            return "não encontrado";
@@ -56,8 +55,8 @@ public class UsuarioService {
 		return coordenadorService.login(email, senha);
 	}
 	//Verifica se o login do admin esta correto
-	public Optional<Egresso> verificaLoginAluno(String email, String senha) {
-		return alunoService.login(email, senha);
+	public Optional<Egresso> verificaLoginEgresso(String email, String senha) {
+		return egressoService.login(email, senha);
 	}
 	
 	
