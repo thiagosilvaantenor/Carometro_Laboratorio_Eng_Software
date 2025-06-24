@@ -53,9 +53,10 @@ public class AdministradorController {
 		if (id != null) {
 			var admin = repository.getReferenceById(id);
 			model.addAttribute("admin", admin);
+			model.addAttribute("editar", true);
 		} else {
 			model.addAttribute("admin", new Administrador());
-
+			model.addAttribute("editar", false);
 		}
 		return "admin/formulario";
 	}
@@ -81,7 +82,9 @@ public class AdministradorController {
 	@Transactional
 	public String atualizar(DadosAtualizacaoAdministrador dados) throws NoSuchAlgorithmException {
 		var admin = repository.getReferenceById(dados.id());
-		if (dados.senha() != null) {
+		
+		//Atualizará a senha apenas se tiver conteudo no campo
+		if (dados.senha() != null && !dados.senha().isBlank()) {
 			admin.setSenha(Criptografia.md5(dados.senha()));
 		}
 		admin.atualizarInformacoes(dados);

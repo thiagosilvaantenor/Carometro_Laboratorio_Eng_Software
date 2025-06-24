@@ -362,7 +362,7 @@
                     <div class="summary-card summary-personal">
                         <div>
                             <h3>Resumo pessoal</h3>
-                            <p th:if="${not #strings.isEmpty(egresso.sobre)}" th:text="${egresso.sobre}"></p>
+                            <p th:if="${not #strings.isEmpty(egresso.sobre)} " th:text="${egresso.sobre}"></p>
                              <p th:unless="${not #strings.isEmpty(egresso.sobre)}">Este egresso ainda não escreveu seu resumo pessoal.</p>
                             
                         </div>

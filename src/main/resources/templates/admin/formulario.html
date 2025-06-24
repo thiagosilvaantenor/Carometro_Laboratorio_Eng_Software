@@ -69,10 +69,17 @@
                                 <input type="email" class="form-control" id="email" name="email" th:value="${admin?.email}">
                             </div>
 
-                            <div class="form-group">
-                                <label for="senha">Senha</label>
-                                <input type="password" class="form-control" id="senha" name="senha" th:value="${admin?.senha}">
-                            </div>
+							<div class="form-group">
+								<label for="senha">* Senha: </label>
+								<!-- Campo para CRIAÇÃO (senha obrigatória) -->
+								<input type="password" class="form-control" id="senha" name="senha"
+										th:if="${!editar}"
+										th:value="${admin?.senha}" required>
+								<!-- Campo para EDIÇÃO (senha opcional) -->
+								<input type="password" class="form-control" id="senha" name="senha"
+										th:if="${editar}"
+										placeholder="Deixe em branco para manter a atual">
+							</div>
 
                             <div class="d-flex justify-content-center mt-4">
                                 <button type="submit" class="btn btn-fatec btn-lg">Cadastrar</button>

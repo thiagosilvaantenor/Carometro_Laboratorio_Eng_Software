@@ -59,20 +59,21 @@ public class EgressoController {
 		//Caso seja uma edição(PUT)
 		if (id != null) {
 			egresso = repository.getReferenceById(id);
+			//Envia uma senha vazia, sem alterar a senha do egresso
+			model.addAttribute("editar", true);
+			model.addAttribute("senha", "");
 			//Verifica e garante que tanto historico como links não sejam nulos ao editar egresso
 			if (egresso.getHistorico() == null) {
 				List<Historico> historico = new ArrayList<>();
 				historico.add(new Historico());
-				
 				egresso.setHistorico(historico);
-				
 			}
 			if (egresso.getLinks() == null) {
 				egresso.setLinks(new Links());
 			}			
 		}//Caso seja um cadastro (POST) 
 		else {
-			
+			model.addAttribute("editar", false);
 			egresso = new Egresso();
 			egresso.setHistorico(new ArrayList<>());
 			egresso.setLinks(new Links());
@@ -191,6 +192,13 @@ public class EgressoController {
 		
 		//Busca o egresso existente
 		var egresso = repository.getReferenceById(dados.id());
+		
+		//Atualizar senha, caso ele tenha colocado algo no campo
+		if (dados.senha() != null && !dados.senha().isBlank()) {
+			//codifica a senha nova
+			egresso.setSenha(Criptografia.md5(dados.senha()));
+		}
+		
 		//Atualiza curso
 		if (dados.curso() != null) {
 			System.out.println(dados.historico().toString());
@@ -253,11 +261,6 @@ public class EgressoController {
 	        egresso.setFoto(dados.foto().getBytes());
 	    }
 		
-		//codifica a senha nova
-		if (dados.senha() != null) {
-			egresso.setSenha(Criptografia.md5(dados.senha()));
-		}
-		
 		egresso.atualizarInformacoes(dados);
 		return "redirect:egresso";
 	}
@@ -275,6 +278,8 @@ public class EgressoController {
 	public ModelAndView index(HttpSession session) {
 		//Pega o administrador recebido do login
 		Egresso egressoLogado = (Egresso) session.getAttribute("usuarioLogado");
+		
+		
 		
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("egresso/index");

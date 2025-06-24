@@ -42,19 +42,18 @@ public class Egresso {
 	private String nome;
 	@Email
 	private String email;
-	//TODO: VALIDAÇÃO DE SENHA 
 	private String senha;
 	private String comentarioFATEC;
 	private String comentario;
 	private Integer ano;
 	//Atributo texto'sobre mim' do egresso, opcional
-	@Column(nullable = true)
+	@Column(name = "sobre", nullable = true, length = 100)
 	private String sobre;
 	//Atributo texo 'sobre mim profissional', opcional
-	@Column(name = "sobre_profissional",nullable = true) 
+	@Column(name = "sobre_profissional",length = 100, nullable = true) 
 	private String sobreProfissional;
 	//Atributo texo 'sobre mim profissional', opcional
-	@Column(name = "sobre_Fatec",nullable = true)
+	@Column(name = "sobre_Fatec",nullable = true, length = 100)
 	private String sobreFatec;
 	//Atributo usado para lidar com aprovação de cadastro aluno, se ainda não foi avaliado = false, se é aluno = true;
 	@ColumnDefault("false")

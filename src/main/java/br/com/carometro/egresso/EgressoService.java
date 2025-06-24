@@ -1,11 +1,17 @@
 package br.com.carometro.egresso;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import br.com.carometro.historico.Historico;
 import br.com.carometro.historico.HistoricoRepository;
@@ -27,6 +33,20 @@ public class EgressoService {
 		return repository.getReferenceById(id);
 	}
 
+//	public String salvarFoto(MultipartFile foto, Egresso egresso) throws IOException {
+//	    if (foto != null && !foto.isEmpty()) {
+//	        String nomeArquivo = UUID.randomUUID() + "_" + foto.getOriginalFilename();
+//	        Path caminho = Paths.get("uploads/egressos", nomeArquivo);
+//	        Files.createDirectories(caminho.getParent());
+//	        Files.write(caminho, foto.getBytes());
+//
+//	        // salvar caminho relativo para exibir no HTML
+//	        egresso.setCaminhoFoto("/uploads/egressos/" + nomeArquivo);
+//	    }
+//	    return egresso.getCaminhoFoto();
+//	}
+	
+	
 	
 	public void salvar(Egresso egresso) throws Exception {
 		try {

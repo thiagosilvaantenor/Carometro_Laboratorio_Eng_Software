@@ -69,21 +69,32 @@
 								<input type="email" class="form-control" id="email"
 								 name="email" th:value="${coordenador?.email}">
 							</div>
+						</div>
+						<div class="form-row">
 							<div class="form-group col-md-4">
 								<label for="senha">Senha:</label>
-								<input type="password" class="form-control" id="senha"
-								 name="senha" th:value="${coordenador?.senha}">
-							</div>
-						</div>
-
-
-						<div class="form-row">
-							<div class="form-group col-md-3">
+								<!-- Campo para CRIAÇÃO (senha obrigatória) -->
+								<input type="password" class="form-control" 
+									id="senha" name="senha" 
+									th:value="${coordenador?.senha}"
+									required
+								>
+								<!-- Campo para EDIÇÃO (senha opcional) -->
+								<input type="password" class="form-control" 
+									id="senha" name="senha"
+									th:if="${editar}"
+									placeholder="Deixe em branco para manter a atual"
+									required
+								>
+							</div>						
+							<div class="form-group col-md-4">
 								<label for="vencimentoMandato">Data de Vencimento do Mandato:</label>
 								<input type="date" id="vencimentoMandato" class="form-control"
 									name="vencimentoMandato" th:value="${coordenador?.vencimentoMandato}">
+							</div>
 						</div>
-							<div class="form-group col-md-4">
+							<div class="form-row d-flex flex-column justify-content-center text-center">
+							<div class="form-group">
 								<label for="cursoSelect">Curso:</label>
 								<select class="form-control" name="cursoId" id="cursoId">
 									<option value="">-- Selecione --</option>

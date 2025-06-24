@@ -51,8 +51,10 @@ public class CoordenadorController {
 		if(id != null) {
 	        var coordenador = repository.getReferenceById(id);
 	        model.addAttribute("coordenador", coordenador);
+	        model.addAttribute("editar", true);
 	    } else {
 	    	model.addAttribute("coordenador", new Coordenador());
+	    	model.addAttribute("editar", false);
 	    }
 		return "coordenador/formulario";
 
@@ -91,8 +93,9 @@ public class CoordenadorController {
 			coordenador.setCurso(dados.curso());
 			dados.curso().setCoordenador(coordenador);
 		}
-		//Encripta a senha
-		if (dados.senha() != null) {
+		//Edita a senha
+		if (dados.senha() != null && !dados.senha().isBlank()) {
+			//encripta a senha nova
 			coordenador.setSenha(Criptografia.md5(dados.senha()));
 		}
 		
@@ -152,39 +155,5 @@ public class CoordenadorController {
 	        throw new Exception("Usuário não está logado.");
 	    }
 	}
-
-//	//Caso seja ex-aluno é aprovado, estado de situaçãoCadastro é mudado para TRUE
-//	 @PostMapping("/aprovarEgresso")
-//	    public String aprovarEgresso(@RequestParam("id") Long id,  Model model, HttpSession session) {
-//		 
-//	        try {
-//				egressoService.aprovarEgresso(id);
-//				//Busca o coordenador logado
-//	    	    Coordenador coordenadorLogado = (Coordenador) session.getAttribute("usuarioLogado");
-//	    	    List<Egresso> egressos = egressoService.filtraEgressoPeloCursoESituacaoCadastor
-//		        		(coordenadorLogado.getCurso().getId(), false);
-//	    	    model.addAttribute("egressos", egressos);
-//			} catch (Exception e) {
-//				e.printStackTrace();
-//			}
-//	        return "redirect:/coordenador/validarEgresso";
-//	    }
-//	 
-//	//Caso não seja ex-aluno é reprovado e deletado do banco de dados 
-//    @DeleteMapping("/reprovarAluno")
-//	    public String reprovarEgresso(@RequestParam("id") Long id, Model model, HttpSession session) {
-//	        try{
-//	        	egressoService.reprovarEgresso(id);
-//	        	//Busca o coordenador logado
-//	    	    Coordenador coordenadorLogado = (Coordenador) session.getAttribute("usuarioLogado");
-//	    	    List<Egresso> egressos = egressoService.filtraEgressoPeloCursoESituacaoCadastor
-//		        		(coordenadorLogado.getCurso().getId(), false);		
-//	 	        model.addAttribute("egressos", egressos);
-//	        }catch(Exception e) {
-//	        	e.printStackTrace();
-//	        }
-//	        return "redirect:/coordenador/validarEgresso";
-//	    }
-
 	
 }
