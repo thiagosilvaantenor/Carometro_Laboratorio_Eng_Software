@@ -48,7 +48,7 @@ public class Aluno {
 		this.telefone = dados.telefone();
 	}
 	
-	public void atualizarInformacoes(AlunoDadosCadastro dados) {
+	public void atualizarInformacoes(AlunoDadosAtualizacao dados) {
 		if(dados.nome() != null) {
 			this.nome = dados.nome();
 		}

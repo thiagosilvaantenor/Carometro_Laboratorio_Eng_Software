@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
 import br.com.carometro.curso.Curso;
@@ -127,7 +128,8 @@ public class EgressoController {
 	@Transactional
 	public String cadastrar(@Valid
 			DadosCadastroEgresso dados,
-			@RequestParam("cursoId") Long cursoId) throws Exception {
+			@RequestParam("foto") MultipartFile foto,
+			@RequestParam("cursoId") Long cursoId) throws IOException {
 		 // A lista de histórico já estará em dados.getHistorico()
 	    List<DadosCadastroHistorico> dadosHistoricoSubmetidos = dados.historico();
 		Curso curso = cursoService.getCursoById(cursoId);
@@ -136,6 +138,8 @@ public class EgressoController {
 		curso.getEgressos().add(egresso);
 		egresso.setCurso(curso);
 		
+		//Foto
+		service.salvarFoto(foto, egresso);
 
 		// Historico
 		List<Historico> historico = new ArrayList<>();
@@ -173,13 +177,12 @@ public class EgressoController {
 			//Não precisa usar repository.save pois o CASCADE.ALL garante que ao salvar o egresso salva links
 		}
 		
-		 // convertendo a foto de MultipartFile para byte[]
-	    if (dados.foto() != null && !dados.foto().isEmpty()) {
-	        egresso.setFoto(dados.foto().getBytes());
-	    }
-				
 
-		service.salvar(egresso);
+		try {
+			service.salvar(egresso);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		
 		return "redirect:egresso";
 	}
@@ -188,6 +191,7 @@ public class EgressoController {
 	@Transactional
 	public String atualizar(@Valid DadosAtualizacaoEgresso dados,
 			@RequestParam("cursoId") Long cursoId,
+			@RequestParam("foto") MultipartFile foto,
 			Model model) throws IOException, NoSuchAlgorithmException {
 		
 		//Busca o egresso existente
@@ -216,9 +220,16 @@ public class EgressoController {
 			egresso.setLinks(links); // Associa ao egresso
 			// Não precisa salvar links explicitamente se cascade está configurado
 		}
-		links.setGitHub(dados.gitHub());
-		links.setLinkedIn(dados.linkedIn());
-		links.setLattesCNPQ(dados.lattesCNPQ());
+		//Atualiza links
+		if (dados.gitHub() != null && !dados.gitHub().isBlank() ) {
+			links.setGitHub(dados.gitHub());			
+		}
+		if (dados.linkedIn() != null && !dados.linkedIn().isBlank() ) {
+			links.setLinkedIn(dados.linkedIn());
+		}
+		if (dados.lattesCNPQ() != null && !dados.lattesCNPQ().isBlank() ) {
+			links.setLattesCNPQ(dados.lattesCNPQ());
+		}
 //		//Atualização do histórico
 		
 		if (dados.historico() != null) {
@@ -257,8 +268,8 @@ public class EgressoController {
 			
 		}
 		//Atualiza foto
-		if (dados.foto() != null && !dados.foto().isEmpty()) {
-	        egresso.setFoto(dados.foto().getBytes());
+		if (foto != null && !foto.isEmpty()) {
+	        service.salvarFoto(foto, egresso);
 	    }
 		
 		egresso.atualizarInformacoes(dados);
@@ -279,8 +290,6 @@ public class EgressoController {
 		//Pega o administrador recebido do login
 		Egresso egressoLogado = (Egresso) session.getAttribute("usuarioLogado");
 		
-		
-		
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.setViewName("egresso/index");
 		modelAndView.addObject("egresso", egressoLogado);
@@ -288,19 +297,6 @@ public class EgressoController {
 		return modelAndView;
 	}
 	
-//	Mapeamento para exibir a foto
-	@GetMapping("/{id}/foto")
-	@ResponseBody
-	public ResponseEntity<byte[]> getFoto(@PathVariable Long id) {
-		Egresso egresso = repository.findById(id).orElse(null);
-		if (egresso != null && egresso.getFoto() != null) {
-			return ResponseEntity.ok()
-					.contentType(MediaType.IMAGE_JPEG)
-					.body(egresso.getFoto());
-		}else {
-			return ResponseEntity.notFound().build();
-		}
-	}
 	
 	@GetMapping("perfil/{id}")
 	public String exibirTelaPerfil(@PathVariable Long id, Model model) {

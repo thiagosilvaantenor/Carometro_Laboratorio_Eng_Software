@@ -340,7 +340,7 @@
 
         <div class="egresso-card-wrapper">
             <div class="egresso-header">
-                <img th:src="@{/egresso/{id}/foto(id=${egresso.id})}" 
+                <img th:src="@{${egresso.foto}}" 
                      th:alt="'Foto de ' + ${egresso.nome}"
                      th:title="${egresso.nome}"
                      class="aluno-foto"/>
@@ -351,8 +351,8 @@
             </div>
 
             <div class="main-carousel-container mb-4">
-                <h2>Carrossel de fotos</h2>
-                 <img th:src="@{/egresso/{id}/foto(id=${egresso.id})}" 
+                <h2>Foto</h2>
+                 <img th:src="@{${egresso.foto}}" 
                      th:alt="'Foto de ' + ${egresso.nome}"
                      th:title="${egresso.nome}"/>
                 </div>

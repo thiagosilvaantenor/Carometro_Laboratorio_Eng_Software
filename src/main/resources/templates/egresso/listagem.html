@@ -202,10 +202,11 @@
 						<tr scope="row" class="table-primary" th:each="egresso : ${lista}">
 							<td scope="col" th:text="${egresso.nome}"></td>
 							<td class="text-center align-middle">
-							    <img th:src="@{/egresso/{id}/foto(id=${egresso.id})}" 
-							         th:alt="'Foto de ' + ${egresso.nome}"
-							         th:title="${egresso.nome}"
-							         class="img-thumbnail rounded-circle aluno-foto"/>
+							<img th:if="${egresso.foto != null}"
+										     th:src="@{${egresso.foto}}"
+										     th:alt="'Foto de ' + ${egresso.nome}"
+							         		 th:title="${egresso.nome}"
+										     class="img-thumbnail rounded-circle aluno-foto" width="150"/>
 							</td>
 							<td scope="col" th:text="${egresso.curso.nome}"></td>
 							<!--  Carrosel de Histórico -->

@@ -1,6 +1,7 @@
 package br.com.carometro.controller;
 
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,10 +17,12 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import br.com.carometro.aluno.Aluno;
+import br.com.carometro.aluno.AlunoDadosAtualizacao;
 import br.com.carometro.aluno.AlunoDadosCadastro;
 import br.com.carometro.aluno.AlunoService;
 import br.com.carometro.curso.Curso;
 import br.com.carometro.curso.CursoService;
+import br.com.carometro.security.Criptografia;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
@@ -38,8 +41,10 @@ public class AlunoController {
 		if(id != null && service.getById(id).isPresent()) {
 	        var aluno = service.getById(id).get();
 	        model.addAttribute("aluno", aluno);
+	        model.addAttribute("editar", true);
 	    } else {
 	    	model.addAttribute("aluno", new Aluno());
+	    	model.addAttribute("editar", false);
 	    }
 		return "aluno/formulario";
 
@@ -52,6 +57,7 @@ public class AlunoController {
 		//Envia todos os alunos
 		model.addAttribute("cursos", cursos);
 		model.addAttribute("lista", service.getAll());
+		
 		return "aluno/listagem";
 	} 
 	
@@ -70,14 +76,23 @@ public class AlunoController {
 	
 	@PutMapping
 	@Transactional
-	public String atualizar(@Valid AlunoDadosCadastro dados, Model model, 
-			@RequestParam("cursoId") Long cursoId) {
-			//busca o curso
-			Curso curso = cursoService.getCursoById(cursoId);
-			Aluno aluno = new Aluno(dados);
-			aluno.setCurso(curso);
-			service.salvar(aluno);
-			return "redirect:aluno";		
+	public String atualizar(@Valid AlunoDadosAtualizacao dados, Model model, 
+			@RequestParam("cursoId") Long cursoId) throws NoSuchAlgorithmException {
+		var aluno = service.getById(dados.id());
+		if (aluno.isPresent()) {
+			Aluno encontrado = aluno.get();
+			//Atualizará a senha apenas se tiver conteudo no campo
+			if (dados.senha() != null && !dados.senha().isBlank()) {
+				encontrado.setSenha(Criptografia.md5(dados.senha()));
+			}
+			if (cursoId != null) {
+				Curso curso = cursoService.getCursoById(cursoId);
+				encontrado.setCurso(curso);
+				
+			}
+			encontrado.atualizarInformacoes(dados);			
+		}
+		return "redirect:aluno";		
 	}
 	
 	//Método para filtrar a listagem
@@ -111,7 +126,6 @@ public class AlunoController {
 	
 	//Mapeamento da pagina de envio de arquivo para cadastrar aluno(futuro egresso)
 	@PostMapping("/resultadoCadastro")
-	@Transactional
 	public String paginaReceberArquivosAlunos(@RequestParam("file") MultipartFile file, Model model){
 		//Percurso de excessão, arquivo vazio
 		if (file.isEmpty()) {

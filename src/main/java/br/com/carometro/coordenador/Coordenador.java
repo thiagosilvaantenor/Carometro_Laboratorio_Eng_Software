@@ -48,19 +48,17 @@ public class Coordenador {
 	}
 
 	public void atualizarInformacoes(DadosAtualizacaoCoordenador dados) {
-		if (dados.nome() != null) {
+		if (dados.nome() != null && !dados.nome().isBlank()) {
 			this.nome = dados.nome();
 		}
-		if (dados.email() != null) {
+		if (dados.email() != null && !dados.email().isBlank()) {
 			this.email = dados.email();
 		}
 		//Senha é criptografada e alterada no controller
 		if (dados.vencimentoMandato() != null) {
 			this.vencimentoMandato = dados.vencimentoMandato();
 		}
-		if (dados.curso() != null) {
-			this.curso = dados.curso();
-		}
+		
 	}
 	
 }

@@ -123,12 +123,8 @@ public class AdministradorController {
 	    	//Busca os cursos
 	     	List<Curso> cursos = cursoService.getAllCursos();
 	    	//Cria a lista de egressos que vai ser populada com os egressos que ainda não foram validados
-	     	//TODO: buscar quem ainda não teve comentario ou foto ou cadastro avaliado
 	    	List<Egresso> egressos = new ArrayList<>();
-	    	cursos.forEach(curso -> {
-	    		 egressos.addAll( egressoService.
-	    				filtrarEgressoPeloCursoESituacaoComentario(curso.getId(), false));
-	    	});
+	    	egressos = egressoService.filtraEgressoAindaNaoAprovadosEmAlgumaSituacao();
 	    	//Envia para a model a lista de egressos
 	        ModelAndView modelAndView = new ModelAndView();
 	        modelAndView.addObject("egressos", egressos);

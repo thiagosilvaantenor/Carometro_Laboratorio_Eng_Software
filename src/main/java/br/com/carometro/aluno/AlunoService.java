@@ -15,6 +15,7 @@ import org.springframework.web.multipart.MultipartFile;
 import br.com.carometro.curso.Curso;
 import br.com.carometro.curso.CursoService;
 import br.com.carometro.security.Criptografia;
+import jakarta.transaction.Transactional;
 
 @Service
 public class AlunoService {
@@ -62,6 +63,7 @@ public class AlunoService {
 	}
 	
 	//Método para lidar com cadastro através de envio de arquivo csv
+	@Transactional
 	public List<Aluno> processarArquivoCsv(MultipartFile file) throws IOException {
 		List<Aluno> alunos = new ArrayList<>();
 		try (BufferedReader br = new BufferedReader

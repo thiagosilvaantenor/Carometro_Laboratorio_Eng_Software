@@ -69,18 +69,34 @@
 						>
 							<td scope="col" th:text="${egresso.nome}"></td>
 							<td class="text-center align-middle">
-							    <img th:src="@{/egresso/{id}/foto(id=${egresso.id})}" 
+								<!-- Exibe a foto para validar, apenas se ainda não foi validada -->
+							    <img th:if="${egresso.situacaoFoto == false}"
+							    th:src="@{${egresso.foto}}" 
 							         th:alt="'Foto de ' + ${egresso.nome}"
 							         th:title="${egresso.nome}"
 							         class="img-thumbnail rounded-circle aluno-foto"/>
+							    <p th:unless="${egresso.situacaoFoto == false}">Foto já validada!</p>
 							</td>
 							<td scope="col" th:text="${egresso.curso.nome}"></td>
 							<td scope="col" th:text="${egresso.ano}"></td>
-							<td scope="col" th:text="${egresso.comentarioFATEC}"></td>
-							<td scope="col" th:text="${egresso.comentario}"></td>
+							<td scope="col">
+								<!-- Exibe comentario apenas se ainda não foi validado -->
+								<p th:if="${egresso.situacaoComentario == false}" 
+									th:text="${egresso.comentarioFATEC}"></p>
+								<p th:unless="${egresso.situacaoComentario == false}">
+										Comentarios já foram validados!</p>
+							</td>
+							<td scope="col">
+								<!-- Exibe comentario apenas se ainda não foi validado -->
+								<p th:if="${egresso.situacaoComentario == false}" 
+									th:text="${egresso.comentario}"></p>
+								<p th:unless="${egresso.situacaoComentario == false}">
+										Comentarios já foram validados!</p>
+							</td>
 							<td scope="col">
 								<h3>Validação de Egresso: É um ex-aluno?</h3>
-							<div class="form-group d-flex">
+							<!-- Exibe os botões apenas se ainda não foi validado como ex-aluno -->
+							<div class="form-group d-flex" th:if="${egresso.situacaoCadastro == false}">
 								<!-- Aprovar egrsso, salva o egresso -->
 								<form action="/admin/aprovarEgresso" method="post">
 									<input type="hidden" name="id" th:value="${egresso.id}">
@@ -94,19 +110,26 @@
 									<input type="submit" class="btn btn-danger ml-3" value="Reprovar">
 								</form>
 							</div>
+							<div class="form-group d-flex" th:unless="${egresso.situacaoCadastro == false}">
+								<p>Sim, esté é um ex-aluno. <strong>Situação de Cadastro já validada </strong></p>
+							</div>
 							
 							<h3>Validação de Egresso: Comentarios e Foto validos?</h3>
 							<!-- Aprovar do admin, salva o comentario e foto -->
+							<!-- Botões aparecem apenas se ainda não foi validado o comentario e a foto -->
+							<div th:if="${egresso.situacaoComentario == false || egresso.situacaoFoto == false}">
+							
 							<form action="/admin/aprovarComentario" method="post">
 								<div class="form-group">
  								<!-- Quais itens serão aprovados -->
 						        <label for="">Selecione antes de aprovar :</label>
 						        <select class="form-control" id="tipo" name="tipo">
 						            <option disabled>-- Selecione antes de aprovar --</option>
-									<option value="fatec">Aprovar comentario Fatec</option>
-									<option value="geral">Aprovar comentario Geral</option>
-									<option value="comentarios">Aprovar ambos comentarios</option>
-									<option value="foto">Aprovar Foto</option>
+						            <!-- Aquilo que ja foi validado não será mais possivel selecionar -->
+									<option value="fatec" th:hidden="${egresso.situacaoComentario == true}">Aprovar comentario Fatec</option>
+									<option value="geral" th:hidden="${egresso.situacaoComentario == true}">Aprovar comentario Geral</option>
+									<option value="comentarios" th:hidden="${egresso.situacaoComentario == true}">Aprovar ambos comentarios</option>
+									<option value="foto" th:hidden="${egresso.situacaoFoto == true}">Aprovar Foto</option>
 						        </select>
 							</div>				
 							    <input type="hidden" name="id" th:value="${egresso.id}">
@@ -131,7 +154,10 @@
 								<input type="submit" class="btn btn-danger" value="Reprovar">
 								
 							</form>
-								
+							</div>
+							<div class="form-group d-flex" th:unless="${egresso.situacaoComentario == false || egresso.situacaoFoto == false}">
+								<p>Sim, <strong>situação de Comentarios e Foto já validadas </strong></p>
+							</div>	
 							</td>
 						</tr>
 					</tbody>

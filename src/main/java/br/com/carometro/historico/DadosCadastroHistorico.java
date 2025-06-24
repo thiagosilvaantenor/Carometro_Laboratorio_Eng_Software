@@ -15,7 +15,6 @@ public record DadosCadastroHistorico(
 		@NotBlank(message = "Data de inicio é obrigatório, mesmo que se lembre apenas o ano")
 		@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
 		LocalDate dtInicio,
-		@NotBlank(message = "Data de fim é obrigatório, mesmo que se lembre apenas o ano")
 		@DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
 		LocalDate dtFim
 		) {

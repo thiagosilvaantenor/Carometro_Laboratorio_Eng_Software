@@ -39,8 +39,7 @@ public record DadosAtualizacaoEgresso(
 		String gitHub,
 		String linkedIn,
 		String lattesCNPQ,
-		List<DadosCadastroHistorico> historico,
-		MultipartFile foto
+		List<DadosCadastroHistorico> historico
 		) {
 
 }

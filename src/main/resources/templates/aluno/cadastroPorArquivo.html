@@ -48,12 +48,35 @@
 
 </head>
 <body>
+	<header th:replace="~{fragmentos/header :: header(activePage='cadastroArquivo')}"></header>
 	<div class="container">
 		<h1 class="text-center mt-3 fatec-title">Cadastrar Aluno (futuro egresso)<br>Por envio de arquivo</h1>
 		
 		 <div th:if="${mensagem}" th:classappend="${#strings.contains(mensagem, 'sucesso') ? 'success' : 'error'}" class="mensagem">
         	<p th:text="${mensagem}"></p>
     	 </div>
+		<div class="p-1">
+				<h5>Exemplo de arquivo aceito: </h5>
+				<table class="table table-responsive table-bordered table-hover">
+					<thead>
+						<tr class="table-info">
+							<th>Coluna 1 : Nome</th>
+							<th>Coluna 2: Email</th>
+							<th>Coluna 3: Telefone</th>
+							<th>Coluna 4: Curso</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr class="table-primary">				
+							<td>Nome do aluno</td>
+							<td>Email do aluno</td>
+							<td>Telefone do aluno</td>
+							<td>Nome do curso, só é aceito nomes de curso já cadastrados</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		
 		
 		<form method="post" action="/aluno/resultadoCadastro" enctype="multipart/form-data">
 			<div class="form-group">
@@ -61,7 +84,7 @@
 				<input type="file" accept=".csv" class="form-control" id="file"
 											name="file" required/>
 			</div>
-			<button type="submit">Enviar</button>
+			<button type="submit" class="btn btn-primary">Enviar</button>
 		</form>
 
 	</div>

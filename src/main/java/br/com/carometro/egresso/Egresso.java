@@ -61,10 +61,9 @@ public class Egresso {
 	//Atributo usado para lidar com aprovação dos comentarios do aluno
 	@ColumnDefault("false")
 	private Boolean situacaoComentario = false;
-	//TODO: Trocar maneira de salvar a foto
-	@Lob
-	@Column(name = "foto", columnDefinition = "LONGBLOB")
-	private byte[] foto;
+	//NO banco de dados será salvo o caminho da foto, ex: "uploads/egresso/foto.jpg" 
+	@Column(name = "foto", length = 200)
+	private String foto;
 
 	private Boolean situacaoFoto = false;
 	

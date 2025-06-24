@@ -49,12 +49,13 @@
 			<div class="row justify-content-md-center">
 				<div class="d-flex flex-column col mt-3 card-form">
 					<h1 class="text-center mt-3 fatec-title">Cadastrar aluno</h1>
+					 <h5 th:if="${editar}">Altere apenas os campos que vão ser atualizados</h5>
 					<form th:object="${aluno}" method="post" action="/aluno">
 
 						<input type="hidden" name="_method" value="put"
 						       th:if="${aluno?.id != null}">
 						<input type="hidden" name="id" th:value="${aluno?.id}"/>
-						<h2> Campos com o simbolo * são obrigatórios</h2>
+						<h5> Campos com o simbolo * são obrigatórios</h5>
 						<div class="form-group">
 							<label for="nome">* Nome: </label>
 							<input class="form-control" type="text" id="nome" name="nome"
@@ -69,8 +70,16 @@
 							
 						<div class="form-group col-md-3">
 								<label for="senha">* Senha: </label>
+								<!-- Campo para CRIAÇÃO (senha obrigatória) -->
 								<input type="password" class="form-control" id="senha"
-								 name="senha" th:value="${aluno?.senha}" required/>
+								 name="senha"
+								 th:if="${!editar}" 
+								 th:value="${aluno?.senha}" required min="8"/>
+								 <!-- Campo para EDIÇÃO (senha opcional) -->
+								 <input type="password" class="form-control" id="senha"
+								 name="senha"
+								 th:if="${editar}" 
+								 placeholder="Deixe em branco para manter a atual" required min="8"/>
 							</div>				
 						</div>
 						<!-- Telefone -->

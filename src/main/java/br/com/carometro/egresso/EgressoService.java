@@ -9,6 +9,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,6 +26,10 @@ public class EgressoService {
 	@Autowired
 	private HistoricoRepository repositoryHistorico;
 
+	@Value("${upload.dir}")
+	private String uploadDir;
+	
+	
 	public List<Egresso> getAllEgresso() {
 		return repository.findAll(Sort.by("nome").ascending());
 	}
@@ -33,18 +38,23 @@ public class EgressoService {
 		return repository.getReferenceById(id);
 	}
 
-//	public String salvarFoto(MultipartFile foto, Egresso egresso) throws IOException {
-//	    if (foto != null && !foto.isEmpty()) {
-//	        String nomeArquivo = UUID.randomUUID() + "_" + foto.getOriginalFilename();
-//	        Path caminho = Paths.get("uploads/egressos", nomeArquivo);
-//	        Files.createDirectories(caminho.getParent());
-//	        Files.write(caminho, foto.getBytes());
-//
-//	        // salvar caminho relativo para exibir no HTML
-//	        egresso.setCaminhoFoto("/uploads/egressos/" + nomeArquivo);
-//	    }
-//	    return egresso.getCaminhoFoto();
-//	}
+	//Método para salvar a foto, vai salvar a foto localmente em /src/main/resources/static/upload/egressos/ e no banco de dados vai salvar o caminho
+	public String salvarFoto(MultipartFile foto, Egresso egresso) throws IOException {
+	    if (foto != null && !foto.isEmpty()) {
+	        String nomeArquivo = UUID.randomUUID() + "_" + foto.getOriginalFilename();
+	        //Pega o caminho do diretorio /uploads
+	        Path diretorio = Paths.get(uploadDir);
+	        //Cria os diretórios
+	        Files.createDirectories(diretorio);
+	        //Cria o caminho da foto
+	        Path caminhoFoto = diretorio.resolve(nomeArquivo);
+	        //Salva localmente a foto
+	        Files.write(caminhoFoto, foto.getBytes());
+	        //Coloca o caminho do diretorio da foto como foto no egresso
+	        egresso.setFoto("/uploads/" + nomeArquivo);
+	    }
+	    return egresso.getFoto();
+	}
 	
 	
 	
@@ -213,5 +223,8 @@ public class EgressoService {
 		return repository.findBySituacaoCadastro(situacao);
 	}
 	
+	public List<Egresso> filtraEgressoAindaNaoAprovadosEmAlgumaSituacao() {
+		return repository.findBySituacaoCadastroFalseOrSituacaoComentarioFalseOrSituacaoFotoFalse();
+	}
 	
 }

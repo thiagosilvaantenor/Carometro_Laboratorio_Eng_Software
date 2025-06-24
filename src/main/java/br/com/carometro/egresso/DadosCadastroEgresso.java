@@ -37,8 +37,7 @@ public record DadosCadastroEgresso(
 		List<DadosCadastroHistorico> historico,
 		String gitHub,
 		String linkedIn,
-		String lattesCNPQ,
-		MultipartFile foto
+		String lattesCNPQ
 		) {
 
 

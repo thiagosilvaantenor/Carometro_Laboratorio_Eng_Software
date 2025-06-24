@@ -40,16 +40,15 @@ public class Administrador {
 		this.nome = dados.nome();
 		this.email = dados.email();
 		this.senha = dados.senha();
-//		relação unidFatec é feita no controller
 	}
 
 	public void atualizarInformacoes(DadosAtualizacaoAdministrador dados) {
-		if (dados.nome() != null) {
+		if (dados.nome() != null && !dados.nome().isBlank()) {
 			this.nome = dados.nome();
 		}
-		if (dados.email() != null) {
+		if (dados.email() != null && !dados.email().isBlank()) {
 			this.email = dados.email();
 		}
-		//Atualização da unidFatec e da senha é feita no controller
+		//Atualização da senha é feita no controller
 	}
 }

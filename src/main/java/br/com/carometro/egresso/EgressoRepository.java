@@ -28,5 +28,9 @@ public interface EgressoRepository extends JpaRepository<Egresso, Long>{
 	public List<Egresso> findByCursoIdAndAno(Long cursoId, Integer ano);
 	
 	public List<Egresso> findByCursoIdAndAnoAndSituacaoCadastro(Long cursoId, Integer ano, Boolean situacao);
+
+	//Procura os egressos que não foram aprovados em pelo menos 1 situacao
+	public List<Egresso> findBySituacaoCadastroFalseOrSituacaoComentarioFalseOrSituacaoFotoFalse();
+
 }
  

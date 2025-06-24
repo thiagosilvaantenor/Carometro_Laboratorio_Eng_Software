@@ -49,6 +49,7 @@
 			<div class="row justify-content-md-center">
 				<div class="d-flex flex-column col mt-3 card-form">
 					<h1 class="text-center mt-3 fatec-title">Cadastrar Egresso</h1>
+                    <h5 th:if="${editar}">Altere apenas os campos que vão ser atualizados</h5>
 					<form th:object="${egresso}" method="post" action="/egresso" enctype="multipart/form-data">
 
 						<input type="hidden" name="_method" value="put"
@@ -69,23 +70,23 @@
 									<input type="email" class="form-control" id="email"
 									 name="email" th:value="${egresso?.email}" required/>
 							</div>
-						<div class="form-group col-md-4 ml-2">
-							<label for="senha">* Senha: </label>
-							<!-- Campo para CRIAÇÃO (senha obrigatória) -->
-						    <input type="password" class="form-control" id="senha"
-						           name="senha"
-						           th:if="${editar}"
-						           placeholder="Digite uma senha"
-						           required
-						           />
-										  
-						    <!-- Campo para EDIÇÃO (senha opcional) -->
-						    <input type="password" class="form-control" id="senha"
-						           name="senha"
-						           th:if="${!editar}"
-						           th:value="${senha}"
-						           placeholder="Deixe em branco para manter a atual"/>
-						</div>
+							<div class="form-group col-md-4 ml-2">
+								<label for="senha">* Senha: </label>
+								<!-- Campo para CRIAÇÃO (senha obrigatória) -->
+							    <input type="password" class="form-control" id="senha"
+							           name="senha"
+							           th:if="${!editar}"
+							           th:value="${egresso?.senha}"
+							           placeholder="Digite uma senha"
+							           required
+							           />
+											  
+							    <!-- Campo para EDIÇÃO (senha opcional) -->
+							    <input type="password" class="form-control" id="senha"
+							           name="senha"
+							           th:if="${editar}"
+							           placeholder="Deixe em branco para manter a atual"/>
+							</div>
 					</div>
 						
 						<!-- Linha 2: Foto e Ano -->
@@ -109,7 +110,7 @@
 					<!-- Linha 3:Curso,Sobre mim, resumo profissional -->
 					<div class="form-row">
 					<!-- Curso -->
-						<div class="form-group mt-2">
+						<div class="form-group col-md-4 mt-2">
 							<label for="cursoSelect">* Selecione o seu curso: </label>
 							<select class="form-control" name="cursoId" id="cursoId">
 								<option value="">-- Selecione --</option>
@@ -122,17 +123,17 @@
 						</div>
 												
 					<!-- Sobre mim Opcional-->
-							<div class="form-group col-md-4 ml-2">
+							<div class="form-group col-md-3 ml-2">
 									<label for="sobre"> Escreva sobre você: </label>
 									<textarea class="form-control" id="sobre"
-										name="sobre" th:value="${egresso?.sobre}" maxlength="100">
+										name="sobre" th:value="${egresso?.sobre}" placeholder="Escreva aqui" maxlength="100">
 									</textarea>
 							</div>
 					<!-- Resumo(Sobre) profissional Opcional-->
 							<div class="form-group col-md-4 ml-2">
 									<label for="sobreProfissional"> Resumo Profissional: </label>
 									<textarea class="form-control" id="sobreProfissional"
-										name="sobreProfissional" th:value="${egresso?.sobreProfissional}" maxlength="100">
+										name="sobreProfissional" th:value="${egresso?.sobreProfissional}"  placeholder="Escreva aqui" maxlength="100">
 									</textarea>
 							</div>			
 					</div>
@@ -144,7 +145,7 @@
 								<div class="form-group col-md-5">
 										<label for="sobreFatec"> Escreva sobre sua experiência com a FATEC: </label>
 										<textarea class="form-control" id="sobreFatec"
-											name="sobreFatec" th:value="${egresso?.sobreFatec}" maxlength="100">
+											name="sobreFatec"  placeholder="Escreva aqui" maxlength="100">
 										</textarea>
 								</div>
 							<!-- Links -->

@@ -51,7 +51,7 @@
 			<div class="row justify-content-center">
 				<div class="col-md-10 card-form">
 					<h2 class="text-center fatec-title">Cadastro de Coordenador</h2>
-
+                   	<h5 th:if="${editar}">Altere apenas os campos que vão ser atualizados</h5>
 					<form th:object="${coordenador}" method="post" action="/coordenador">
 						<!-- Caso for Atualização PUT -->
 						<input type="hidden" name="_method" value="put"
@@ -75,9 +75,11 @@
 								<label for="senha">Senha:</label>
 								<!-- Campo para CRIAÇÃO (senha obrigatória) -->
 								<input type="password" class="form-control" 
-									id="senha" name="senha" 
+									id="senha" name="senha"
+									th:if="${!editar}" 
 									th:value="${coordenador?.senha}"
 									required
+									min="8"
 								>
 								<!-- Campo para EDIÇÃO (senha opcional) -->
 								<input type="password" class="form-control" 
@@ -85,6 +87,7 @@
 									th:if="${editar}"
 									placeholder="Deixe em branco para manter a atual"
 									required
+									min="8"
 								>
 							</div>						
 							<div class="form-group col-md-4">
