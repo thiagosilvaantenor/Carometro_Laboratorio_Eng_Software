@@ -3,167 +3,197 @@
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{template.html}">
 <head>
-<title>Lista de Egressos e postagens a serem validados</title>
-<link rel="stylesheet"
-	href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css"
-	integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
-	crossorigin="anonymous">
+	<meta charset="UTF-8">
+	<title>Validação de Egressos</title>
+	<link rel="stylesheet"
+		href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+		crossorigin="anonymous">
+	<style>
+		body {
+			background-color: #f8f9fa;
+		}
+
+		.card-container {
+			background: #fff;
+			border-radius: 16px;
+			box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+			padding: 30px;
+			margin-top: 40px;
+		}
+
+		.header-title {
+			background-color: #990000;
+			color: white;
+			padding: 20px;
+			border-radius: 12px;
+			text-align: center;
+			margin-bottom: 30px;
+		}
+
+		.btn-fatec {
+			background-color: #990000;
+			color: white;
+			transition: 0.3s;
+			border-radius: 6px;
+			font-weight: 500;
+		}
+
+		.btn-fatec:hover {
+			background-color: #b30000;
+			color: white;
+		}
+
+		.aluno-foto {
+			width: 90px;
+			height: 90px;
+			object-fit: cover;
+			border-radius: 50%;
+			box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+		}
+
+		.section-title {
+			font-size: 1.25rem;
+			font-weight: 600;
+			margin: 20px 0 10px;
+		}
+
+		select.form-control,
+		input.form-control {
+			border-radius: 6px;
+		}
+
+		table th, table td {
+			vertical-align: middle;
+		}
+	</style>
 </head>
 <body>
 	<header th:replace="~{fragmentos/header :: header(activePage='validarPostagem')}"></header>
-		<div class="row justify-content-md-center">
-			<div class="d-flex flex-column col mt-3">
-				<h1 class="text-center">Lista de Egressos e Postagens a serém aprovadas</h1>
-				<div class="d-flex justify-content-md-center">
-					<!-- Filtros -->
-					<form method="get" action="/admin/filtrar">
-						<h2 class="text-center">Filtros:</h2>
-						<!-- Curso -->
-						<div class="form-group mt-2">
-							<label for="cursoSelect"> Selecione o seu curso: </label>
-							<select class="form-control" name="cursoId" id="cursoId">
-								<option value="">-- Selecione --</option>
-								<option th:each="curso : ${cursos}"
-									th:value="${curso.id}"
-									th:text="${curso.nome}">
-								</option>
-							</select>
-						</div>
-						<!-- Ano semestre -->
-						<div class="form-group mt-2">
-							<label for="anoSelect"> Selecione o ano semestre 
-							(ex: 202401 = 1° semestre de 2024): </label>
-							<select class="form-control" name="ano" id="ano">
-								<option value="">-- Selecione --</option>
-								<option th:each="ano : ${anos}"
-									th:value="${ano}"
-									th:text="${ano}">
-								</option>
-							</select>
-						</div>
-						<button type="submit" class="btn btn-success p-3">
-								Filtrar por ano semestre concluido
-							</button>
-					</form>
+
+	<div class="container" layout:fragment="conteudo">
+		<div class="card-container">
+			<div class="header-title">
+				<h2>Validação de Egressos e Postagens</h2>
+			</div>
+
+			<form method="get" action="/admin/filtrar" class="mb-4">
+				<div class="row g-3">
+					<div class="col-md-6">
+						<label for="cursoSelect" class="form-label">Curso</label>
+						<select class="form-control" name="cursoId" id="cursoId">
+							<option value="">-- Selecione --</option>
+							<option th:each="curso : ${cursos}" th:value="${curso.id}" th:text="${curso.nome}"></option>
+						</select>
+					</div>
+					<div class="col-md-6">
+						<label for="ano" class="form-label">Ano Semestre (ex: 202401)</label>
+						<select class="form-control" name="ano" id="ano">
+							<option value="">-- Selecione --</option>
+							<option th:each="ano : ${anos}" th:value="${ano}" th:text="${ano}"></option>
+						</select>
+					</div>
+					<div class="col-12 text-end">
+						<button type="submit" class="btn btn-fatec">Filtrar</button>
+					</div>
 				</div>
-			</div>
+			</form>
+
+			<table class="table table-bordered table-hover">
+				<thead class="table-secondary text-center">
+					<tr>
+						<th>Nome</th>
+						<th>Foto</th>
+						<th>Curso</th>
+						<th>Ano</th>
+						<th>Comentário FATEC</th>
+						<th>Comentário Livre</th>
+						<th>Ações</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr th:each="egresso : ${egressos}"
+						th:if="${egresso.comentario != null && egresso.comentarioFATEC != null}">
+						
+						<td th:text="${egresso.nome}"></td>
+						
+						<td class="text-center">
+							<img th:if="${egresso.situacaoFoto == false}" th:src="@{${egresso.foto}}"
+								th:alt="'Foto de ' + ${egresso.nome}" class="aluno-foto">
+							<p th:unless="${egresso.situacaoFoto == false}">Foto já validada</p>
+						</td>
+						
+						<td th:text="${egresso.curso.nome}"></td>
+						<td th:text="${egresso.ano}"></td>
+
+						<td>
+							<p th:if="${egresso.situacaoComentario == false}" th:text="${egresso.comentarioFATEC}"></p>
+							<p th:unless="${egresso.situacaoComentario == false}">Comentário validado</p>
+						</td>
+						
+						<td>
+							<p th:if="${egresso.situacaoComentario == false}" th:text="${egresso.comentario}"></p>
+							<p th:unless="${egresso.situacaoComentario == false}">Comentário validado</p>
+						</td>
+
+						<td>
+							<div class="mb-2">
+								<h5 class="section-title">Validação de Ex-Aluno</h5>
+								<div th:if="${egresso.situacaoCadastro == false}" class="d-flex gap-2 flex-wrap">
+									<form action="/admin/aprovarEgresso" method="post">
+										<input type="hidden" name="id" th:value="${egresso.id}">
+										<button class="btn btn-success btn-sm">Aprovar</button>
+									</form>
+									<form action="/admin/reprovarEgresso" method="post">
+										<input type="hidden" name="_method" value="delete">
+										<input type="hidden" name="id" th:value="${egresso.id}">
+										<button class="btn btn-danger btn-sm">Reprovar</button>
+									</form>
+								</div>
+								<p th:unless="${egresso.situacaoCadastro == false}"><strong>Já validado como ex-aluno</strong></p>
+							</div>
+
+							<div class="mt-3">
+								<h5 class="section-title">Validação de Comentários e Foto</h5>
+								<div th:if="${egresso.situacaoComentario == false || egresso.situacaoFoto == false}">
+									<form action="/admin/aprovarComentario" method="post" class="mb-2">
+										<select class="form-control mb-2" name="tipo" required>
+											<option disabled selected>-- Selecione antes de aprovar --</option>
+											<option value="fatec" th:hidden="${egresso.situacaoComentario == true}">Comentário FATEC</option>
+											<option value="geral" th:hidden="${egresso.situacaoComentario == true}">Comentário Geral</option>
+											<option value="comentarios" th:hidden="${egresso.situacaoComentario == true}">Ambos Comentários</option>
+											<option value="foto" th:hidden="${egresso.situacaoFoto == true}">Foto</option>
+										</select>
+										<input type="hidden" name="id" th:value="${egresso.id}">
+										<button class="btn btn-primary btn-sm">Aprovar</button>
+									</form>
+
+									<form action="/admin/reprovarComentario" method="post">
+										<input type="hidden" name="_method" value="put">
+										<select class="form-control mb-2" name="tipo" required>
+											<option disabled selected>-- Selecione antes de reprovar --</option>
+											<option value="fatec">Reprovar Comentário FATEC</option>
+											<option value="geral">Reprovar Comentário Geral</option>
+											<option value="comentarios">Reprovar Ambos Comentários</option>
+											<option value="foto">Reprovar Foto</option>
+										</select>
+										<input type="hidden" name="id" th:value="${egresso.id}">
+										<button class="btn btn-danger btn-sm">Reprovar</button>
+									</form>
+								</div>
+								<p th:unless="${egresso.situacaoComentario == false || egresso.situacaoFoto == false}">
+									<strong>Comentários e Foto já validados</strong>
+								</p>
+							</div>
+						</td>
+					</tr>
+					<tr th:if="${#lists.isEmpty(egressos)}">
+						<td colspan="7" class="text-center text-muted">Nenhum egresso com postagens pendentes.</td>
+					</tr>
+				</tbody>
+			</table>
 		</div>
-		<div class="row d-flex justify-content-center">
-			<div class="p-1">
-				<table class="table table-responsive table-bordered table-hover">
-					<thead>
-						<tr scope="row" class="table-info">
-							<th scope="col">Nome</th>
-							<th>Foto</th>
-							<th scope="col">Nome do curso</th>
-							<th>Ano</th>
-							<th scope="col">Comentario FATEC </th>
-							<th scope="col">Comentario Livre </th>
-							<th scope="col">Opções</th>
-						</tr>
-					</thead>
-					<tbody>
-						<!-- Só exibe se o egresso tiver comentario e comentario FATEC diferentes de null -->
-						<tr scope="row" class="table-primary" th:each="egresso : ${egressos}"
-							th:if="${egresso.comentario != null && egresso.comentarioFATEC != null}"
-						>
-							<td scope="col" th:text="${egresso.nome}"></td>
-							<td class="text-center align-middle">
-								<!-- Exibe a foto para validar, apenas se ainda não foi validada -->
-							    <img th:if="${egresso.situacaoFoto == false}"
-							    th:src="@{${egresso.foto}}" 
-							         th:alt="'Foto de ' + ${egresso.nome}"
-							         th:title="${egresso.nome}"
-							         class="img-thumbnail rounded-circle aluno-foto"/>
-							    <p th:unless="${egresso.situacaoFoto == false}">Foto já validada!</p>
-							</td>
-							<td scope="col" th:text="${egresso.curso.nome}"></td>
-							<td scope="col" th:text="${egresso.ano}"></td>
-							<td scope="col">
-								<!-- Exibe comentario apenas se ainda não foi validado -->
-								<p th:if="${egresso.situacaoComentario == false}" 
-									th:text="${egresso.comentarioFATEC}"></p>
-								<p th:unless="${egresso.situacaoComentario == false}">
-										Comentarios já foram validados!</p>
-							</td>
-							<td scope="col">
-								<!-- Exibe comentario apenas se ainda não foi validado -->
-								<p th:if="${egresso.situacaoComentario == false}" 
-									th:text="${egresso.comentario}"></p>
-								<p th:unless="${egresso.situacaoComentario == false}">
-										Comentarios já foram validados!</p>
-							</td>
-							<td scope="col">
-								<h3>Validação de Egresso: É um ex-aluno?</h3>
-							<!-- Exibe os botões apenas se ainda não foi validado como ex-aluno -->
-							<div class="form-group d-flex" th:if="${egresso.situacaoCadastro == false}">
-								<!-- Aprovar egrsso, salva o egresso -->
-								<form action="/admin/aprovarEgresso" method="post">
-									<input type="hidden" name="id" th:value="${egresso.id}">
-								    <input type="submit" class="btn btn-primary mb-3" value="Aprovar">
-								</form>
-								<!-- Reprovar Egresso, já que não é um ex-aluno, deleta ele do banco de dados 
-									e quando ele tentar logar com esse email informa ele -->
-								<form  action="/admin/reprovarEgresso" method="post">
-									<input type="hidden" name="_method" value="delete">
-									<input type="hidden" name="id" th:value="${egresso.id}">
-									<input type="submit" class="btn btn-danger ml-3" value="Reprovar">
-								</form>
-							</div>
-							<div class="form-group d-flex" th:unless="${egresso.situacaoCadastro == false}">
-								<p>Sim, esté é um ex-aluno. <strong>Situação de Cadastro já validada </strong></p>
-							</div>
-							
-							<h3>Validação de Egresso: Comentarios e Foto validos?</h3>
-							<!-- Aprovar do admin, salva o comentario e foto -->
-							<!-- Botões aparecem apenas se ainda não foi validado o comentario e a foto -->
-							<div th:if="${egresso.situacaoComentario == false || egresso.situacaoFoto == false}">
-							
-							<form action="/admin/aprovarComentario" method="post">
-								<div class="form-group">
- 								<!-- Quais itens serão aprovados -->
-						        <label for="">Selecione antes de aprovar :</label>
-						        <select class="form-control" id="tipo" name="tipo">
-						            <option disabled>-- Selecione antes de aprovar --</option>
-						            <!-- Aquilo que ja foi validado não será mais possivel selecionar -->
-									<option value="fatec" th:hidden="${egresso.situacaoComentario == true}">Aprovar comentario Fatec</option>
-									<option value="geral" th:hidden="${egresso.situacaoComentario == true}">Aprovar comentario Geral</option>
-									<option value="comentarios" th:hidden="${egresso.situacaoComentario == true}">Aprovar ambos comentarios</option>
-									<option value="foto" th:hidden="${egresso.situacaoFoto == true}">Aprovar Foto</option>
-						        </select>
-							</div>				
-							    <input type="hidden" name="id" th:value="${egresso.id}">
-							    <input type="submit" class="btn btn-primary mb-3" value="Aprovar">
-							</form>
-							
-							<!-- Reprovar do admin, deleta o comentario ou foto, egresso pode atualizar depois -->
-							<form action="/admin/reprovarComentario" method="post">
-								<input type="hidden" name="_method" value="put">
-								<div class="form-group">
- 								<!-- Quais comentarios serão reprovados -->
-						        <label for="">Selecione antes de reprovar :</label>
-						        <select class="form-control" id="tipo" name="tipo">
-						            <option disabled>-- Selecione antes de reprovar --</option>
-									<option value="fatec">Reprovar comentario Fatec</option>
-									<option value="geral">Reprovar comentario Geral</option>
-									<option value="comentarios">Reprovar ambos comentarios</option>
-									<option value="foto">Reprovar Foto</option>
-						        </select>
-							</div>
-								<input type="hidden" name="id" th:value="${egresso.id}">
-								<input type="submit" class="btn btn-danger" value="Reprovar">
-								
-							</form>
-							</div>
-							<div class="form-group d-flex" th:unless="${egresso.situacaoComentario == false || egresso.situacaoFoto == false}">
-								<p>Sim, <strong>situação de Comentarios e Foto já validadas </strong></p>
-							</div>	
-							</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-		</div>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+	</div>
+
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

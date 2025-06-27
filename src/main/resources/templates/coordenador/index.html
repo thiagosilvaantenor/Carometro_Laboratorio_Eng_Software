@@ -3,65 +3,70 @@
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{template.html}">
 <head>
+	<meta charset="UTF-8">
 	<title>Home do Coordenador</title>
-	<link rel="stylesheet"
-		href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css"
-		integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
-		crossorigin="anonymous">
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" crossorigin="anonymous">
 	<style>
 		body {
 			background-color: #f4f4f4;
+			font-family: 'Segoe UI', sans-serif;
 		}
 
 		.home-card {
 			background-color: #fff;
-			border-radius: 10px;
-			padding: 40px 30px;
+			border-radius: 12px;
+			padding: 50px 40px;
 			margin-top: 60px;
-			box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+			box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
 			text-align: center;
 		}
 
 		h1 {
 			color: #990000;
-			font-weight: bold;
+			font-weight: 700;
+			font-size: 2rem;
 			margin-bottom: 30px;
 		}
 
 		.btn-fatec {
 			background-color: #990000;
-			color: #fff;
+			color: white;
 			border: none;
 			margin: 10px;
-			padding: 12px 25px;
-			border-radius: 5px;
+			padding: 14px 30px;
+			border-radius: 6px;
 			font-size: 16px;
-			transition: background-color 0.3s ease;
+			font-weight: 500;
+			transition: 0.3s ease;
 		}
 
 		.btn-fatec:hover {
 			background-color: #b30000;
 			color: #fff;
+			transform: scale(1.02);
 		}
 	</style>
 </head>
 
 <body>
 	<header th:replace="~{fragmentos/header :: header(activePage='index')}"></header>
+
 	<div layout:fragment="conteudo">
 		<div class="container">
 			<div class="row justify-content-center">
-				<div class="col-md-8 home-card">
-					<h1 th:text="'Bem vindo à sua Home, ' + (${coordenador.nome} ?: 'Coordenador') + '!'">Bem-vindo à sua Home</h1>
-					<div class="d-flex justify-content-center flex-wrap">
+				<div class="col-md-10 home-card">
+					<h1 th:text="'Bem-vindo à sua Home, ' + (${coordenador.nome} ?: 'Coordenador') + '!'">
+						Bem-vindo à sua Home
+					</h1>
+					<div class="d-flex flex-wrap justify-content-center gap-3">
 						<a th:href="@{/coordenador/validarEgresso}" class="btn btn-fatec">Validar Egresso</a>
 						<a th:href="@{/coordenador/formulario(id=${coordenador.id})}" class="btn btn-fatec">Editar Cadastro</a>
-
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
+
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </html>

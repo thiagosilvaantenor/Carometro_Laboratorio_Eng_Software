@@ -3,34 +3,55 @@
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{template.html}">
 <head>
-<title>Cadastrar Aluno por envio de arquivo</title>
-<link rel="stylesheet"
-	href="https://cdn.jsdelivr.net/npm/bootstrap@4.1.3/dist/css/bootstrap.min.css"
-	integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
-	crossorigin="anonymous">
-
-<style>
-
+	<meta charset="UTF-8">
+	<title>Cadastrar Aluno por envio de arquivo</title>
+	<link rel="stylesheet"
+		href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+		crossorigin="anonymous">
+	<style>
 		body {
-			background-color: #f2f2f2;
+			background: linear-gradient(to right, #f4f6f9, #e9ecef);
+			font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+			padding: 20px;
 		}
-		.messagem { margin-top: 20px; padding: 10px; border-radius: 5px; }
-        .success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
-        .error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
-        form { margin-top: 20px; }
-		.card-form {
-			background-color: white;
-			border-radius: 10px;
-			padding: 30px;
-			box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
-			margin-top: 40px;
-			margin-bottom: 40px;
-		}
+
 		.fatec-title {
 			color: #990000;
 			font-weight: bold;
-			margin-bottom: 20px;
+			margin-bottom: 30px;
+			text-align: center;
+			font-size: 1.8rem;
 		}
+
+		.card-form {
+			background-color: white;
+			border-radius: 12px;
+			padding: 35px;
+			box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+			max-width: 800px;
+			margin: 0 auto 40px auto;
+		}
+
+		.message {
+			margin: 20px auto;
+			padding: 15px;
+			border-radius: 8px;
+			max-width: 800px;
+			font-size: 1rem;
+		}
+
+		.success {
+			background-color: #d4edda;
+			color: #155724;
+			border: 1px solid #c3e6cb;
+		}
+
+		.error {
+			background-color: #f8d7da;
+			color: #721c24;
+			border: 1px solid #f5c6cb;
+		}
+
 		.btn-fatec {
 			background-color: #990000;
 			color: white;
@@ -44,49 +65,64 @@
 			background-color: #b30000;
 			color: white;
 		}
-</style>
 
+		.table-sample {
+			max-width: 900px;
+			margin: 20px auto;
+		}
+
+		label {
+			font-weight: 500;
+		}
+	</style>
 </head>
 <body>
-	<header th:replace="~{fragmentos/header :: header(activePage='cadastroArquivo')}"></header>
-	<div class="container">
-		<h1 class="text-center mt-3 fatec-title">Cadastrar Aluno (futuro egresso)<br>Por envio de arquivo</h1>
-		
-		 <div th:if="${mensagem}" th:classappend="${#strings.contains(mensagem, 'sucesso') ? 'success' : 'error'}" class="mensagem">
-        	<p th:text="${mensagem}"></p>
-    	 </div>
-		<div class="p-1">
-				<h5>Exemplo de arquivo aceito: </h5>
-				<table class="table table-responsive table-bordered table-hover">
-					<thead>
-						<tr class="table-info">
-							<th>Coluna 1 : Nome</th>
-							<th>Coluna 2: Email</th>
-							<th>Coluna 3: Telefone</th>
-							<th>Coluna 4: Curso</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr class="table-primary">				
-							<td>Nome do aluno</td>
-							<td>Email do aluno</td>
-							<td>Telefone do aluno</td>
-							<td>Nome do curso, só é aceito nomes de curso já cadastrados</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-		
-		
-		<form method="post" action="/aluno/resultadoCadastro" enctype="multipart/form-data">
-			<div class="form-group">
-				<label for="arquivo">Arquivos aceitos: .csv</label>
-				<input type="file" accept=".csv" class="form-control" id="file"
-											name="file" required/>
-			</div>
-			<button type="submit" class="btn btn-primary">Enviar</button>
-		</form>
 
+	<header th:replace="~{fragmentos/header :: header(activePage='cadastroArquivo')}"></header>
+
+	<h1 class="fatec-title">Cadastrar Aluno (futuro egresso)<br>Por envio de arquivo</h1>
+
+	<!-- Mensagem de retorno -->
+	<div th:if="${mensagem}" th:classappend="${#strings.contains(mensagem, 'sucesso') ? 'success' : 'error'}" class="message text-center">
+		<p th:text="${mensagem}" class="mb-0"></p>
 	</div>
+
+	<!-- Tabela exemplo -->
+	<div class="table-sample">
+		<h5 class="mb-3">Exemplo de arquivo aceito:</h5>
+		<table class="table table-bordered table-hover text-center">
+			<thead class="table-danger">
+				<tr>
+					<th>Coluna 1: Nome</th>
+					<th>Coluna 2: Email</th>
+					<th>Coluna 3: Telefone</th>
+					<th>Coluna 4: Curso</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr class="table-light">
+					<td>Nome do aluno</td>
+					<td>Email do aluno</td>
+					<td>Telefone do aluno</td>
+					<td>Nome do curso (deve estar cadastrado previamente)</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<!-- Formulário -->
+	<div class="card-form">
+		<form method="post" action="/aluno/resultadoCadastro" enctype="multipart/form-data">
+			<div class="mb-3">
+				<label for="file">Arquivos aceitos: <strong>.csv</strong></label>
+				<input type="file" accept=".csv" class="form-control" id="file" name="file" required />
+			</div>
+			<div class="text-end mt-4">
+				<button type="submit" class="btn btn-fatec">Enviar</button>
+			</div>
+		</form>
+	</div>
+
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
