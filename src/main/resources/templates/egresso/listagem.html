@@ -155,6 +155,29 @@
       outline: none;
       box-shadow: 0 0 8px #b30000;
     }
+
+    .btn-success{
+     background-color: #990000 !important;
+
+    }
+
+    .btn-success:hover{
+      background-color: #c80505;
+    }
+
+    .table-info{
+       background-color: #c80505;
+        color: #fff;
+        margin-left: 5px;
+    }
+    th{ 
+    margin-left: 25px;
+    padding-left: 7px;
+    text-align: center;
+
+
+   }
+
   </style>
 </head>
 <body>
@@ -197,17 +220,18 @@
 
     <div class="row justify-content-center">
       <div class="col-12">
-        <div class="table-responsive shadow-sm rounded bg-white">
-          <table class="table table-bordered table-hover mb-0">
+        <div class="table-responsive shadow-sm rounded bg-white" style="width: 55vw; justify-self: center;">
+          <table class="table table-bordered table-hover mb-0 btn-succes">
+            <table not</table>
             <thead class="table-info">
               <tr>
                 <th>Nome</th>
                 <th class="text-center">Foto</th>
                 <th>Nome do curso</th>
-                <th>Históricos de trabalho</th>
+                <th>Experiências</th>
                 <th>Comentário FATEC</th>
                 <th>Comentário Livre</th>
-                <th>Redes</th>
+                <th>Redes Sociais</th>
                 <th>Perfil</th>
               </tr>
             </thead>
@@ -278,7 +302,7 @@
                     th:if="${egresso.links.linkedIn != null && egresso.links.linkedIn.startsWith('http')}"
                     th:href="${egresso.links.linkedIn}"
                     target="_blank"
-                    class="btn btn-sm btn-outline-primary"
+                    class="btn btn-sm btn-outline-primary mt-3  "
                     >LinkedIn</a
                   >
                   <span
