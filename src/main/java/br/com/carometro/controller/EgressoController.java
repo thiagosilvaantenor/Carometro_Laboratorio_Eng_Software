@@ -184,7 +184,7 @@ public class EgressoController {
 			e.printStackTrace();
 		}
 		
-		return "redirect:egresso";
+		return "redirect:login";
 	}
 	
 	@PutMapping
@@ -273,7 +273,7 @@ public class EgressoController {
 	    }
 		
 		egresso.atualizarInformacoes(dados);
-		return "redirect:egresso";
+		return "redirect:egresso/index";
 	}
 
 	@DeleteMapping

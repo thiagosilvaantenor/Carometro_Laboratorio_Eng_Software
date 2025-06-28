@@ -25,7 +25,7 @@ public class CursoService {
 	}
 
 	public Optional<Curso> getByNome(String nome){
-		return repository.findByNome(nome);
+		return repository.findByNomeContains(nome);
 	}
 
 }

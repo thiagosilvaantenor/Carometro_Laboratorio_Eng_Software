@@ -109,8 +109,12 @@
           </div>
           <div class="col-md-4">
             <label for="senha">* Senha:</label>
-            <input type="password" class="form-control" id="senha" name="senha" th:if="${!editar}" th:value="${egresso?.senha}" placeholder="Digite uma senha" required />
-            <input type="password" class="form-control" id="senha" name="senha" th:if="${editar}" placeholder="Deixe em branco para manter a atual" />
+            <!-- Senha caso for criação de egresso -->
+            <input type="password" class="form-control" id="senha" name="senha" th:if="${!editar}" th:value="${egresso?.senha}" 
+            		placeholder="Digite uma senha" required minlength="8" />
+            <!-- Senha caso for atualização de egresso -->		
+            <input type="password" class="form-control" id="senha" name="senha" th:if="${editar}" 
+            		placeholder="Deixe em branco para manter a atual" minlength="8"/>
           </div>
         </div>
 
@@ -130,7 +134,7 @@
             <label for="cursoId">* Curso:</label>
             <select class="form-control" name="cursoId" id="cursoId" required>
               <option value="">-- Selecione --</option>
-              <option th:each="curso : ${cursos}" th:value="${curso.id}" th:text="${curso.nome}" th:selected="${egresso?.curso?.id} == ${curso.id}"></option>
+              <option th:each="curso : ${cursos}" th:value="${curso.id}" th:text="${curso.nome + ' ' + curso.turno}" th:selected="${egresso?.curso?.id} == ${curso.id}"></option>
             </select>
           </div>
           <div class="col-md-4">
@@ -208,6 +212,34 @@
           <input class="btn btn-fatec p-3 px-5" type="submit" value="Cadastrar" />
         </div>
       </form>
+      <!-- Caso o usuário clique em Adicionar Histórico, exibe os campos da div abaixo, com o indice do proximo histórico-->
+							<div class="historico-template historico-entry" style="display: none;">
+								<input type="hidden" name="historico[__index__].id" value=""/> 
+								<div class="form-row">
+									<div class="form-group col-md-6">
+										<label for="empresaTrabalho__index__"> Empresa: </label>
+										<input type="text" class="form-control" id="empresaTrabalho__index__" name="historico[__index__].empresaTrabalho" required/>
+									</div>
+									<div class="form-group col-md-6">
+										<label for="descricaoTrabalho__index__"> Descrição: </label>
+										<input type="text" class="form-control" id="descricaoTrabalho__index__" name="historico[__index__].descricaoTrabalho" required/>
+									</div>
+								</div>
+								<div class="form-row">
+									<div class="form-group col-md-6">
+										<label for="dtInicio__index__"> Data Início: </label>
+										<input type="date" class="form-control" id="dtInicio__index__" name="historico[__index__].dtInicio" required/>
+									</div>
+									<div class="form-group col-md-6">
+									<label for="dtFim__index__"> Data Fim (se aplicável): </label>
+										<input type="date" class="form-control" id="dtFim__index__" name="historico[__index__].dtFim"/>
+									</div>
+								</div>
+								<button class="remove-historico btn btn-danger">Remover</button>
+							</div>
+				</div>
+			</div>
+		</div>
     </div>
   </div>
 </div>

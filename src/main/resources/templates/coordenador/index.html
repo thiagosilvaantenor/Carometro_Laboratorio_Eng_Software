@@ -10,6 +10,7 @@
 		body {
 			background-color: #f4f4f4;
 			font-family: 'Segoe UI', sans-serif;
+			margin-top: 5rem;
 		}
 
 		.home-card {
@@ -59,7 +60,7 @@
 						Bem-vindo à sua Home
 					</h1>
 					<div class="d-flex flex-wrap justify-content-center gap-3">
-						<a th:href="@{/coordenador/validarEgresso}" class="btn btn-fatec">Validar Egresso</a>
+						<a th:href="@{/egresso/filtrar?(cursoId=${coordenador.curso.id})}" class="btn btn-fatec">Ver Postagens do seu curso</a>
 						<a th:href="@{/coordenador/formulario(id=${coordenador.id})}" class="btn btn-fatec">Editar Cadastro</a>
 					</div>
 				</div>

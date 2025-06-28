@@ -71,7 +71,7 @@ public class AlunoController {
 			Aluno aluno = new Aluno(dados);
 			aluno.setCurso(curso);
 			service.salvar(aluno);
-			return "redirect:aluno";		
+			return "redirect:login";		
 	}
 	
 	@PutMapping
@@ -96,7 +96,6 @@ public class AlunoController {
 	}
 	
 	//Método para filtrar a listagem
-	//FIXME: filtros não retornam nada
 	@GetMapping("/filtrar")
 	public String filtrar(@RequestParam(name = "nome", required = false) String nome, 
 				@RequestParam(name = "cursoId", required = false)  Long cursoId, Model model) {
@@ -104,11 +103,11 @@ public class AlunoController {
 		//Envia a lista de cursos da seleção de filtro
 		List<Curso> cursos = cursoService.getAllCursos();
 		model.addAttribute("cursos", cursos);
-		if (nome != null && cursoId != null)
+		if (!nome.isBlank() && cursoId != null)
 			alunos = service.filtarPorNomeECurso(nome, cursoId);
-		else if (nome != null && cursoId == null)
+		else if (!nome.isBlank() && cursoId == null)
 			alunos = service.filtarPorNome(nome);
-		else if (cursoId != null && nome == null)
+		else if (cursoId != null && nome.isBlank())
 			alunos = service.filtarPorCurso(cursoId);
 		else
 			alunos = service.getAll();

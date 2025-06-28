@@ -51,7 +51,7 @@ public class AlunoService {
 	}
 
 	public List<Aluno> filtarPorNomeECurso(String nome, Long cursoId) {
-		return repository.findByNomeAndCursoId(nome, cursoId);
+		return repository.findByNomeContainsAndCursoId(nome, cursoId);
 	}
 
 	public List<Aluno> filtarPorNome(String nome) {
@@ -76,7 +76,15 @@ public class AlunoService {
 			int cursoI = -1;
 			boolean primeiraLinha = true;
 			while ((linha = br.readLine()) != null) {
-				String[] dados = linha.split(",");
+				String[] dados;
+				// Verifica se o separador é ';' ou ','
+				if (linha.contains(";")) {
+					dados = linha.split(";");					
+				}
+				else {
+					dados = linha.split(",");
+				}
+				
 				//Caso seja a linha do cabeçalho, entra no if para verificar qual os indices das colunas de cada atributo
 				if (primeiraLinha) {
 					primeiraLinha = false;
@@ -103,7 +111,7 @@ public class AlunoService {
 					}
 					continue; // Pula para a próxima linha depois de processar o cabeçalho
 				}
-				//Assumindo que o separador do arquivo seja virgula
+				
 				if(dados.length >= 4) {//O minimo tem que ser 4 dados 
 					String nome = dados[nomeI].trim();
 					String email = dados[emailI].trim();
@@ -133,7 +141,6 @@ public class AlunoService {
 						alunos.add(aluno);
 					}
 				} else {
-					// Opcional: logar linhas que não têm dados suficientes
 					System.err.println("Linha ignorada por ter dados insuficientes: " + linha);
 				}
 					

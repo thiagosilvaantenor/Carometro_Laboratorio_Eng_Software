@@ -77,7 +77,7 @@ public class CoordenadorController {
 		coordenador.setCurso(curso);
 		
 		service.salvar(coordenador); 
-		return "redirect:coordenador";
+		return "redirect:login";
 	} 
 	
 	@PutMapping
@@ -101,7 +101,7 @@ public class CoordenadorController {
 		
 		coordenador.atualizarInformacoes(dados);
 		repository.save(coordenador);
-	    return "redirect:coordenador";
+	    return "redirect:coordenador/index";
 	}
 
 	@DeleteMapping
@@ -133,27 +133,6 @@ public class CoordenadorController {
 		modelAndView.addObject("coordenador", coordenadorLogado);
 		modelAndView.addObject("role", "coordenador");
 		return modelAndView;
-	}
-	
-	//TODO: Colocar um botão para linkar o coordenador a página de postagens com o filtro do curso dele
-	//Mapeamento da pagina de posts para validaçao dos egressos 
-	//Validação de egresso:Quando egresso é cadastrado, para ser exibido na listagem é necessario o coordenador verificar se ele é ex-egresso
-	@GetMapping("/validarEgresso")
-	public ModelAndView paginaExibicaoPosts(HttpSession session) throws Exception {
-		//Busca o coordenador logado
-	    Coordenador coordenadorLogado = (Coordenador) session.getAttribute("usuarioLogado");
-	    if (coordenadorLogado != null) {
-	    	//Busca os egressos do curso do coordenador com situação de cadastro false para ele realizar a validação
-	        List<Egresso> egressos = egressoService.filtraEgressoPeloCursoESituacaoCadastor
-	        		(coordenadorLogado.getCurso().getId(), false);
-	        
-	        ModelAndView modelAndView = new ModelAndView();
-	        modelAndView.addObject("egressos", egressos);
-	        modelAndView.setViewName("coordenador/validarEgresso");
-	        return modelAndView;
-	    } else {
-	        throw new Exception("Usuário não está logado.");
-	    }
 	}
 	
 }

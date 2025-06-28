@@ -17,6 +17,7 @@
     body {
       background-color: #f4f4f4;
       padding: 1rem;
+      margin-top: 5rem;
     }
     .aluno-foto {
       width: 100px;
@@ -183,15 +184,16 @@
 <body>
   <header th:replace="~{fragmentos/header :: header(activePage='listagem')}"></header>
 
-  <div class="container mt-5">
+  <div class="container">
     <div class="row justify-content-center mb-4">
       <div class="col-md-6">
         <h1 class="text-center mb-4">Lista de Egresso / Postagens</h1>
+        <!-- Filtros -->
         <form method="get" action="/egresso/filtrar" class="bg-white p-4 rounded shadow-sm">
           <h2 class="text-center mb-3">Filtros:</h2>
           <!-- Curso -->
           <div class="mb-3">
-            <label for="cursoId" class="form-label">Selecione o seu curso:</label>
+            <label for="cursoId" class="form-label">Selecione o curso:</label>
             <select class="form-select" name="cursoId" id="cursoId">
               <option value="">-- Selecione --</option>
               <option
@@ -202,7 +204,7 @@
           </div>
           <!-- Ano semestre -->
           <div class="mb-3">
-            <label for="ano" class="form-label">Selecione o ano semestre (ex: 202401 = 1° semestre de 2024):</label>
+            <label for="ano" class="form-label">Selecione o ano de conclusão:</label>
             <select class="form-select" name="ano" id="ano">
               <option value="">-- Selecione --</option>
               <option
@@ -220,7 +222,7 @@
 
     <div class="row justify-content-center">
       <div class="col-12">
-        <div class="table-responsive shadow-sm rounded bg-white" style="width: 55vw; justify-self: center;">
+        <div class="table-responsive shadow-sm rounded bg-white" style="width: 55vw; justify-self: center; margin-left:7rem;">
           <table class="table table-bordered table-hover mb-0 btn-succes">
             
             <thead class="table-info">

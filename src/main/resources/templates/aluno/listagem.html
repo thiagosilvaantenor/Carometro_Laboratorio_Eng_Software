@@ -179,7 +179,7 @@
 				<tr th:each="aluno : ${lista}">
 					<td th:text="${aluno.nome}"></td>
 					<td th:text="${aluno.email}"></td>
-					<td th:text="${aluno.curso.nome}"></td>
+					<td th:text="${aluno.curso.nome + ' ' + aluno.curso.turno}"></td>
 				</tr>
 			</tbody>
 		</table>

@@ -12,12 +12,13 @@
 		body {
 			background-color: #f8f9fa;
 			font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+			margin-top:5rem;
 		}
 
 		h1 {
 			color: #990000;
 			font-weight: 700;
-			margin-top: 30px;
+			margin-top: 55px;
 			margin-bottom: 20px;
 			text-align: center;
 		}
@@ -61,12 +62,13 @@
 		.d-flex-column > *:last-child {
 			margin-bottom: 0;
 		}
+		
 	</style>
 </head>
 <body>
 	<header th:replace="~{fragmentos/header :: header(activePage='listagemCurso')}"></header>
 
-	<div class="container" layout:fragment="conteudo">
+	<div class="container">
 		<h1>Lista de Cursos</h1>
 		<div class="text-center mb-4">
 			<a class="btn btn-fatec" href="/curso/formulario">+ Novo Curso</a>
@@ -94,7 +96,7 @@
 						<td th:text="${curso.turno}"></td>
 						<td th:text="${curso.areaAtuacao}"></td>
 						<td>
-							<div class="d-flex flex-column">
+							<div class="d-flex flex-column gap-2">
 								<a th:href="@{/curso/formulario?id={id}(id=${curso.id})}">
 									<button class="btn btn-sm btn-primary w-100">Editar</button>
 								</a>

@@ -75,7 +75,7 @@ public class AdministradorController {
 		}
 		Administrador admin = new Administrador(dados);
 		service.salvarAdmin(admin);
-		return "redirect:admin"; 
+		return "redirect:login"; 
 	}
  
 	@PutMapping

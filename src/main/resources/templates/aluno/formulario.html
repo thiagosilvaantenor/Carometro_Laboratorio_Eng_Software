@@ -19,6 +19,7 @@
 			font-weight: bold;
 			margin-bottom: 20px;
 			text-align: center;
+			margin-top: 55px;
 		}
 
 		.card-form {
@@ -136,7 +137,7 @@
 				<label for="cursoId">* Selecione o seu curso:</label>
 				<select class="form-control" name="cursoId" id="cursoId" required>
 					<option value="">-- Selecione --</option>
-					<option th:each="curso : ${cursos}" th:value="${curso.id}" th:text="${curso.nome}"
+					<option th:each="curso : ${cursos}" th:value="${curso.id}" th:text="${curso.nome + ' ' + curso.turno}"
 						th:selected="${aluno?.curso?.id} == ${curso.id}"></option>
 				</select>
 			</div>
