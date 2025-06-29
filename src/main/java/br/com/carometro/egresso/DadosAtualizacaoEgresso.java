@@ -39,7 +39,8 @@ public record DadosAtualizacaoEgresso(
 		String gitHub,
 		String linkedIn,
 		String lattesCNPQ,
-		List<DadosCadastroHistorico> historico
+		List<DadosCadastroHistorico> historico,
+		Boolean consentimentoDivulgacao
 		) {
 
 }

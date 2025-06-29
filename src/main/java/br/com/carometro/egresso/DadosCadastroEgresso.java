@@ -6,8 +6,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import br.com.carometro.curso.Curso;
 import br.com.carometro.historico.DadosCadastroHistorico;
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public record DadosCadastroEgresso(
@@ -37,7 +39,10 @@ public record DadosCadastroEgresso(
 		List<DadosCadastroHistorico> historico,
 		String gitHub,
 		String linkedIn,
-		String lattesCNPQ
+		String lattesCNPQ,
+		@NotNull(message = "É necessário concordar com a divulgação para prosseguir.")
+		@AssertTrue(message = "É necessário concordar com a divulgação para prosseguir.")
+		Boolean consentimentoDivulgacao
 		) {
 
 

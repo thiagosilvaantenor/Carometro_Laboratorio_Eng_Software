@@ -10,6 +10,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import br.com.carometro.curso.Curso;
 import br.com.carometro.curso.CursoService;
@@ -128,8 +130,56 @@ public class EgressoController {
 	@Transactional
 	public String cadastrar(@Valid
 			DadosCadastroEgresso dados,
+			@Valid BindingResult resultado,
 			@RequestParam("foto") MultipartFile foto,
-			@RequestParam("cursoId") Long cursoId) throws IOException {
+			@RequestParam("cursoId") Long cursoId,
+			RedirectAttributes redirectAttributes) throws IOException {
+		
+		  // --- 1. Validação do DTO (incluindo o checkbox) ---
+	    if (resultado.hasErrors()) {
+	        // Adiciona os erros de validação como flash attributes
+	        // Assim, eles estarão disponíveis após o redirecionamento
+	        resultado.getAllErrors().forEach(error -> {
+	            redirectAttributes.addFlashAttribute("erroValidacao", error.getDefaultMessage());
+	        });
+	        // Retorna para o formulário para exibir as mensagens
+	        return "redirect:/egresso/formulario";
+	    }
+		 
+	    // Validação de consentimento de divulgação
+	    if (dados.consentimentoDivulgacao() == null || !dados.consentimentoDivulgacao()) {
+	        redirectAttributes.addFlashAttribute("erroValidacao", "É necessário concordar com a divulgação para prosseguir.");
+	        return "redirect:/egresso/formulario";
+	    }
+	    
+	    
+		 // --- 2. Validação da Foto (Tipo e Tamanho) ---
+		final long TAMANHO_MAX_BYTES = 2 * 1024 * 1024; // 2 MB
+		final String[] TIPOS_MIME_VALIDOS = {"image/png", "image/jpeg"};
+		
+		if (!foto.isEmpty()) { // Verifica se um arquivo foi enviado
+		    String contentType = foto.getContentType();
+		    long tamanho = foto.getSize();
+		
+		    boolean tipoValido = false;
+		    //Itera sobre os tipos para verificar se o arquivo enviado é do tipo valido
+		    for (String tipo : TIPOS_MIME_VALIDOS) {
+		        if (tipo.equals(contentType)) {
+		            tipoValido = true;
+		            break;
+		        }
+		    }
+		
+		    if (!tipoValido) {
+		        redirectAttributes.addFlashAttribute("erroValidacao", "Formato de imagem inválido. Por favor, envie JPG ou PNG.");
+		        return "redirect:/egresso/formulario"; 
+		    }
+		
+		    if (tamanho > TAMANHO_MAX_BYTES) {
+		        redirectAttributes.addFlashAttribute("erroValidacao", "A imagem excede o tamanho máximo permitido de 2MB.");
+		        return "redirect:/egresso/formulario";
+		    }
+		}	
 		 // A lista de histórico já estará em dados.getHistorico()
 	    List<DadosCadastroHistorico> dadosHistoricoSubmetidos = dados.historico();
 		Curso curso = cursoService.getCursoById(cursoId);
@@ -180,11 +230,13 @@ public class EgressoController {
 
 		try {
 			service.salvar(egresso);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		return "redirect:login";
+		    redirectAttributes.addFlashAttribute("mensagemSucesso", "Cadastro realizado com sucesso! Em breve um administrador vai avaliar seu cadastro para poder aparecer na listagem de egressos");
+		    return "redirect:login"; // Ou para onde quiser após o sucesso
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        redirectAttributes.addFlashAttribute("erroValidacao", "Erro ao cadastrar egresso: " + e.getMessage());
+	        return "redirect:/egresso/formulario";
+	    }
 	}
 	
 	@PutMapping

@@ -86,250 +86,342 @@
 </head>
 <body>
 	<header th:replace="~{fragmentos/header :: header(activePage='formularioEgresso')}"></header>
-	<div class="container">
+<div class="container">
   <div class="row justify-content-md-center">
     <div class="col-12 col-md-10 card-form d-flex flex-column">
 		<div class="fatec-header mb-4">
-      <h1>Cadastrar Egresso</h1>
-	  </div>
-      <p th:if="${editar}" class="text-center mb-3">Altere apenas os campos que vão ser atualizados</p>
+	      <h1>Cadastrar Egresso</h1>
+	      <h5 class="text-center mb-4">Campos com o símbolo * são obrigatórios</h5>
+		  </div>
+	      <p th:if="${editar}" class="text-center mb-3">Altere apenas os campos que vão ser atualizados</p>
 
-      <form th:object="${egresso}" method="post" action="/egresso" enctype="multipart/form-data" novalidate>
-        <input type="hidden" name="_method" value="put" th:if="${egresso?.id != null}" />
-        <input type="hidden" name="id" th:value="${egresso?.id}" />
+		<!-- Mensagens de erro e sucesso -->
+		<div th:if="${erroValidacao}" class="alert alert-danger" role="alert">
+		    <p th:text="${erroValidacao}"></p>
+		</div>
+		
+		<div th:if="${mensagemSucesso}" class="alert alert-success" role="alert">
+		    <p th:text="${mensagemSucesso}"></p>
+		</div>
 
-        <div class="row mb-3">
-          <div class="col-md-4">
-            <label for="nome">* Nome:</label>
-            <input class="form-control" type="text" id="nome" name="nome" th:value="${egresso?.nome}" required />
-          </div>
-          <div class="col-md-4">
-            <label for="email">* Email:</label>
-            <input type="email" class="form-control" id="email" name="email" th:value="${egresso?.email}" required />
-          </div>
-          <div class="col-md-4">
-            <label for="senha">* Senha:</label>
-            <!-- Senha caso for criação de egresso -->
-            <input type="password" class="form-control" id="senha" name="senha" th:if="${!editar}" th:value="${egresso?.senha}" 
-            		placeholder="Digite uma senha" required minlength="8" />
-            <!-- Senha caso for atualização de egresso -->		
-            <input type="password" class="form-control" id="senha" name="senha" th:if="${editar}" 
-            		placeholder="Deixe em branco para manter a atual" minlength="8"/>
-          </div>
-        </div>
-
-        <div class="row mb-3">
-          <div class="col-md-6">
-            <label for="foto">* Foto (JPG até 2MB):</label>
-            <input type="file" accept="image/jpeg" class="form-control" id="foto" name="foto" th:value="${egresso?.foto}" />
-          </div>
-          <div class="col-md-6">
-            <label for="ano">* Ano de conclusão (Ex: 2024):</label>
-            <input type="number" class="form-control" id="ano" name="ano" th:value="${egresso?.ano}" />
-          </div>
-        </div>
-
-        <div class="row mb-3">
-          <div class="col-md-4">
-            <label for="cursoId">* Curso:</label>
-            <select class="form-control" name="cursoId" id="cursoId" required>
-              <option value="">-- Selecione --</option>
-              <option th:each="curso : ${cursos}" th:value="${curso.id}" th:text="${curso.nome + ' ' + curso.turno}" th:selected="${egresso?.curso?.id} == ${curso.id}"></option>
-            </select>
-          </div>
-          <div class="col-md-4">
-            <label for="sobre">Sobre você:</label>
-            <textarea class="form-control" id="sobre" name="sobre" maxlength="100" th:text="${egresso?.sobre}"></textarea>
-          </div>
-          <div class="col-md-4">
-            <label for="sobreProfissional">Resumo Profissional:</label>
-            <textarea class="form-control" id="sobreProfissional" name="sobreProfissional" maxlength="100" th:text="${egresso?.sobreProfissional}"></textarea>
-          </div>
-        </div>
-
-        <div class="row mb-3">
-          <div class="col-md-6">
-            <label for="sobreFatec">Sua experiência com a FATEC:</label>
-            <textarea class="form-control" id="sobreFatec" name="sobreFatec" maxlength="100" th:text="${egresso?.sobreFatec}"></textarea>
-          </div>
-          <div class="col-md-2">
-            <label for="linkedIn">LinkedIn:</label>
-            <input type="url" class="form-control" name="linkedIn" id="linkedIn" placeholder="https://linkedin.com/in/..." th:value="${egresso?.links.linkedIn}" />
-          </div>
-          <div class="col-md-2">
-            <label for="gitHub">GitHub:</label>
-            <input type="url" class="form-control" name="gitHub" id="gitHub" placeholder="https://github.com/..." th:value="${egresso?.links.gitHub}" />
-          </div>
-          <div class="col-md-2">
-            <label for="lattesCNPQ">Lattes:</label>
-            <input type="url" class="form-control" name="lattesCNPQ" id="lattesCNPQ" placeholder="http://lattes.cnpq.br/..." th:value="${egresso?.links.lattesCNPQ}" />
-          </div>
-        </div>
-
-        <div id="historicosContainer" class="mb-3">
-          <div class="historico-entry" th:each="historicoEntry, stat : *{historico}">
-            <input type="hidden" th:field="*{historico[__${stat.index}__].id}" />
-            <div class="row mb-2">
-              <div class="col-md-6">
-                <label th:for="${#ids.next('empresaTrabalho')}">Empresa:</label>
-                <input type="text" class="form-control" th:field="*{historico[__${stat.index}__].empresaTrabalho}" required />
-              </div>
-              <div class="col-md-6">
-                <label th:for="${#ids.next('descricaoTrabalho')}">Descrição/Cargo:</label>
-                <input type="text" class="form-control" th:field="*{historico[__${stat.index}__].descricaoTrabalho}" required />
-              </div>
-            </div>
-            <div class="row mb-2">
-              <div class="col-md-6">
-                <label th:for="${#ids.next('dtInicio')}">Data Início:</label>
-                <input type="date" class="form-control" th:field="*{historico[__${stat.index}__].dtInicio}" required />
-              </div>
-              <div class="col-md-6">
-                <label th:for="${#ids.next('dtFim')}">Data Fim:</label>
-                <input type="date" class="form-control" th:field="*{historico[__${stat.index}__].dtFim}" />
-              </div>
-            </div>
-            <button type="button" class="remove-historico btn btn-danger mt-2">Remover</button>
-            <hr />
-          </div>
-        </div>
-
-        <button type="button" class="btn btn-success btn-fatec mb-4" id="addHistoricoBtn">+ Adicionar Histórico Profissional</button>
-
-        <div class="row mb-4">
-          <div class="col-md-6">
-            <label for="comentarioFATEC">Comentário sobre a FATEC:</label>
-            <input type="text" id="comentarioFATEC" class="form-control" name="comentarioFATEC" th:value="${egresso?.comentarioFATEC}" />
-          </div>
-          <div class="col-md-6">
-            <label for="comentario">Comentário Geral:</label>
-            <input type="text" id="comentario" class="form-control" name="comentario" th:value="${egresso?.comentario}" />
-          </div>
-        </div>
-
-        <p class="text-center mb-4">Campos com o símbolo * são obrigatórios</p>
-        <div class="d-flex justify-content-center">
-          <input class="btn btn-fatec p-3 px-5" type="submit" value="Cadastrar" />
-        </div>
+      	<form th:object="${egresso}" method="post" action="/egresso" enctype="multipart/form-data" novalidate>
+	        <input type="hidden" name="_method" value="put" th:if="${egresso?.id != null}" />
+	        <input type="hidden" name="id" th:value="${egresso?.id}" />
+			<!-- Nome, Email e Senha -->
+	        <div class="row mb-3">
+	          <div class="col-md-4">
+	            <label for="nome">* Nome:</label>
+	            <input class="form-control" type="text" id="nome" name="nome" th:value="${egresso?.nome}" required />
+	          </div>
+	          <div class="col-md-4">
+	            <label for="email">* Email:</label>
+	            <input type="email" class="form-control" id="email" name="email" th:value="${egresso?.email}" required />
+	          </div>
+	          <div class="col-md-4">
+	            <label for="senha">* Senha:</label>
+	            <!-- Senha caso for criação de egresso -->
+	            <input type="password" class="form-control" id="senha" name="senha" th:if="${!editar}" th:value="${egresso?.senha}" 
+	            		placeholder="Digite uma senha" required minlength="8" />
+	            <!-- Senha caso for atualização de egresso -->		
+	            <input type="password" class="form-control" id="senha" name="senha" th:if="${editar}" 
+	            		placeholder="Deixe em branco para manter a atual" minlength="8"/>
+	          </div>
+	        </div>
+        
+			<!-- Foto, ano de conclusão -->
+	        <div class="row mb-3">
+	          <div class="col-md-6">
+	            <label for="foto">* Foto (JPG até 2MB):</label>
+	            <input type="file" accept="image/png, image/jpeg" class="form-control" id="foto" name="foto" th:value="${egresso?.foto}" multiple />
+	            <!-- Div para exibir erro de tipo de arquivo ou tamanho -->
+	            <div id="mensagemErroFoto" style="color: red; margin-top: 5px;"></div>
+	          </div>
+	          <div class="col-md-6">
+	            <label for="ano">* Ano de conclusão (Ex: 2024):</label>
+	            <input type="number" class="form-control" id="ano" name="ano" th:value="${egresso?.ano}" />
+	          </div>
+	        </div>
+			<!-- Curso, Sobre você, Resumo Profissional -->
+	        <div class="row mb-3">
+	          <div class="col-md-4">
+	            <label for="cursoId">* Curso:</label>
+	            <select class="form-control" name="cursoId" id="cursoId" required>
+	              <option value="">-- Selecione --</option>
+	              <option th:each="curso : ${cursos}" th:value="${curso.id}" th:text="${curso.nome + ' ' + curso.turno}" th:selected="${egresso?.curso?.id} == ${curso.id}"></option>
+	            </select>
+	          </div>
+	          <div class="col-md-4">
+	            <label for="sobre">Sobre você:</label>
+	            <textarea class="form-control" id="sobre" name="sobre" maxlength="100" th:text="${egresso?.sobre}"></textarea>
+	          </div>
+	          <div class="col-md-4">
+	            <label for="sobreProfissional">Resumo Profissional:</label>
+	            <textarea class="form-control" id="sobreProfissional" name="sobreProfissional" maxlength="100" th:text="${egresso?.sobreProfissional}"></textarea>
+	          </div>
+	        </div>
+			<!-- Resumo Fatec, LinkedIn, Github e Lattes -->
+	        <div class="row mb-3">
+	          <div class="col-md-6">
+	            <label for="sobreFatec">Sua experiência com a FATEC:</label>
+	            <textarea class="form-control" id="sobreFatec" name="sobreFatec" maxlength="100" th:text="${egresso?.sobreFatec}"></textarea>
+	          </div>
+	          <div class="col-md-2">
+	            <label for="linkedIn">LinkedIn:</label>
+	            <input type="url" class="form-control" name="linkedIn" id="linkedIn" placeholder="https://linkedin.com/in/..." th:value="${egresso?.links.linkedIn}" />
+	          </div>
+	          <div class="col-md-2">
+	            <label for="gitHub">GitHub:</label>
+	            <input type="url" class="form-control" name="gitHub" id="gitHub" placeholder="https://github.com/..." th:value="${egresso?.links.gitHub}" />
+	          </div>
+	          <div class="col-md-2">
+	            <label for="lattesCNPQ">Lattes:</label>
+	            <input type="url" class="form-control" name="lattesCNPQ" id="lattesCNPQ" placeholder="http://lattes.cnpq.br/..." th:value="${egresso?.links.lattesCNPQ}" />
+	          </div>
+	        </div>
+			<!-- Histórico Profissional -->
+	        <div id="historicosContainer" class="mb-3">
+	          <div class="historico-entry" th:each="historicoEntry, stat : *{historico}">
+	            <input type="hidden" th:field="*{historico[__${stat.index}__].id}" />
+	            <div class="row mb-2">
+	              <div class="col-md-6">
+	                <label th:for="${#ids.next('empresaTrabalho')}">*Empresa:</label>
+	                <input type="text" class="form-control" th:field="*{historico[__${stat.index}__].empresaTrabalho}" required />
+	              </div>
+	              <div class="col-md-6">
+	                <label th:for="${#ids.next('descricaoTrabalho')}">*Descrição/Cargo:</label>
+	                <input type="text" class="form-control" th:field="*{historico[__${stat.index}__].descricaoTrabalho}" required />
+	              </div>
+	            </div>
+	            <div class="row mb-2">
+	              <div class="col-md-6">
+	                <label th:for="${#ids.next('dtInicio')}">*Data Início:</label>
+	                <input type="date" class="form-control" th:field="*{historico[__${stat.index}__].dtInicio}" required />
+	              </div>
+	              <div class="col-md-6">
+	                <label th:for="${#ids.next('dtFim')}">Data Fim:</label>
+	                <input type="date" class="form-control" th:field="*{historico[__${stat.index}__].dtFim}" />
+	              </div>
+	            </div>
+	            <button type="button" class="remove-historico btn btn-danger mt-2">Remover</button>
+	            <hr />
+	          </div>
+	        </div>
+	
+	        <button type="button" class="btn btn-success btn-fatec mb-4" id="addHistoricoBtn">+ Adicionar Histórico Profissional</button>
+			<!-- Comentário Fatec, Comentário Geral e Consentimento de divulgação -->
+	        <div class="row mb-4">
+	          <div class="col-md-6">
+	            <label for="comentarioFATEC">Comentário sobre a FATEC:</label>
+	            <input type="text" id="comentarioFATEC" class="form-control" name="comentarioFATEC" th:value="${egresso?.comentarioFATEC}" />
+	          </div>
+	          <div class="col-md-6">
+	            <label for="comentario">Comentário Geral:</label>
+	            <input type="text" id="comentario" class="form-control" name="comentario" th:value="${egresso?.comentario}" />
+	          </div>
+	        </div>
+	       <!-- Consentimento de divulgação, se não for aceito, não é possivel se cadastrar, só é exibido no cadastro -->
+	          <div th:if="${!editar}" class="col-md-8 mt-3">
+	          	<input type="checkbox" id="consentimentoDivulgacao" name="consentimentoDivulgacao" value="true" required>
+			  	<label for="aceiteDivulgacao">Concordo com a divulgação da foto, histórico de trabalho e comentários enviados</label>
+			  </div>
+	        
+			<!-- Input para enviar dados do form -->
+	        <div class="d-flex justify-content-center">
+	          <input class="btn btn-fatec p-3 px-5" type="submit" value="Cadastrar" />
+	        </div>
       </form>
       <!-- Caso o usuário clique em Adicionar Histórico, exibe os campos da div abaixo, com o indice do proximo histórico-->
-							<div class="historico-template historico-entry" style="display: none;">
-								<input type="hidden" name="historico[__index__].id" value=""/> 
-								<div class="form-row">
-									<div class="form-group col-md-6">
-										<label for="empresaTrabalho__index__"> Empresa: </label>
-										<input type="text" class="form-control" id="empresaTrabalho__index__" name="historico[__index__].empresaTrabalho" required/>
-									</div>
-									<div class="form-group col-md-6">
-										<label for="descricaoTrabalho__index__"> Descrição: </label>
-										<input type="text" class="form-control" id="descricaoTrabalho__index__" name="historico[__index__].descricaoTrabalho" required/>
-									</div>
-								</div>
-								<div class="form-row">
-									<div class="form-group col-md-6">
-										<label for="dtInicio__index__"> Data Início: </label>
-										<input type="date" class="form-control" id="dtInicio__index__" name="historico[__index__].dtInicio" required/>
-									</div>
-									<div class="form-group col-md-6">
-									<label for="dtFim__index__"> Data Fim (se aplicável): </label>
-										<input type="date" class="form-control" id="dtFim__index__" name="historico[__index__].dtFim"/>
-									</div>
-								</div>
-								<button class="remove-historico btn btn-danger">Remover</button>
-							</div>
+		<div class="historico-template historico-entry" style="display: none;">
+			<input type="hidden" name="historico[__index__].id" value=""/> 
+			<div class="form-row">
+				<div class="form-group col-md-6">
+					<label for="empresaTrabalho__index__"> Empresa: </label>
+					<input type="text" class="form-control" id="empresaTrabalho__index__" name="historico[__index__].empresaTrabalho" required/>
+				</div>
+				<div class="form-group col-md-6">
+					<label for="descricaoTrabalho__index__"> Cargo: </label>
+					<input type="text" class="form-control" id="descricaoTrabalho__index__" name="historico[__index__].descricaoTrabalho" required/>
 				</div>
 			</div>
+			<div class="form-row">
+				<div class="form-group col-md-6">
+					<label for="dtInicio__index__"> Data Início: </label>
+					<input type="date" class="form-control" id="dtInicio__index__" name="historico[__index__].dtInicio" required/>
+				</div>
+				<div class="form-group col-md-6">
+					<label for="dtFim__index__"> Data Fim (se aplicável): </label>
+					<input type="date" class="form-control" id="dtFim__index__" name="historico[__index__].dtFim"/>
+				</div>
+			</div>
+			<button class="remove-historico btn btn-danger">Remover</button>
 		</div>
-    </div>
-  </div>
+	</div>
 </div>
+</div>
+<!-- JavaScript -->
+<script>	
+//Funções e observadores de eventos para lidar com histórico
+document.addEventListener("DOMContentLoaded", function () {
+	const historicosContainer = document.getElementById('historicosContainer');
+	const addHistoricoBtn = document.getElementById('addHistoricoBtn');
+	const historicoTemplate = document.querySelector('.historico-template');
 
-
-	<script>
-		document.addEventListener("DOMContentLoaded", function () {
-			const historicosContainer = document.getElementById('historicosContainer');
-			const addHistoricoBtn = document.getElementById('addHistoricoBtn');
-			const historicoTemplate = document.querySelector('.historico-template');
-
-			// Próximo índice
-			function getNextIndex() {
-				const idFields = historicosContainer.querySelectorAll('.historico-entry:not(.historico-template) input[name$=".id"]');
-				let maxIndex = -1;
-				idFields.forEach(field => {
-					const match = field.name.match(/historico\[(\d+)\].id/);
-					if (match && match[1]) {
-						const idx = parseInt(match[1]);
-						if (!isNaN(idx) && idx > maxIndex) maxIndex = idx;
-					}
-				});
-				return maxIndex + 1;
+	// Próximo índice
+	function getNextIndex() {
+		const idFields = historicosContainer.querySelectorAll('.historico-entry:not(.historico-template) input[name$=".id"]');
+		let maxIndex = -1;
+		idFields.forEach(field => {
+			const match = field.name.match(/historico\[(\d+)\].id/);
+			if (match && match[1]) {
+				const idx = parseInt(match[1]);
+				if (!isNaN(idx) && idx > maxIndex) maxIndex = idx;
 			}
+		});
+		return maxIndex + 1;
+	}
 
-			// Atualiza names e ids dos campos clonados
-			function updateNamesAndIds(element, index) {
-				element.querySelectorAll('[name]').forEach(input => {
-					input.name = input.name.replace('__index__', index);
-				});
-				element.querySelectorAll('[id]').forEach(input => {
-					input.id = input.id.replace('__index__', index);
-				});
-				// Limpa valores (exceto hidden id)
-				element.querySelectorAll('input:not([type="hidden"]), textarea, select').forEach(input => input.value = '');
-				// Limpa hidden id
-				const idInput = element.querySelector('input[type="hidden"][name$=".id"]');
-				if (idInput) idInput.value = '';
+	// Atualiza names e ids dos campos clonados
+	function updateNamesAndIds(element, index) {
+		element.querySelectorAll('[name]').forEach(input => {
+			input.name = input.name.replace('__index__', index);
+		});
+		element.querySelectorAll('[id]').forEach(input => {
+			input.id = input.id.replace('__index__', index);
+		});
+		// Limpa valores (exceto hidden id)
+		element.querySelectorAll('input:not([type="hidden"]), textarea, select').forEach(input => input.value = '');
+		// Limpa hidden id
+		const idInput = element.querySelector('input[type="hidden"][name$=".id"]');
+		if (idInput) idInput.value = '';
 
-				// Adiciona listener remover
-				const removeBtn = element.querySelector('.remove-historico');
-				if (removeBtn && !removeBtn.dataset.listenerAttached) {
-					removeBtn.addEventListener('click', handleRemoveHistorico);
-					removeBtn.dataset.listenerAttached = 'true';
-				}
-			}
+		// Adiciona listener remover
+		const removeBtn = element.querySelector('.remove-historico');
+		if (removeBtn && !removeBtn.dataset.listenerAttached) {
+			removeBtn.addEventListener('click', handleRemoveHistorico);
+			removeBtn.dataset.listenerAttached = 'true';
+		}
+	}
 
-			// Renumera entradas após remoção
-			function renumerarHistoricos() {
-				const historicos = historicosContainer.querySelectorAll('.historico-entry:not(.historico-template)');
-				historicos.forEach((entry, index) => {
-					entry.querySelectorAll('[name]').forEach(input => {
-						input.name = input.name.replace(/historico\[\d+\]/, `historico[${index}]`);
-					});
-					entry.querySelectorAll('[id]').forEach(input => {
-						input.id = input.id.replace(/__\d+__/, `__${index}__`);
-					});
-				});
-			}
-
-			// Remove histórico
-			function handleRemoveHistorico(event) {
-				event.preventDefault();
-				const entry = event.target.closest('.historico-entry');
-				if (entry && !entry.classList.contains('historico-template')) {
-					entry.remove();
-					renumerarHistoricos();
-				}
-			}
-
-			// Botão adicionar histórico
-			addHistoricoBtn.addEventListener('click', () => {
-				const newIndex = getNextIndex();
-				const clone = historicoTemplate.cloneNode(true);
-				clone.classList.remove('historico-template');
-				clone.style.display = 'block';
-				updateNamesAndIds(clone, newIndex);
-				historicosContainer.appendChild(clone);
+	// Renumera entradas após remoção
+	function renumerarHistoricos() {
+		const historicos = historicosContainer.querySelectorAll('.historico-entry:not(.historico-template)');
+		historicos.forEach((entry, index) => {
+			entry.querySelectorAll('[name]').forEach(input => {
+				input.name = input.name.replace(/historico\[\d+\]/, `historico[${index}]`);
 			});
-
-			// Add listener remover para existentes
-			historicosContainer.querySelectorAll('.historico-entry:not(.historico-template) .remove-historico').forEach(btn => {
-				if (!btn.dataset.listenerAttached) {
-					btn.addEventListener('click', handleRemoveHistorico);
-					btn.dataset.listenerAttached = 'true';
-				}
+			entry.querySelectorAll('[id]').forEach(input => {
+				input.id = input.id.replace(/__\d+__/, `__${index}__`);
 			});
 		});
+	}
+
+	// Remove histórico
+	function handleRemoveHistorico(event) {
+		event.preventDefault();
+		const entry = event.target.closest('.historico-entry');
+		if (entry && !entry.classList.contains('historico-template')) {
+			entry.remove();
+			renumerarHistoricos();
+		}
+	}
+
+	// Botão adicionar histórico
+	addHistoricoBtn.addEventListener('click', () => {
+		const newIndex = getNextIndex();
+		const clone = historicoTemplate.cloneNode(true);
+		clone.classList.remove('historico-template');
+		clone.style.display = 'block';
+		updateNamesAndIds(clone, newIndex);
+		historicosContainer.appendChild(clone);
+	});
+
+	// Add listener remover para existentes
+	historicosContainer.querySelectorAll('.historico-entry:not(.historico-template) .remove-historico').forEach(btn => {
+		if (!btn.dataset.listenerAttached) {
+			btn.addEventListener('click', handleRemoveHistorico);
+			btn.dataset.listenerAttached = 'true';
+		}
+	});
+		
+		// Observador de evento do input de foto
+    const fileInput = document.getElementById('foto');
+    const form = document.querySelector('form');
+    const mensagemErroFoto = document.getElementById('mensagemErroFoto');
+
+    const MAX_FILE_SIZE_BYTES = 2 * 1024 * 1024; // 2 MB
+    const VALID_MIME_TYPES = ['image/png', 'image/jpeg'];
+
+    /**
+     * Valida um arquivo de imagem verificando seu tipo e tamanho.
+     * Exibe mensagens de erro em um elemento HTML específico.
+     *
+     * @param {File} file - O objeto File a ser validado (geralmente fileInput.files[0]).
+     * @param {HTMLElement} errorDisplayElement - O elemento HTML onde a mensagem de erro será exibida.
+     * @param {HTMLInputElement} inputElement - O input de arquivo associado, para limpar seu valor se inválido.
+     * @returns {boolean} - Retorna true se o arquivo for válido, false caso contrário.
+     */
+    function validarFotoArquivo(file, errorDisplayElement, inputElement) {
+        // Limpa qualquer mensagem de erro anterior
+        errorDisplayElement.textContent = '';
+        errorDisplayElement.style.display = 'none';
+
+        if (!file) {
+            // Se nenhum arquivo foi selecionado, consideramos válido para esta função
+            // (a validação de 'required' ficaria no HTML ou em outra parte)
+            return true;
+        }
+
+        // 1. Validar o tipo de arquivo (MIME Type)
+        if (!VALID_MIME_TYPES.includes(file.type)) {
+            errorDisplayElement.textContent = 'Formato de arquivo inválido. Por favor, use JPG ou PNG.';
+            errorDisplayElement.style.display = 'block';
+            if (inputElement) {
+                inputElement.value = ''; // Limpa o input para forçar nova seleção
+            }
+            return false;
+        }
+
+        // 2. Validar o tamanho do arquivo
+        if (file.size > MAX_FILE_SIZE_BYTES) {
+            errorDisplayElement.textContent = `Tamanho do arquivo excedido. O máximo permitido é ${MAX_FILE_SIZE_BYTES / (1024 * 1024)}MB.`;
+            errorDisplayElement.style.display = 'block';
+            if (inputElement) {
+                inputElement.value = ''; // Limpa o input para forçar nova seleção
+            }
+            return false;
+        }
+
+        return true; // Arquivo válido
+    }
+
+    // --- Configuração dos Event Listeners ---
+
+    // Validação imediata ao selecionar o arquivo
+    fileInput.addEventListener('change', function() {
+        if (this.files.length > 0) {
+            validarFotoArquivo(this.files[0], mensagemErroFoto, this);
+        } else {
+            // Se o usuário desmarcou a seleção (por exemplo, cancelou), limpa o erro
+            mensagemErroFoto.textContent = '';
+            mensagemErroFoto.style.display = 'none';
+        }
+    });
+
+    // Validação final ao tentar enviar o formulário
+    form.addEventListener('submit', function(event) {
+        // Checa se o campo de foto está preenchido e é válido
+        if (fileInput.files.length > 0) {
+            const isValid = validarFotoArquivo(fileInput.files[0], mensagemErroFoto, fileInput);
+            if (!isValid) {
+                event.preventDefault(); // Impede o envio se o arquivo não for válido
+            }
+        }
+        // Se o campo de foto for obrigatório, certifique-se de que o input HTML tem 'required'.
+        // O navegador já impede o envio se um campo 'required' não for preenchido.
+    });
+});
 	</script>
 
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -15,7 +15,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
@@ -64,7 +63,7 @@ public class Egresso {
 	//NO banco de dados será salvo o caminho da foto, ex: "uploads/egresso/foto.jpg" 
 	@Column(name = "foto", length = 200)
 	private String foto;
-
+	@Column(name = "situacao_foto")
 	private Boolean situacaoFoto = false;
 	
 	//1 curso para N alunos
@@ -77,7 +76,9 @@ public class Egresso {
 	//Um aluno para 1 lista de redes, cascata do tipo All para quando for salvar um aluno salvar os links e o mesmo para remover
 	@OneToOne(mappedBy = "egresso", cascade = CascadeType.ALL)
 	private Links links;
-	
+	//Atributo para garantir que o usuário concorda com a divulgação de foto e comentarios expressos
+	@Column(name = "consentimento_divulgacao", nullable = false)
+	private Boolean consentimentoDivulgacao;
 	
 	public Egresso(DadosCadastroEgresso dados) {
 		this.nome = dados.nome();
@@ -90,6 +91,7 @@ public class Egresso {
 		this.sobre = dados.sobre();
 		this.sobreFatec = dados.sobreFatec();
 		this.sobreProfissional = dados.sobreProfissional();
+		this.consentimentoDivulgacao = dados.consentimentoDivulgacao();
 		//DTO do historico é adicionado no controller
 		//Relações de historico e links são feitas no controller
 	}
