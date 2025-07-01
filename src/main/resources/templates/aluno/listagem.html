@@ -173,6 +173,7 @@
 					<th>Nome</th>
 					<th>Email</th>
 					<th>Curso</th>
+					<th>Opções<th>
 				</tr>
 			</thead>
 			<tbody>
@@ -180,6 +181,17 @@
 					<td th:text="${aluno.nome}"></td>
 					<td th:text="${aluno.email}"></td>
 					<td th:text="${aluno.curso.nome + ' ' + aluno.curso.turno}"></td>
+					<td>
+						<div style="display: flex; gap: 8px; justify-content: center;">
+							<a th:href="@{/aluno/formulario(id=${aluno.id})}">
+								<button class="btn btn-primary">Editar</button>
+							</a>
+							<form action="/aluno" method="post">
+								<input type="hidden" name="_method" value="delete" />
+								<input type="hidden" name="id" th:value="${aluno.id}" />
+								<input type="submit" class="btn btn-danger" value="Excluir" />
+							</form>
+						</div>
 				</tr>
 			</tbody>
 		</table>

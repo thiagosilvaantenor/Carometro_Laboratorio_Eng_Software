@@ -14,6 +14,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import br.com.carometro.curso.Curso;
 import br.com.carometro.curso.CursoService;
+import br.com.carometro.egresso.Egresso;
+import br.com.carometro.historico.Historico;
 import br.com.carometro.security.Criptografia;
 import jakarta.transaction.Transactional;
 
@@ -60,6 +62,15 @@ public class AlunoService {
 
 	public List<Aluno> filtarPorCurso(Long cursoId) {
 		return repository.findByCursoId(cursoId);
+	}
+	
+	
+	public void remover(Long id) {
+		Optional<Aluno> alunoBuscado = repository.findById(id);
+		if (alunoBuscado.isPresent()) {			
+			repository.deleteById(id);
+		}
+		
 	}
 	
 	//Método para lidar com cadastro através de envio de arquivo csv
@@ -149,6 +160,16 @@ public class AlunoService {
 			}
 			return repository.saveAll(alunos);
 		}
+
+		//Verifica o login(email e senha) do aluno
+		public Optional<Aluno> login(String email, String senha) {
+			return repository.findByEmailAndSenha(email,senha);
+		}
+
+		public Aluno findByEmail(String email) {
+			return repository.findByEmail(email);
+		}
+
 	
 	
 }

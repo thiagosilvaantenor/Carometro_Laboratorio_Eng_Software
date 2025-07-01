@@ -4,25 +4,30 @@ import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import br.com.carometro.aluno.Aluno;
 import br.com.carometro.aluno.AlunoDadosAtualizacao;
 import br.com.carometro.aluno.AlunoDadosCadastro;
 import br.com.carometro.aluno.AlunoService;
+import br.com.carometro.coordenador.Coordenador;
 import br.com.carometro.curso.Curso;
 import br.com.carometro.curso.CursoService;
 import br.com.carometro.security.Criptografia;
+import jakarta.servlet.http.HttpSession;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
@@ -95,6 +100,18 @@ public class AlunoController {
 		return "redirect:aluno";		
 	}
 	
+	
+	@DeleteMapping
+	@Transactional
+	public String removeAluno(Long id) {
+		Optional<Aluno> aluno = service.getById(id);
+		// Desfaz o vinculo entre curso e coordenador
+		if (aluno.isPresent()) {
+			service.remover(id);
+		}
+		return "redirect:aluno";
+	}
+	
 	//Método para filtrar a listagem
 	@GetMapping("/filtrar")
 	public String filtrar(@RequestParam(name = "nome", required = false) String nome, 
@@ -115,6 +132,20 @@ public class AlunoController {
 		model.addAttribute("lista", alunos);
 		return "aluno/listagem";
 			
+	}
+	
+	
+	//Mapeamento da pagina inicio do administrador, para chegar lá é necessario ele se logar pelo LoginController
+	@GetMapping("/index")
+	public ModelAndView index(HttpSession session) {
+		//Pega o aluno recebido do login
+		Aluno alunoLogado = (Aluno) session.getAttribute("usuarioLogado");
+		
+		ModelAndView modelAndView = new ModelAndView();
+		modelAndView.setViewName("aluno/index");
+		modelAndView.addObject("aluno", alunoLogado);
+		modelAndView.addObject("role", "aluno");
+		return modelAndView;
 	}
 	
 	//Mapeamento da pagina de envio de arquivo para cadastrar aluno(futuro egresso)

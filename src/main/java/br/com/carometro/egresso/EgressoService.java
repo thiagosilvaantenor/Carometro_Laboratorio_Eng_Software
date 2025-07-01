@@ -81,6 +81,8 @@ public class EgressoService {
 		return repository.findByEmail(email);
 	}
 	
+	//Métodos para os Filtros:
+	
 	public List<Egresso> filtraEgressoPeloCurso(Long cursoId){
 		return repository.findByCursoId(cursoId);
 	}

@@ -78,6 +78,7 @@
 	<header th:replace="~{fragmentos/header :: header(activePage='listagem')}"></header>
 
 	<h1 class="text-center">Alunos Gerados do CSV</h1>
+	<p>Caso o aluno queira editar os dados ele pode logar com a senha padrão: senhaPadrao123</p>
 
     <!-- Mensagem de sucesso ou erro -->
     <div th:if="${messagem}" th:classappend="${#strings.contains(messagem, 'sucesso') ? 'success' : 'error'}" class="message text-center">

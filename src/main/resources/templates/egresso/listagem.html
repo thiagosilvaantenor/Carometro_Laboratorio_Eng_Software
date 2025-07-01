@@ -238,7 +238,7 @@
               </tr>
             </thead>
             <tbody>
-              <tr th:each="egresso : ${lista}" class="table-primary align-middle">
+              <tr th:each="egresso : ${lista}" class="table-primary align-top">
                 <td th:text="${egresso.nome}"></td>
                 <td class="text-center">
                   <img
@@ -252,7 +252,9 @@
                 </td>
                 <td th:text="${egresso.curso.nome}"></td>
                 <td>
+                	<!-- Caso o egresso tenha histórico -->
                   <div
+                  	th:if="${not #lists.isEmpty(egresso.historico)}"
                     th:attr="id='carouselHistoricos' + ${egresso.id}"
                     class="carousel slide carousel-custom"
                     data-bs-ride="carousel"
@@ -296,46 +298,53 @@
                       <span class="visually-hidden">Próximo</span>
                     </button>
                   </div>
+                  
+                  <div
+                  	th:unless="${not #lists.isEmpty(egresso.historico)}"
+                  	>
+                  		<p>Ainda não cadastrou histórico de emprego</p>
+                  	</div>
                 </td>
                 <td th:text="${egresso.comentarioFATEC != null && !#strings.isEmpty(egresso.comentarioFATEC) ? egresso.comentarioFATEC : 'Ainda não comentou'}"></td>
                 <td th:text="${egresso.comentario != null && !#strings.isEmpty(egresso.comentario) ? egresso.comentario : 'Ainda não comentou'}"></td>
-                <td class="d-flex flex-column gap-1">
-                  <a
-                    th:if="${egresso.links.linkedIn != null && egresso.links.linkedIn.startsWith('http')}"
-                    th:href="${egresso.links.linkedIn}"
-                    target="_blank"
-                    class="btn btn-sm btn-outline-primary mt-3  "
-                    >LinkedIn</a
-                  >
-                  <span
-                    th:unless="${egresso.links.linkedIn != null && egresso.links.linkedIn.startsWith('http')}"
-                    class="text-muted"
-                    >Não tem LinkedIn</span
-                  >
-                  <a
-                    th:if="${egresso.links.gitHub != null && egresso.links.gitHub.startsWith('http')}"
-                    th:href="${egresso.links.gitHub}"
-                    target="_blank"
-                    class="btn btn-sm btn-outline-dark"
-                    >GitHub</a
-                  >
-                  <span
-                    th:unless="${egresso.links.gitHub != null && egresso.links.gitHub.startsWith('http')}"
-                    class="text-muted"
-                    >Não tem GitHub</span
-                  >
-                  <a
-                    th:if="${egresso.links.lattesCNPQ != null && egresso.links.lattesCNPQ.startsWith('http')}"
-                    th:href="${egresso.links.lattesCNPQ}"
-                    target="_blank"
-                    class="btn btn-sm btn-outline-success"
-                    >Lattes</a
-                  >
-                  <span
-                    th:unless="${egresso.links.lattesCNPQ != null && egresso.links.lattesCNPQ.startsWith('http')}"
-                    class="text-muted"
-                    >Não tem Lattes</span
-                  >
+                <td>
+                	<div class="d-flex flex-column gap-1">
+	                  <a
+	                    th:if="${egresso.links.linkedIn != null && egresso.links.linkedIn.startsWith('http')}"
+	                    th:href="${egresso.links.linkedIn}"
+	                    target="_blank"
+	                    class="btn btn-sm btn-outline-primary"
+	                    >LinkedIn</a>
+	                  <span
+	                    th:unless="${egresso.links.linkedIn != null && egresso.links.linkedIn.startsWith('http')}"
+	                    class="text-muted"
+	                    >Não tem LinkedIn</span
+	                  >
+	                  <a
+	                    th:if="${egresso.links.gitHub != null && egresso.links.gitHub.startsWith('http')}"
+	                    th:href="${egresso.links.gitHub}"
+	                    target="_blank"
+	                    class="btn btn-sm btn-outline-dark"
+	                    >GitHub</a
+	                  >
+	                  <span
+	                    th:unless="${egresso.links.gitHub != null && egresso.links.gitHub.startsWith('http')}"
+	                    class="text-muted"
+	                    >Não tem GitHub</span
+	                  >
+	                  <a
+	                    th:if="${egresso.links.lattesCNPQ != null && egresso.links.lattesCNPQ.startsWith('http')}"
+	                    th:href="${egresso.links.lattesCNPQ}"
+	                    target="_blank"
+	                    class="btn btn-sm btn-outline-success"
+	                    >Lattes</a
+	                  >
+	                  <span
+	                    th:unless="${egresso.links.lattesCNPQ != null && egresso.links.lattesCNPQ.startsWith('http')}"
+	                    class="text-muted"
+	                    >Não tem Lattes</span
+	                  >
+	                </div>
                 </td>
                 <td>
                   <a

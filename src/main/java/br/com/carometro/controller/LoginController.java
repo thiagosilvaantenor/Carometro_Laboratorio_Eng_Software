@@ -13,6 +13,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import br.com.carometro.adm.Administrador;
+import br.com.carometro.aluno.Aluno;
 import br.com.carometro.coordenador.Coordenador;
 import br.com.carometro.egresso.Egresso;
 import br.com.carometro.security.Criptografia;
@@ -92,13 +93,23 @@ public class LoginController {
 		    				"Senha incorreta. Tente novamente");
 					return "redirect:/login";
 				}else {
-					// Adicione esta linha para identificar o usuário
 					Egresso egressoEncontrado = egresso.get();
 					session.setAttribute("usuarioLogado", egressoEncontrado);
 					session.setAttribute("role", "egresso");
 					return "redirect:/egresso/index";
 				}
-	
+			case "aluno":
+				Optional<Aluno> aluno = serviceUsuario.verificaLoginAluno(dados.email(), senhaCript);
+				if (aluno.isEmpty()) {
+					redirectAttributes.addFlashAttribute("mensagemErro", 
+		    				"Senha incorreta. Tente novamente");
+					return "redirect:/login";
+				}else {
+					Aluno alunoEncontrado = aluno.get();
+					session.setAttribute("usuarioLogado", alunoEncontrado);
+					session.setAttribute("role", "aluno");
+					return "redirect:/aluno/index";
+				}
 			default:
 				redirectAttributes.addFlashAttribute("mensagemErro", 
 	    				"Usuário não encontrado. Tente novamente");

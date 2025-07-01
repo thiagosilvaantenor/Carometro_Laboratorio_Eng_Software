@@ -8,12 +8,15 @@ import org.springframework.stereotype.Service;
 import br.com.carometro.adm.Administrador;
 import br.com.carometro.adm.AdministradorRepository;
 import br.com.carometro.adm.AdministradorService;
+import br.com.carometro.aluno.Aluno;
+import br.com.carometro.aluno.AlunoService;
 import br.com.carometro.coordenador.Coordenador;
 import br.com.carometro.coordenador.CoordenadorRepository;
 import br.com.carometro.coordenador.CoordenadorService;
 import br.com.carometro.egresso.Egresso;
 import br.com.carometro.egresso.EgressoRepository;
 import br.com.carometro.egresso.EgressoService;
+import jakarta.validation.constraints.NotBlank;
 
 @Service
 public class UsuarioService {
@@ -29,6 +32,8 @@ public class UsuarioService {
 	@Autowired
 	private EgressoService egressoService;
 	
+	@Autowired
+	private AlunoService alunoService;
 	
 	public String verificaAtor(String email) {
 
@@ -40,6 +45,9 @@ public class UsuarioService {
 	            }
 	            if (egressoService.findByEmail(email) != null) {
 	            	return "egresso";
+	            }
+	            if (alunoService.findByEmail(email) != null) {
+	            	return "aluno";
 	            }
 	            //Se não encontrar é por que o email não esta cadastrado
 	            return "não encontrado";
@@ -54,9 +62,13 @@ public class UsuarioService {
 	public Optional<Coordenador> verificaLoginCoordenador(String email, String senha) {
 		return coordenadorService.login(email, senha);
 	}
-	//Verifica se o login do admin esta correto
+	//Verifica se o login do egresso esta correto
 	public Optional<Egresso> verificaLoginEgresso(String email, String senha) {
 		return egressoService.login(email, senha);
+	}
+	//Verifica se o login do aluno esta correto
+	public Optional<Aluno> verificaLoginAluno(String email, String senha) {
+		return alunoService.login(email, senha);
 	}
 	
 	
