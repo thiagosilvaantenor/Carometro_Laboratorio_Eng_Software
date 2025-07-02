@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -66,8 +67,8 @@ public class EgressoService {
 	
 			egresso.setSenha(Criptografia.md5(egresso.getSenha()));
 
-		} catch (Exception e) {
-			throw new Exception("Erro na criptografia da senha");
+		} catch (NoSuchAlgorithmException e) {
+			throw new NoSuchAlgorithmException("Erro na criptografia da senha : " + e.getMessage());
 		}
 		repository.save(egresso);
 	}

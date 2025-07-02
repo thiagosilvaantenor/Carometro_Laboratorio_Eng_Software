@@ -89,13 +89,13 @@ public class EgressoController {
 	@GetMapping
 	public String carregaPaginaListagem(Model model) {
 		//Lista de egressos com cadastro aprovado pelo coordenador
-		List<Egresso> egresso = service.buscaEgressoPelaSituacaoCadastro(true);
-		model.addAttribute("lista", egresso);
+		List<Egresso> egressos = service.buscaEgressoPelaSituacaoCadastro(true);
+		model.addAttribute("lista", egressos);
 		//Filtros
-		//Separa os anos semestres cadastrados e envia a lista para a model
+		//Separa os anos cadastrados e envia a lista para a model
 		List<Integer> anos = new ArrayList<>();
-		egresso.forEach( e -> {
-			//Verifica se o ano semestre ja esta na lista, se não adiciona
+		egressos.forEach( e -> {
+			//Verifica se o ano ja esta na lista, se não adiciona
 			if(!anos.contains(e.getAno())) {
 				anos.add(e.getAno());							
 			}
@@ -244,15 +244,21 @@ public class EgressoController {
 	public String atualizar(@Valid DadosAtualizacaoEgresso dados,
 			@RequestParam("cursoId") Long cursoId,
 			@RequestParam("foto") MultipartFile foto,
-			Model model) throws IOException, NoSuchAlgorithmException {
+			Model model,
+			@Valid BindingResult resultado,
+			RedirectAttributes redirectAttributes) throws IOException, NoSuchAlgorithmException {
 		
 		//Busca o egresso existente
 		var egresso = repository.getReferenceById(dados.id());
 		
 		//Atualizar senha, caso ele tenha colocado algo no campo
 		if (dados.senha() != null && !dados.senha().isBlank()) {
-			//codifica a senha nova
-			egresso.setSenha(Criptografia.md5(dados.senha()));
+			try {
+				//codifica a senha nova
+				egresso.setSenha(Criptografia.md5(dados.senha()));				
+			}catch (NoSuchAlgorithmException e) {
+				throw new NoSuchAlgorithmException("Erro na criptografia da senha : " + e.getMessage());
+			}
 		}
 		
 		//Atualiza curso
@@ -320,12 +326,49 @@ public class EgressoController {
 			
 		}
 		//Atualiza foto
+		// --- 2. Validação da Foto (Tipo e Tamanho) ---
+		final long TAMANHO_MAX_BYTES = 2 * 1024 * 1024; // 2 MB
+		final String[] TIPOS_MIME_VALIDOS = {"image/png", "image/jpeg"};
+		
+		if (!foto.isEmpty()) { // Verifica se um arquivo foi enviado
+		    String contentType = foto.getContentType();
+		    long tamanho = foto.getSize();
+		
+		    boolean tipoValido = false;
+		    //Itera sobre os tipos para verificar se o arquivo enviado é do tipo valido
+		    for (String tipo : TIPOS_MIME_VALIDOS) {
+		        if (tipo.equals(contentType)) {
+		            tipoValido = true;
+		            break;
+		        }
+		    }
+		
+		    if (!tipoValido) {
+		        redirectAttributes.addFlashAttribute("erroValidacao", "Formato de imagem inválido. Por favor, envie JPG ou PNG.");
+		        return "redirect:/egresso/formulario"; 
+		    }
+		
+		    if (tamanho > TAMANHO_MAX_BYTES) {
+		        redirectAttributes.addFlashAttribute("erroValidacao", "A imagem excede o tamanho máximo permitido de 2MB.");
+		        return "redirect:/egresso/formulario";
+		    }
+		}	
 		if (foto != null && !foto.isEmpty()) {
 	        service.salvarFoto(foto, egresso);
+	        //Se foto nova, precisa ser validada
+	        egresso.setSituacaoFoto(false);
 	    }
 		
-		egresso.atualizarInformacoes(dados);
-		return "redirect:egresso/index";
+		
+		try {
+			egresso.atualizarInformacoes(dados);
+		    redirectAttributes.addFlashAttribute("mensagemSucesso", "Atualização realizado com sucesso! Caso tenha alterado foto ou comentarios um adminsitrador vai avalia-los para que possam aparecer na página de postagens");
+		    return "redirect:egresso/index";
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        redirectAttributes.addFlashAttribute("erroValidacao", "Erro ao atualizar egresso: " + e.getMessage());
+	        return "redirect:/egresso/formulario?/id=" + egresso.getId();
+	    }
 	}
 
 	@DeleteMapping

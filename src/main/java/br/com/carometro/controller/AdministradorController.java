@@ -125,10 +125,19 @@ public class AdministradorController {
 	    	//Cria a lista de egressos que vai ser populada com os egressos que ainda não foram validados
 	    	List<Egresso> egressos = new ArrayList<>();
 	    	egressos = egressoService.filtraEgressoAindaNaoAprovadosEmAlgumaSituacao();
+	    	//Separa os anos cadastrados e envia a lista para a model
+			List<Integer> anos = new ArrayList<>();
+			egressos.forEach( e -> {
+				//Verifica se o ano ja esta na lista, se não adiciona
+				if(!anos.contains(e.getAno())) {
+					anos.add(e.getAno());							
+				}
+			});
 	    	//Envia para a model a lista de egressos
 	        ModelAndView modelAndView = new ModelAndView();
 	        modelAndView.addObject("egressos", egressos);
 	        modelAndView.addObject("cursos", cursoService.getAllCursos());
+	        modelAndView.addObject("anos", anos);
 	        modelAndView.setViewName("admin/validarPostagem");
 	        return modelAndView; 
 	    } else {

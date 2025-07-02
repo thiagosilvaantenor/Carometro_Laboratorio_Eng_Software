@@ -55,9 +55,7 @@ public class Aluno {
 		if(dados.email() != null) {
 			this.email = dados.email();
 		}
-		if(dados.senha() != null) {
-			this.senha = dados.senha();
-		}
+		//Senha é atualizada no controller
 		if(dados.telefone() != null) {
 			this.telefone = dados.telefone();
 		}

@@ -307,17 +307,23 @@
 
         <article class="egresso-card-wrapper">
             <header class="egresso-header">
-                <img th:src="@{${egresso.foto}}"
+            	<!-- Caso foto foi aprovada -->
+                <img th:if="${egresso.foto != null && egresso.situacaoFoto == true}"
+                	th:src="@{${egresso.foto}}"
                     th:alt="'Foto de ' + ${egresso.nome}"
                     th:title="${egresso.nome}"
                     class="aluno-foto" />
+                <!-- Caso foto ainda esta sendo avaliada -->
+                <p th:unless="${egresso.situacaoFoto == true}">Foto sendo avaliada</p>
+                <!-- Caso foto ainda não foi adicionada -->
+                <p th:unless="${egresso.foto != null}">Ainda não adicionou foto</p>
                 <div class="egresso-info">
                     <h2 th:text="${egresso.nome}"></h2>
                     <p th:text="${egresso.curso.nome}"></p>
                 </div>
             </header>
 
-            <section class="main-carousel-container mb-5" aria-label="Foto principal do egresso">
+            <section th:if="${egresso.foto != null && egresso.situacaoFoto == true}" class="main-carousel-container mb-5" aria-label="Foto principal do egresso">
                 <h2>Foto</h2>
                 <img th:src="@{${egresso.foto}}"
                     th:alt="'Foto de ' + ${egresso.nome}"

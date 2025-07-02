@@ -202,7 +202,7 @@
                 th:text="${curso.nome}"></option>
             </select>
           </div>
-          <!-- Ano semestre -->
+          <!-- Ano -->
           <div class="mb-3">
             <label for="ano" class="form-label">Selecione o ano de conclusão:</label>
             <select class="form-select" name="ano" id="ano">
@@ -242,13 +242,25 @@
                 <td th:text="${egresso.nome}"></td>
                 <td class="text-center">
                   <img
-                    th:if="${egresso.foto != null}"
+                    th:if="${egresso.foto != null && egresso.situacaoFoto == true}"
                     th:src="@{${egresso.foto}}"
                     th:alt="'Foto de ' + ${egresso.nome}"
                     th:title="${egresso.nome}"
                     class="aluno-foto img-thumbnail"
                     width="150"
                   />
+                  <!-- Caso não tenha foto -->
+                  <div
+                  	th:unless="${egresso.foto != null}"
+                  	>
+                  		<p>Foto ainda não adicionada</p>
+                  	</div>
+               	<!-- Caso foto ainda não avaliada -->
+                 <div
+                 	th:unless="${egresso.situacaoFoto == true}"
+                 	>
+            	  		<p>Foto sendo avaliada</p>
+                 	</div>
                 </td>
                 <td th:text="${egresso.curso.nome}"></td>
                 <td>

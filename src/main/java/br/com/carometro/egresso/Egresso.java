@@ -103,12 +103,15 @@ public class Egresso {
 		if (dados.email() != null) {
 			this.email = dados.email();
 		}
-		//Senha é criptografada e alterada no controller		
+		//Senha é criptografada e alterada no controller
+		//Foto é atualizada na controller
 		if (dados.comentarioFATEC() != null) {
 			this.comentarioFATEC = dados.comentarioFATEC();
+			this.situacaoComentario = false;
 		}
 		if (dados.comentario() != null) {
 			this.comentario = dados.comentario();
+			this.situacaoComentario = false;
 		}
 		if (dados.ano() != null) {
 			this.ano = dados.ano();

@@ -256,7 +256,12 @@
              th:href="@{/admin/index}">
             <i class="fas fa-home me-2"></i> Home
           </a>
-
+		  
+	      <a class="nav-link text-success"
+             th:if="${session.role == 'aluno'}"
+             th:href="@{/aluno/index}">
+            <i class="fas fa-home me-2"></i> Home
+          </a>
           <a class="nav-link text-danger" th:href="@{/login/logout}">
             <i class="fas fa-sign-out-alt me-2"></i> Sair
           </a>
