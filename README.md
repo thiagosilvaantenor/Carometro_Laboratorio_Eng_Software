@@ -46,8 +46,8 @@
   ![Postagens de Egressos](https://github.com/user-attachments/assets/3445d540-e7f3-445d-85ea-96f65828efbf)
   * Perfil de egresso: `localhost:8080/egresso/perfil/{id}`
   ![Perfil do Egresso — Mozilla Firefox 2025-07-02 10-47-28](https://github.com/user-attachments/assets/4f8ff819-cb44-4e6d-8b88-174ec8958926)
-  * Home: `localhost:8080/admin/index`
-  ![home do egresso](https://github.com/user-attachments/assets/84a462e5-1dac-42ec-a84e-0f02ae647a6e)
+  * Home (precisa estar logado): `localhost:8080/egresso/index`
+  ![home do egresso](https://github.com/user-attachments/assets/d86da2a5-9c27-45c7-be74-b26af807e85f)
 
 * Administrador:
   * Cadastrar: `localhost:8080/admin/formulario`
@@ -55,7 +55,7 @@
   * Exibir, Editar e excluir (Acessivel apenas ao Admin): `localhost:8080/admin`
   ![listagem de admin](https://github.com/user-attachments/assets/a6873336-c139-41c3-936a-a2193b5fb22b)
   * Home (deve estar logado): `localhost:8080/admin/index`
-  ![Home do admin](https://github.com/user-attachments/assets/31b7bcc4-188e-4c32-8180-bc94fc6d1467)
+  ![Home do admin](https://github.com/user-attachments/assets/b54d0cb0-33f4-490b-a2f5-b996f9f58b5f)
   * Cadastrar Cursos (deve estar logado): `localhost:8080/curso/formulario`
   ![cadastrar cursos](https://github.com/user-attachments/assets/4d623855-72cb-4fe1-9c77-8f38812ca998)
   * Exibir, Editar e excluir cursos: `localhost:8080/curso`
@@ -71,7 +71,7 @@
   * Exibir, Editar e excluir (Acessivel apenas ao Admin): `localhost:8080/coordenador`
   ![listagem de coordenador](https://github.com/user-attachments/assets/e01a5181-0d8d-4045-b257-f41451cec3f7)
   * Home (deve estar logado): `localhost:8080/coordenador/index`
-  ![Home do coordenador](https://github.com/user-attachments/assets/3319d22c-3d3e-4f75-991f-dd1a60a8c230)
+    ![Home do coordenador](https://github.com/user-attachments/assets/8e80782b-1240-4a3f-9f7e-2145dec493e4)
   * Ver postagens do curso do coordenador logado (redireciona para postagens dos egressos, com o filtro de curso selecionado para o curso do coordenador): `http://localhost:8080/egresso/filtrar?&cursoId={id do curso do coordenador}`
   ![Ver postagens do curso](https://github.com/user-attachments/assets/15f758b7-4aaa-40c6-9012-2a2d9bfe1938)
  
@@ -79,5 +79,8 @@
   * Cadastro: `localhost:8080/aluno/formulario`
     ![cadastrar aluno](https://github.com/user-attachments/assets/cb41ba0c-92ad-4d1d-a391-87b23f6212bf)
   * Exibir, Editar e excluir (acessivel apenas ao admin): `http://localhost:8080/aluno`
-    ![image](https://github.com/user-attachments/assets/f7a33d8e-e476-40a9-b6dd-84cfd0e42037)
+    ![listar alunos](https://github.com/user-attachments/assets/f7a33d8e-e476-40a9-b6dd-84cfd0e42037)
+  * Home (deve estar logado):
+    ![home aluno](https://github.com/user-attachments/assets/945fadc3-b843-4cf5-b828-7c85e20a3032)
+
     
