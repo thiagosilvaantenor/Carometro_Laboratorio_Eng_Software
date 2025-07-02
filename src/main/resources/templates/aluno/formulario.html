@@ -12,6 +12,7 @@
 			background: linear-gradient(to right, #f4f6f9, #e9ecef);
 			font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 			padding: 20px;
+			margin-top: 5rem;
 		}
 
 		.fatec-title {
@@ -97,9 +98,10 @@
 	<div class="card-form">
 		<div class="fatec-header mb-4">
 		<h1>Cadastrar aluno</h1>
-		</div>
 		<p th:if="${editar}" class="optional-info text-center">Altere apenas os campos que vão ser atualizados.</p>
-
+		<h5 th:if="${!editar}"class="required-note text-center">Campos com o símbolo * são obrigatórios</h5>
+		</div>
+			
 		<form th:object="${aluno}" method="post" action="/aluno">
 			<input type="hidden" name="_method" value="put" th:if="${aluno?.id != null}">
 			<input type="hidden" name="id" th:value="${aluno?.id}" />
@@ -141,7 +143,6 @@
 						th:selected="${aluno?.curso?.id} == ${curso.id}"></option>
 				</select>
 			</div>
-			<p class="required-note text-center">Campos com o símbolo * são obrigatórios</p>
 
 			<div class="text-center">
 				<button type="submit" class="btn btn-fatec">Cadastrar</button>

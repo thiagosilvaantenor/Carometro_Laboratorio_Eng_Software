@@ -83,6 +83,7 @@
 							<h2>Cadastro de Coordenador</h2>
 							<h5 class="text-center mb-4" th:if="${editar}">Altere apenas os campos que deseja
 								atualizar</h5>
+							<h5 th:if="${!editar}" class="text-center mb-4">Campos com o símbolo * são obrigatórios</h5>
 						</div>
 						<form th:object="${coordenador}" method="post" action="/coordenador">
 							<!-- PUT se for edição -->
@@ -91,19 +92,19 @@
 
 							<div class="row g-3">
 								<div class="col-md-6">
-									<label for="nome">Nome</label>
+									<label for="nome">* Nome</label>
 									<input type="text" id="nome" name="nome" class="form-control"
 										th:value="${coordenador?.nome}" required>
 								</div>
 
 								<div class="col-md-6">
-									<label for="email">Email</label>
+									<label for="email">* Email</label>
 									<input type="email" id="email" name="email" class="form-control"
 										th:value="${coordenador?.email}" required>
 								</div>
 
 								<div class="col-md-6">
-									<label for="senha">Senha</label>
+									<label for="senha">* Senha</label>
 									<!-- Criação -->
 									<input type="password" id="senha" name="senha" class="form-control"
 										th:if="${!editar}" th:value="${coordenador?.senha}" required minlength="8">
@@ -120,7 +121,7 @@
 								</div>
 
 								<div class="col-12 mt-2">
-									<label for="cursoId">Curso</label>
+									<label for="cursoId">* Curso</label>
 									<select class="form-control" name="cursoId" id="cursoId" required>
 										<option value="">-- Selecione --</option>
 										<option th:each="curso : ${cursos}" th:value="${curso.id}"

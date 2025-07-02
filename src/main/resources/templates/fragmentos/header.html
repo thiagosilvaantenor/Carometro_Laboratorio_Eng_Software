@@ -122,7 +122,7 @@
                role="button"
                data-bs-toggle="dropdown"
                aria-expanded="false"
-               th:classappend="${activePage != 'formularioEgresso' && activePage != 'listagemEgresso' ? 'active' : ''}"
+               th:classappend="${activePage == 'formularioEgresso' && activePage == 'listagemEgresso' ? 'active' : ''}"
                style="cursor: pointer;">
               <i class="fas fa-film me-1"></i> Egresso
             </a>
@@ -145,7 +145,7 @@
           </li>
 
           <!-- Dropdown Admin -->
-          <li class="nav-item dropdown" th:if="${session.usuarioLogado == null}">
+          <li class="nav-item dropdown" th:if="${session.usuarioLogado == null || session.role == 'admin'}">
             <a class="nav-link dropdown-toggle"
                id="adminDropdown"
                role="button"
@@ -156,17 +156,23 @@
               <i class="fas fa-film me-1"></i> Admin
             </a>
             <ul class="dropdown-menu" aria-labelledby="adminDropdown">
-              <li>
+              <li th:if="${session.usuarioLogado == null}">
                 <a class="dropdown-item"
                    th:href="@{/admin/formulario}">
                   <i class="fas fa-star me-1"></i> Cadastrar Admin
+                </a>
+              </li>
+              <li th:if="${session.role == 'admin'}">
+                <a class="dropdown-item"
+                   th:href="@{/admin}">
+                  <i class="fas fa-star me-1"></i> Listar Admin
                 </a>
               </li>
             </ul>
           </li>
 
           <!-- Dropdown Coordenador -->
-          <li class="nav-item dropdown" th:if="${session.usuarioLogado == null}">
+          <li class="nav-item dropdown" th:if="${session.usuarioLogado == null || session.role == 'admin'}">
             <a class="nav-link dropdown-toggle"
                id="coordenadorDropdown"
                role="button"
@@ -177,10 +183,16 @@
               <i class="fas fa-film me-1"></i> Coordenador
             </a>
             <ul class="dropdown-menu" aria-labelledby="coordenadorDropdown">
-              <li>
+              <li th:if="${session.usuarioLogado == null}">
                 <a class="dropdown-item"
                    th:href="@{/coordenador/formulario}">
                   <i class="fas fa-star me-1"></i> Cadastrar Coordenador
+                </a>
+              </li>
+              <li th:if="${session.role == 'admin'}">
+                <a class="dropdown-item"
+                   th:href="@{/coordenador}">
+                  <i class="fas fa-star me-1"></i> Listar Coordenadores
                 </a>
               </li>
             </ul>
