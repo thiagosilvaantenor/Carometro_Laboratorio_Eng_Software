@@ -172,16 +172,16 @@
 										<input type="hidden" name="_method" value="put">
 										<select class="form-control mb-2" name="tipo" required>
 											<option disabled selected>-- Selecione antes de reprovar --</option>
-											<option value="fatec">Reprovar Comentário FATEC</option>
-											<option value="geral">Reprovar Comentário Geral</option>
+											<option value="fatec" th:hidden="${egresso.situacaoComentario == false}">Reprovar Comentário FATEC</option>
+											<option value="geral" th:hidden="${egresso.situacaoComentario == false}">Reprovar Comentário Geral</option>
 											<option value="comentarios">Reprovar Ambos Comentários</option>
-											<option value="foto">Reprovar Foto</option>
+											<option value="foto" th:hidden="${egresso.situacaoFoto == false}">Reprovar Foto</option>
 										</select>
 										<input type="hidden" name="id" th:value="${egresso.id}">
 										<button class="btn btn-danger btn-sm">Reprovar</button>
 									</form>
 								</div>
-								<p th:unless="${egresso.situacaoComentario == false || egresso.situacaoFoto == false}">
+								<p th:if="${egresso.situacaoComentario == true && egresso.situacaoFoto == true}">
 									<strong>Comentários e Foto já validados</strong>
 								</p>
 							</div>

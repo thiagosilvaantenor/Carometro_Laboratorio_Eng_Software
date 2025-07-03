@@ -105,11 +105,11 @@ public class Egresso {
 		}
 		//Senha é criptografada e alterada no controller
 		//Foto é atualizada na controller
-		if (dados.comentarioFATEC() != null) {
+		if (dados.comentarioFATEC() != null && !dados.comentarioFATEC().isBlank()) {
 			this.comentarioFATEC = dados.comentarioFATEC();
 			this.situacaoComentario = false;
 		}
-		if (dados.comentario() != null) {
+		if (dados.comentario() != null && !dados.comentario().isBlank()) {
 			this.comentario = dados.comentario();
 			this.situacaoComentario = false;
 		}
