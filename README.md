@@ -15,6 +15,12 @@
 - MySQL
 - Lombok
 
+## Atores
+- `Administrador`: Vai cadastrar os cursos da FATEC, validar os egressos para que possam aparecer na página de postagem e cadastrar alunos, via envio de arquivo `.csv`, para que possam ser contatados quando virarem egressos para ingressar na plataforma.
+- `Coordenador`: Pode filtrar a lista de egressos para ver somente os do seu curso
+- `Egresso`: Vai se cadastrar, necessitando aceitar o termo de divulgação das informações presentes na postagem, e após validado pelo administrador vai aparecer na página de postagens
+- `Aluno`: Pode se cadastrar, informando os dados de contato para quando se tornar um egresso.
+
 ## Para rodar:
 - Tenha instalado: Java 17 ou maior, Maven e Lombok
 - Escolha sua IDE Java de preferência, a exemplo o Eclipse, importe o projeto e instale as dependencias, caso precisar usar o terminal use o comando: `mvn install`
@@ -24,6 +30,20 @@
   - Linha 7, porta em que vai rodar o servidor, caso queira rodar em 8081: server.port=`8081`
 - Pronto, basta rodar o `/main/src/main/java/br/com/carometro/CarometroSpringApplication.java`, ou usar o comando `mvn spring-boot:run`
 - **Para testar, cadastre um administrador, faça o login e cadastre os cursos para que os outros atores possam interagir com o sistema**
+
+## Explicação de utilização prevista
+- Adminstrador realiza o cadastro, realiza o login, cadastra os cursos da FATEC
+- Caso nécessário o adminsitrador pode editar seu cadastro
+- Coordenador e Egresso podem se cadastrar
+- Ambos podem se logar e editar o cadastro
+- Administrador valida o cadastro do egresso:
+  - Se realmente é um egresso
+  - Se a foto é valida para aparecer na postagem e perfil
+  - Se os comentários sobre a FATEC e o Geral são válidos para aparecer na postagem e perfil
+- Egresso agora é visivel na página de postagens
+- Qualquer usuário, mesmo sem estar logado, pode ver as postagens
+- Caso o egresso edite sua foto ou comentários, eles devem ser validados novamente para serem exibidos na postagem.
+
 
 ## Preview
 
